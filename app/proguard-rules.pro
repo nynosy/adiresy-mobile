@@ -39,6 +39,14 @@
     public <init>(android.content.Context, androidx.work.WorkerParameters);
 }
 
+# WorkManager instantiates the WorkRequest's InputMerger (default:
+# androidx.work.OverwritingInputMerger) reflectively via Class.forName +
+# getDeclaredConstructor(); a stripped no-arg constructor fails silently
+# and every worker's doWork() is skipped.
+-keep class * extends androidx.work.InputMerger {
+    public <init>();
+}
+
 # Room entities and DAOs — keep all fields and method signatures
 -keep class org.github.nynosy.adiresy_mobile.data.cache.** { *; }
 
