@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Address code — large, primary colour -->
+    <TextView
+        android:id="@+id/label_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:textColor="?attr/colorPrimary"
+        android:layout_marginBottom="4dp" />
+
+    <!-- Fokontany -->
+    <TextView
+        android:id="@+id/label_fokontany"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_marginBottom="2dp" />
+
+    <!-- Commune › District -->
+    <TextView
+        android:id="@+id/label_hierarchy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodySmall"
+        android:textColor="?android:attr/textColorSecondary"
+        android:layout_marginBottom="20dp" />
+
+    <!-- Icon-only action row: Bookmark · Share · Copy · Navigate -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:layout_marginBottom="8dp">
+
+        <ImageButton
+            android:id="@+id/btn_bookmark"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_bookmark_border"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_bookmark_unsaved"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_share"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_share"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_share_code"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_copy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_copy"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_copy_code"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_navigate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_navigate"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_navigate"
+            android:scaleType="center" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -1,0 +1,16 @@
+{
+  "version": 8,
+  "name": "Adiresy Dev Stub (Light)",
+  "center": [46.8691, -18.9100],
+  "zoom": 5,
+  "sources": {},
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#F0FDFA"
+      }
+    }
+  ]
+}

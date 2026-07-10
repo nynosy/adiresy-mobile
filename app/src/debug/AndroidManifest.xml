@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Debug manifest overlay -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" />
+
+    <application
+        android:networkSecurityConfig="@xml/network_security_config"
+        tools:replace="android:networkSecurityConfig">
+
+        <!-- Debug-only: inject GPS via adb broadcast (see MockLocationReceiver) -->
+        <receiver
+            android:name=".debug.MockLocationReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="org.github.nynosy.adiresy_mobile.MOCK_LOCATION" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+</manifest>

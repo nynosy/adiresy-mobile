@@ -1,0 +1,186 @@
+<resources>
+    <string name="app_name">Adiresy</string>
+
+    <!-- Bottom navigation tabs -->
+    <string name="tab_home">Accueil</string>
+    <string name="tab_map">Carte</string>
+    <string name="tab_search">Recherche</string>
+    <string name="tab_settings">Paramètres</string>
+
+    <!-- First-run language chooser — shown in own language, no translation needed -->
+    <string name="lang_english">English</string>
+    <string name="lang_french">Français</string>
+    <string name="lang_malagasy">Malagasy</string>
+
+    <!-- Home screen -->
+    <string name="btn_locate_me">Me localiser</string>
+    <string name="label_nearby_buildings">Bâtiments à proximité</string>
+    <string name="disclaimer_unofficial">Service non officiel — les codes n\'ont aucune valeur légale</string>
+    <string name="nearby_empty_online">Aucun bâtiment trouvé à proximité</string>
+    <string name="nearby_empty_offline">Connectez-vous pour trouver les bâtiments à proximité</string>
+
+    <!-- Code card / code detail -->
+    <string name="btn_share">Partager</string>
+    <string name="btn_copy">Copier</string>
+    <string name="btn_navigate">Itinéraire</string>
+    <string name="navigate_coming_soon">Disponible dans une prochaine mise à jour</string>
+    <string name="navigate_external_hint">Ouvre une application de navigation externe</string>
+    <string name="copied_to_clipboard">Code copié</string>
+    <string name="share_text">Trouvez ce bâtiment sur Adiresy : %2$s</string>
+    <string name="share_chooser_title">Partager le code d\'adresse</string>
+
+    <!-- Code detail errors -->
+    <string name="error_code_not_found">Impossible de résoudre ce code — vérifiez votre connexion et réessayez</string>
+    <string name="error_no_network">Pas de connexion réseau</string>
+    <string name="error_api_key">Clé API manquante — veuillez vérifier les paramètres</string>
+    <string name="btn_retry">Réessayer</string>
+
+    <!-- Admin hierarchy labels -->
+    <string name="label_region">Région</string>
+    <string name="label_district">District</string>
+    <string name="label_commune">Commune</string>
+    <string name="label_fokontany">Fokontany</string>
+
+    <!-- Map / Explore -->
+    <string name="btn_explore">Explorer</string>
+    <string name="map_offline_banner">Données cartographiques non disponibles — téléchargez dans Paramètres</string>
+    <string name="title_attribution">Données cartographiques et attributions</string>
+    <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
+    <string name="attribution_osm">© Contributeurs OpenStreetMap (ODbL)</string>
+    <string name="attribution_buildings">© Google Open Buildings</string>
+    <string name="attribution_admin">© BNGRC / OCHA (limites administratives)</string>
+    <string name="attribution_unofficial">Adiresy est un service non officiel. Les codes n\'ont aucune valeur légale.</string>
+    <string name="btn_close">Fermer</string>
+
+    <!-- Search -->
+    <string name="search_hint">Rechercher codes, lieux, zones…</string>
+    <string name="label_recent_searches">Recherches récentes</string>
+    <string name="btn_clear_history">Effacer l\'historique</string>
+    <string name="search_type_code">Code</string>
+    <string name="search_type_place">Lieu</string>
+    <string name="search_type_area">Zone</string>
+    <string name="search_empty">Aucun résultat pour « %s »</string>
+
+    <!-- Settings -->
+    <string name="title_settings">Paramètres</string>
+    <string name="label_language">Langue</string>
+    <string name="label_theme">Thème</string>
+    <string name="label_offline_data">Données cartographiques hors ligne</string>
+    <string name="label_about">À propos et attributions</string>
+    <string name="label_privacy">Confidentialité</string>
+
+    <!-- Theme options — per spec §11.1 -->
+    <string name="theme_auto">Auto</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+
+    <!-- Offline data screen -->
+    <string name="title_offline_data">Données cartographiques hors ligne</string>
+    <string name="offline_status_none">Non téléchargé</string>
+    <string name="offline_status_downloading">Téléchargement…</string>
+    <string name="offline_status_progress">Téléchargement — %1$s Mo / %2$s Mo</string>
+    <string name="offline_status_done">À jour (v%1$s, %2$s Mo)</string>
+    <string name="download_scope_national">National (pays entier)</string>
+    <string name="download_scope_province">Par province</string>
+    <string name="label_national_tiles">Vue d\'ensemble nationale — Z12 (~43 Mo)</string>
+    <string name="label_regional_tiles">Détail régional — Z14 (niveau rue)</string>
+    <string name="label_choose_province">Province</string>
+    <string name="province_antananarivo">Antananarivo</string>
+    <string name="province_fianarantsoa">Fianarantsoa</string>
+    <string name="province_toamasina">Toamasina</string>
+    <string name="province_mahajanga">Mahajanga</string>
+    <string name="province_toliara">Toliara</string>
+    <string name="province_antsiranana">Antsiranana</string>
+    <string name="download_size_mb">%s Mo</string>
+    <string name="toggle_mobile_data">Utiliser les données mobiles</string>
+    <string name="warning_mobile_data_title">Utiliser les données mobiles ?</string>
+    <string name="warning_mobile_data_message">Le téléchargement des données cartographiques via les données mobiles peut consommer une quantité importante de données et entraîner des frais supplémentaires.</string>
+    <string name="btn_download">Télécharger</string>
+    <string name="btn_delete_map_data">Supprimer les données</string>
+    <string name="confirm_delete_title">Supprimer les données cartographiques ?</string>
+    <string name="confirm_delete_message">Cela supprimera toutes les tuiles cartographiques téléchargées. Vous pourrez les télécharger à nouveau à tout moment.</string>
+    <string name="btn_delete">Supprimer</string>
+    <string name="btn_cancel">Annuler</string>
+
+    <!-- About screen -->
+    <string name="title_about">À propos et attributions</string>
+    <string name="label_app_version">Version de l\'application</string>
+    <string name="label_data_version">Version des données cartographiques</string>
+    <string name="data_version_none">Non téléchargé</string>
+    <string name="disclaimer_title">Service non officiel</string>
+    <string name="disclaimer_body">Adiresy est un service d\'adressage non officiel. Les codes d\'adresses sont valables uniquement sur cette plateforme et n\'ont aucune valeur légale.</string>
+    <string name="title_data_sources">Sources de données</string>
+    <string name="link_adiresy">adiresy.mg</string>
+
+    <!-- Favoris (Signets) -->
+    <string name="tab_saved">Favoris</string>
+    <string name="saved_empty_title">Aucun favori</string>
+    <string name="saved_empty_body">Ouvrez la fiche d\'un bâtiment et appuyez sur l\'icône de signet pour l\'ajouter à vos favoris.</string>
+    <string name="save_to_list_title">Ajouter aux favoris</string>
+    <string name="new_list_label">+ Nouvelle liste</string>
+    <string name="list_name_hint">Nom de la liste</string>
+    <string name="list_description_hint">Description (facultatif)</string>
+    <string name="list_name_required_error">Le nom est obligatoire</string>
+    <string name="list_name_too_long_error">Le nom doit comporter 40 caractères maximum</string>
+    <string name="bookmark_saved_to">Enregistré dans %s</string>
+    <string name="bookmark_moved_to">Déplacé vers %s</string>
+    <string name="bookmark_removed_from">Supprimé de %s</string>
+    <string name="bookmark_undo">Annuler</string>
+    <string name="bookmark_limit_warning">Presque plein — %d sur 500 lieux utilisés</string>
+    <string name="bookmark_limit_reached">Vous avez atteint la limite de 500 lieux</string>
+    <string name="create_list_title">Nouvelle liste</string>
+    <string name="edit_list_title">Modifier la liste</string>
+    <string name="delete_list_title">Supprimer la liste ?</string>
+    <string name="delete_list_body">Supprimer « %1$s » ? Les %2$d lieux enregistrés seront également supprimés.</string>
+    <string name="delete_list_body_empty">Supprimer « %s » ?</string>
+    <string name="edit_description_title">Modifier la description</string>
+    <string name="edit_description_hint">Description</string>
+    <string name="move_to_list_title">Déplacer vers une liste</string>
+    <string name="saved_section_label">Favoris</string>
+    <string name="btn_save">Enregistrer</string>
+    <string name="btn_edit">Modifier</string>
+    <string name="btn_move">Déplacer</string>
+    <string name="label_no_description">(Sans description)</string>
+    <string name="label_saved_places">Lieux favoris</string>
+    <string name="emoji_picker_title">Choisir un emoji</string>
+    <string name="bookmark_name_hint">Nom (facultatif, ex. Maison)</string>
+    <string name="add_description_hint">Notes (facultatif)</string>
+    <string name="places_count_one">1 lieu</string>
+    <string name="places_count_other">%d lieux</string>
+    <string name="saved_today">Aujourd\'hui</string>
+    <string name="saved_yesterday">Hier</string>
+    <string name="saved_days_ago">Il y a %d jours</string>
+    <string name="export_bookmarks_label">Exporter les signets</string>
+    <string name="import_bookmarks_label">Importer des signets</string>
+    <string name="export_chooser_title">Partager les signets</string>
+    <string name="import_success">%d lieux importés</string>
+    <string name="import_truncated">%1$d sur %2$d lieux importés — limite atteinte</string>
+    <string name="import_error_schema">Cette sauvegarde a été créée par une version plus récente d\'Adiresy et ne peut pas être importée.</string>
+    <string name="import_error_file">Impossible de lire le fichier de sauvegarde.</string>
+    <string name="cd_bookmark_unsaved">Ajouter aux favoris</string>
+    <string name="cd_bookmark_saved">Retirer des favoris</string>
+
+    <!-- Privacy screen -->
+    <string name="title_privacy">Confidentialité</string>
+    <string name="privacy_body">Cette application ne nécessite pas de compte et ne collecte aucune donnée analytique. Lors de la recherche de bâtiments à proximité, vos coordonnées GPS sont envoyées à l\'API adiresy.mg — elles ne sont pas conservées au-delà de la durée de la requête et ne sont pas partagées avec des tiers. Les données cartographiques et d\'adresses en cache sont stockées localement sur votre appareil et peuvent être supprimées à tout moment dans Paramètres → Données hors ligne.</string>
+
+    <!-- Map icon legend -->
+    <string name="cd_legend">Afficher la légende des icônes</string>
+    <string name="title_legend">Icônes de la carte</string>
+    <string name="poi_label_healthcare">Santé – hôpital, pharmacie, médecin</string>
+    <string name="poi_label_education">Éducation – école, université, collège</string>
+    <string name="poi_label_food">Restauration – restaurant, café, bar</string>
+    <string name="poi_label_finance">Finance – banque, distributeur (ATM)</string>
+    <string name="poi_label_lodging">Hébergement – hôtel, auberge</string>
+    <string name="poi_label_shopping">Commerce – supermarché, boutique</string>
+    <string name="poi_label_fuel">Station-service</string>
+    <string name="poi_label_default">Point d\'intérêt</string>
+
+    <!-- Accessibility content descriptions -->
+    <string name="cd_copy_code">Copier le code d\'adresse dans le presse-papiers</string>
+    <string name="cd_navigate">Itinéraire vers cette adresse</string>
+    <string name="cd_explore">Explorer les zones administratives</string>
+    <string name="cd_back_level">Revenir au niveau administratif précédent</string>
+    <string name="cd_clear_search_history">Effacer tout l\'historique de recherche</string>
+    <string name="cd_map_view">Carte interactive de Madagascar</string>
+</resources>

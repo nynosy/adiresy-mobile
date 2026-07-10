@@ -1,0 +1,249 @@
+<resources>
+    <string name="app_name">Adiresy</string>
+
+    <!-- Bottom navigation tabs -->
+    <string name="tab_home">Home</string>
+    <string name="tab_map">Map</string>
+    <string name="tab_search">Search</string>
+    <string name="tab_settings">Settings</string>
+
+    <!-- First-run language chooser -->
+    <string name="lang_english">English</string>
+    <string name="lang_french">Français</string>
+    <string name="lang_malagasy">Malagasy</string>
+
+    <!-- Home screen -->
+    <string name="btn_locate_me">Locate me</string>
+    <string name="label_nearby_buildings">Nearby buildings</string>
+    <string name="disclaimer_unofficial">Unofficial service — codes have no legal value</string>
+    <string name="nearby_empty_online">No buildings found nearby</string>
+    <string name="nearby_empty_offline">Connect to find nearby buildings</string>
+
+    <!-- Code card / code detail -->
+    <string name="btn_share">Share</string>
+    <string name="btn_copy">Copy</string>
+    <string name="btn_open_maps">Open in Maps</string>
+    <string name="btn_navigate">Navigate</string>
+    <string name="navigate_coming_soon">Available in a future update</string>
+    <string name="navigate_external_hint">Opens external maps app</string>
+    <string name="copied_to_clipboard">Code copied</string>
+    <string name="tap_no_address">No address found for this building</string>
+    <string name="tap_no_network">No connection — connect to look up this building</string>
+    <!-- %1$s = canonical code -->
+    <string name="share_text">https://adiresy.mg/%1$s</string>
+    <string name="share_chooser_title">Share address code</string>
+
+    <!-- Code detail errors -->
+    <string name="error_code_not_found">Could not resolve this code — check your connection and try again</string>
+    <string name="error_no_network">No network connection</string>
+    <string name="error_api_key">API key missing — please check Settings</string>
+    <string name="btn_retry">Retry</string>
+
+    <!-- Admin hierarchy labels -->
+    <string name="label_region">Region</string>
+    <string name="label_district">District</string>
+    <string name="label_commune">Commune</string>
+    <string name="label_fokontany">Fokontany</string>
+
+    <!-- Map / Explore -->
+    <string name="btn_explore">Explore</string>
+    <string name="map_offline_banner">Map data not available — download in Settings</string>
+    <string name="title_attribution">Map data &amp; attributions</string>
+    <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
+    <string name="attribution_osm">© OpenStreetMap contributors (ODbL)</string>
+    <string name="attribution_buildings">© Google Open Buildings</string>
+    <string name="attribution_admin">© BNGRC / OCHA (administrative boundaries)</string>
+    <string name="attribution_unofficial">Adiresy is an unofficial service. Codes have no legal value.</string>
+    <string name="btn_close">Close</string>
+
+    <!-- Search -->
+    <string name="search_hint">Search codes, places, areas…</string>
+    <string name="label_recent_searches">Recent searches</string>
+    <string name="btn_clear_history">Clear history</string>
+    <string name="search_type_code">Code</string>
+    <string name="search_type_place">Place</string>
+    <string name="search_type_area">Area</string>
+    <string name="search_empty">No results for "%s"</string>
+
+    <!-- Settings -->
+    <string name="title_settings">Settings</string>
+    <string name="label_language">Language</string>
+    <string name="label_theme">Theme</string>
+    <string name="label_offline_data">Offline map data</string>
+    <string name="label_about">Attribution</string>
+    <string name="label_privacy">Privacy</string>
+
+    <!-- Theme options -->
+    <string name="theme_auto">Auto</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+
+    <!-- Offline data screen -->
+    <string name="title_offline_data">Offline map data</string>
+    <string name="offline_status_none">Not downloaded</string>
+    <string name="offline_status_downloading">Downloading…</string>
+    <!-- %1$s = downloaded MB (int), %2$s = total MB (int) -->
+    <string name="offline_status_progress">Downloading — %1$s MB / %2$s MB</string>
+    <!-- %1$s = version string, %2$s = size in MB (int) -->
+    <string name="offline_status_done">Up to date · v%1$s · %2$s MB</string>
+    <!-- %1$s = zoom level (e.g. "Z13"), %2$s = version, %3$s = size MB -->
+    <string name="offline_national_done">National %1$s downloaded · v%2$s · %3$s MB</string>
+    <string name="offline_title_national">National map data</string>
+    <string name="offline_desc_national">Covers all of Madagascar at the selected detail level. Download once and use offline anywhere in the country.</string>
+    <string name="offline_title_province">Province detail packs</string>
+    <string name="offline_desc_province">Add extra detail for specific provinces — useful for areas you visit often. Only zoom levels above your national pack are available.</string>
+    <string name="offline_title_downloaded_packs">Downloaded province packs</string>
+    <string name="offline_no_packs">No province packs downloaded</string>
+    <string name="offline_province_n14_note">National Z14 already includes the maximum detail level. Province packs cannot be added on top of a Z14 national download.</string>
+    <!-- Zoom level labels for selectable rows -->
+    <string name="offline_zoom_z12_title">Regional overview · ~190 MB</string>
+    <string name="offline_zoom_z12_label">Regional overview</string>
+    <string name="offline_zoom_z12_national_desc">District borders, major roads and rivers</string>
+    <string name="offline_zoom_z13_title">City level · ~410 MB</string>
+    <string name="offline_zoom_z13_label">City level</string>
+    <string name="offline_zoom_z13_national_desc">Streets, neighbourhood names and local roads</string>
+    <string name="offline_zoom_z14_title">Full detail · ~950 MB</string>
+    <string name="offline_zoom_z14_label">Full detail</string>
+    <string name="offline_zoom_z14_national_desc">Individual buildings and precise street layout</string>
+    <!-- Province pack already downloaded for selected province+zoom -->
+    <!-- %1$s = pack display name, %2$s = version, %3$s = size MB -->
+    <string name="offline_pack_downloaded">Already downloaded · v%2$s · %3$s MB</string>
+    <!-- Warning when replacing national pack -->
+    <string name="offline_replace_national_title">Replace national pack?</string>
+    <!-- %1$s = existing zoom (e.g. "Z12"), %2$s = new zoom (e.g. "Z13") -->
+    <string name="offline_replace_national_message">You already have a national %1$s pack. Downloading %2$s will delete it and use more storage. Continue?</string>
+    <string name="download_scope_national">National (full country)</string>
+    <string name="download_scope_province">Per province</string>
+    <string name="label_national_tiles">National overview — Z12 (~43 MB)</string>
+    <string name="label_regional_tiles">Regional detail — Z14 (street level)</string>
+    <string name="label_choose_province">Province</string>
+    <string name="province_antananarivo">Antananarivo</string>
+    <string name="province_fianarantsoa">Fianarantsoa</string>
+    <string name="province_toamasina">Toamasina</string>
+    <string name="province_mahajanga">Mahajanga</string>
+    <string name="province_toliara">Toliara</string>
+    <string name="province_antsiranana">Antsiranana</string>
+    <!-- %s = size in MB -->
+    <string name="download_size_mb">%s MB</string>
+    <string name="toggle_mobile_data">Use mobile data</string>
+    <string name="warning_mobile_data_title">Use mobile data?</string>
+    <string name="warning_mobile_data_message">Downloading map data over mobile data may use a significant amount of data and incur costs on your plan.</string>
+    <string name="btn_download">Download</string>
+    <string name="btn_delete_map_data">Delete map data</string>
+    <string name="confirm_delete_title">Delete map data?</string>
+    <string name="confirm_delete_message">This will remove all downloaded map tiles. You can download again at any time.</string>
+    <string name="btn_delete">Delete</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_pause">Pause</string>
+    <string name="btn_resume">Resume</string>
+    <string name="offline_status_paused">Paused</string>
+    <string name="offline_replace_province_title">Replace province pack?</string>
+    <!-- %1$s = existing pack (e.g. "Antananarivo Z12"), %2$s = new pack (e.g. "Antananarivo Z13") -->
+    <string name="offline_replace_province_message">You already have a %1$s pack. Downloading %2$s will delete it and use more storage. Continue?</string>
+
+    <!-- About tab -->
+    <string name="tab_about">About</string>
+    <string name="label_app_version">App version</string>
+    <string name="label_data_version">Map data version</string>
+    <string name="data_version_none">Not downloaded</string>
+    <string name="disclaimer_title">Unofficial service</string>
+    <string name="disclaimer_body">Adiresy is an unofficial addressing service. Address codes are valid on this platform only and have no legal value.</string>
+    <string name="title_data_sources">Data sources</string>
+    <string name="link_adiresy">adiresy.mg</string>
+
+    <string name="about_section_what">What is Adiresy?</string>
+    <string name="about_what_body">Adiresy is an unofficial, community-built addressing system for Madagascar — it is not a government service and codes have no legal standing. Every structure in the country — from city apartments to rural homes — can receive a unique, permanent code that makes it findable without a street name or postcode.\n\nThe system can be used for deliveries, emergency services, official correspondence, and development planning across all six provinces of Madagascar.</string>
+    <string name="about_section_codes">How codes work</string>
+    <string name="about_codes_body">Each code follows the administrative hierarchy of Madagascar: Region › District › Commune › Fokontany › Building. A code like 203-AMBS-01234 uniquely identifies a single building within its fokontany.\n\nCodes are permanent — a building keeps its code even if it changes hands or use.</string>
+    <string name="about_section_independent">Independent app</string>
+    <string name="about_independent_body">This mobile app is an independent project and is not developed, operated, or endorsed by the team behind adiresy.mg. It uses the public API provided by adiresy.mg to look up building codes and administrative areas.</string>
+    <string name="about_section_website">Official website</string>
+
+    <!-- About screen (legacy dialog, now Attribution only) -->
+    <string name="title_about">Attribution</string>
+
+    <!-- Location permission rationale -->
+    <string name="location_rationale_body">Adiresy needs your location to find nearby buildings. Your GPS coordinates are sent to the adiresy.mg API to look up buildings close to you. They are not stored beyond the request and are not shared with third parties.</string>
+    <string name="btn_grant_permission">Grant permission</string>
+    <string name="location_failed_outdoors">Signal weak — try again outdoors</string>
+    <string name="location_permission_denied">Location permission denied — enable it in Settings</string>
+    <string name="btn_open_settings">Open Settings</string>
+
+    <!-- Privacy screen -->
+    <string name="title_privacy">Privacy</string>
+    <string name="privacy_body">This app does not require an account and collects no analytics. When you search for nearby buildings, your GPS coordinates are sent to the adiresy.mg API — they are not stored beyond the duration of the request and are not shared with third parties. Cached map and address data is stored locally on your device and can be deleted at any time in Settings → Offline map data.</string>
+
+    <!-- Favourites (Bookmarks) -->
+    <string name="tab_saved">Favourites</string>
+    <string name="saved_empty_title">No favourites yet</string>
+    <string name="saved_empty_body">Open any building\'s code card and tap the bookmark icon to add it to your favourites.</string>
+    <string name="save_to_list_title">Add to favourites</string>
+    <string name="new_list_label">+ New list</string>
+    <string name="list_name_hint">List name</string>
+    <string name="list_description_hint">Description (optional)</string>
+    <string name="list_name_required_error">Name is required</string>
+    <string name="list_name_too_long_error">Name must be 40 characters or fewer</string>
+    <string name="bookmark_saved_to">Saved to %s</string>
+    <string name="bookmark_moved_to">Moved to %s</string>
+    <string name="bookmark_removed_from">Removed from %s</string>
+    <string name="bookmark_undo">Undo</string>
+    <string name="bookmark_limit_warning">Almost full — %d of 500 saved places used</string>
+    <string name="bookmark_limit_reached">You\'ve reached the 500-place limit</string>
+    <string name="create_list_title">New list</string>
+    <string name="edit_list_title">Edit list</string>
+    <string name="delete_list_title">Delete list?</string>
+    <!-- %1$s = list name, %2$d = bookmark count -->
+    <string name="delete_list_body">Delete \"%1$s\"? All %2$d saved places will also be removed.</string>
+    <string name="delete_list_body_empty">Delete \"%s\"?</string>
+    <string name="edit_description_title">Edit description</string>
+    <string name="edit_description_hint">Description</string>
+    <string name="move_to_list_title">Move to list</string>
+    <string name="saved_section_label">Favourites</string>
+    <string name="btn_save">Save</string>
+    <string name="btn_edit">Edit</string>
+    <string name="btn_move">Move to list</string>
+    <string name="label_no_description">(No description)</string>
+    <string name="label_saved_places">Favourite Places</string>
+    <string name="emoji_picker_title">Choose an emoji</string>
+    <string name="bookmark_name_hint">Name (optional, e.g. Home)</string>
+    <string name="add_description_hint">Notes (optional)</string>
+    <!-- %d = count -->
+    <string name="places_count_one">1 place</string>
+    <string name="places_count_other">%d places</string>
+    <string name="saved_today">Today</string>
+    <string name="saved_yesterday">Yesterday</string>
+    <!-- %d = number of days -->
+    <string name="saved_days_ago">%d days ago</string>
+    <!-- Export / import -->
+    <string name="export_bookmarks_label">Export bookmarks</string>
+    <string name="import_bookmarks_label">Import bookmarks</string>
+    <string name="export_chooser_title">Share bookmarks</string>
+    <!-- %d = count imported -->
+    <string name="import_success">Imported %d places</string>
+    <!-- %1$d = imported, %2$d = total -->
+    <string name="import_truncated">Imported %1$d of %2$d places — limit reached</string>
+    <string name="import_error_schema">This backup was created by a newer version of Adiresy and cannot be imported.</string>
+    <string name="import_error_file">Could not read the backup file.</string>
+
+    <!-- Accessibility content descriptions -->
+    <string name="cd_locate_me">Locate me — find my GPS position</string>
+    <string name="cd_share_code">Share this address code</string>
+    <string name="cd_copy_code">Copy address code to clipboard</string>
+    <string name="cd_navigate">Navigate to this address</string>
+    <string name="cd_bookmark_unsaved">Add to favourites</string>
+    <string name="cd_bookmark_saved">Remove from favourites</string>
+    <string name="cd_explore">Explore administrative areas</string>
+    <string name="cd_back_level">Go back to previous administrative level</string>
+    <string name="cd_clear_search_history">Clear all recent searches</string>
+    <string name="cd_map_view">Interactive map of Madagascar</string>
+    <string name="cd_legend">Show map icon legend</string>
+    <string name="title_legend">Map icons</string>
+    <string name="poi_label_healthcare">Healthcare – hospital, pharmacy, doctor</string>
+    <string name="poi_label_education">Education – school, university, college</string>
+    <string name="poi_label_food">Food &amp; drink – restaurant, café, bar</string>
+    <string name="poi_label_finance">Finance – bank, ATM</string>
+    <string name="poi_label_lodging">Accommodation – hotel, hostel</string>
+    <string name="poi_label_shopping">Shopping – supermarket, store</string>
+    <string name="poi_label_fuel">Fuel station</string>
+    <string name="poi_label_default">Other point of interest</string>
+</resources>

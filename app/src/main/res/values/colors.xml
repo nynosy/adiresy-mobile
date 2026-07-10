@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand — light theme -->
+    <color name="teal_600">#0D9488</color>
+    <color name="teal_700">#0F766E</color>
+    <color name="teal_500">#14B8A6</color>
+    <color name="teal_400">#2DD4BF</color>
+
+    <!-- Neutrals — light theme -->
+    <color name="white">#FFFFFF</color>
+    <color name="slate_100">#F1F5F9</color>
+    <color name="slate_200">#E2E8F0</color>
+    <color name="slate_400">#94A3B8</color>
+    <color name="slate_600">#475569</color>
+    <color name="slate_700">#334155</color>
+    <color name="slate_800">#1E293B</color>
+    <color name="slate_900">#0F172A</color>
+
+    <!-- Neutrals — dark theme -->
+    <color name="dark_background">#0B1220</color>
+
+    <!-- Semantic -->
+    <color name="red_600">#DC2626</color>
+    <color name="red_400">#F87171</color>
+    <color name="emerald_600">#059669</color>
+    <color name="blue_600">#2563EB</color>
+
+    <!-- On-primary for dark theme -->
+    <color name="teal_900">#04312C</color>
+    <color name="teal_on_secondary_light">#062E2A</color>
+
+    <!-- Emoji picker selected state -->
+    <color name="emoji_selected_bg">#1A0D9488</color>
+</resources>

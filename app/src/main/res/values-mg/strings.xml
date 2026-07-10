@@ -1,0 +1,189 @@
+<resources>
+    <!-- MALAGASY TRANSLATIONS — all strings marked [MG-REVIEW] require verification
+         by a native Malagasy speaker before release. Standard (Merina-based) Malagasy. -->
+
+    <string name="app_name">Adiresy</string>
+
+    <!-- Bottom navigation tabs -->
+    <string name="tab_home">Fandraisana</string><!-- [MG-REVIEW] -->
+    <string name="tab_map">Sarintany</string>
+    <string name="tab_search">Fikarohana</string><!-- [MG-REVIEW] -->
+    <string name="tab_settings">Fandrindrana</string><!-- [MG-REVIEW] -->
+
+    <!-- First-run language chooser — shown in own language -->
+    <string name="lang_english">English</string>
+    <string name="lang_french">Français</string>
+    <string name="lang_malagasy">Malagasy</string>
+
+    <!-- Home screen -->
+    <string name="btn_locate_me">Asehoy ny toerako</string><!-- [MG-REVIEW] show my location -->
+    <string name="label_nearby_buildings">Trano akaikin\'ny toerana</string><!-- [MG-REVIEW] -->
+    <string name="disclaimer_unofficial">Serivisy tsy ofisialy — ny kaody tsy manan-kery ara-dalàna</string><!-- [MG-REVIEW] -->
+    <string name="nearby_empty_online">Tsy hita trano akaikin\'ny toerana</string><!-- [MG-REVIEW] -->
+    <string name="nearby_empty_offline">Mampifandray mba hahita trano akaikin\'ny toerana</string><!-- [MG-REVIEW] -->
+
+    <!-- Code card / code detail -->
+    <string name="btn_share">Zarao</string><!-- [MG-REVIEW] -->
+    <string name="btn_copy">Adikao</string><!-- [MG-REVIEW] -->
+    <string name="btn_navigate">Tariho</string><!-- [MG-REVIEW] -->
+    <string name="navigate_coming_soon">Hisy amin\'ny fanavaozana manaraka</string><!-- [MG-REVIEW] -->
+    <string name="navigate_external_hint">Manokatra fampiharana sarintany ivelany</string><!-- [MG-REVIEW] -->
+    <string name="copied_to_clipboard">Voadika ny kaody</string><!-- [MG-REVIEW] -->
+    <string name="share_text">Hitadiava ity trano ity amin\'ny Adiresy: %2$s</string><!-- [MG-REVIEW] -->
+    <string name="share_chooser_title">Zarao ny kaody adiresy</string><!-- [MG-REVIEW] -->
+
+    <!-- Code detail errors -->
+    <string name="error_code_not_found">Tsy afaka namaha ity kaody ity — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
+    <string name="error_no_network">Tsy misy fifandraisana amin\'ny tambajotra</string><!-- [MG-REVIEW] -->
+    <string name="error_api_key">Tsy misy fanalahidy API — jereo ny Fandrindrana</string><!-- [MG-REVIEW] -->
+    <string name="btn_retry">Andramo indray</string><!-- [MG-REVIEW] -->
+
+    <!-- Admin hierarchy labels -->
+    <string name="label_region">Faritra</string>
+    <string name="label_district">Distrika</string>
+    <string name="label_commune">Kaominina</string>
+    <string name="label_fokontany">Fokontany</string>
+
+    <!-- Map / Explore -->
+    <string name="btn_explore">Hahalala</string><!-- [MG-REVIEW] explore/discover -->
+    <string name="map_offline_banner">Tsy misy angon-tsarintany — alaina ao amin\'ny Fandrindrana</string><!-- [MG-REVIEW] -->
+    <string name="title_attribution">Loharanon\'ny angona sy fankasitrahana</string><!-- [MG-REVIEW] -->
+    <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
+    <string name="attribution_osm">© Mpandray anjara amin\'ny OpenStreetMap (ODbL)</string><!-- [MG-REVIEW] -->
+    <string name="attribution_buildings">© Google Open Buildings</string>
+    <string name="attribution_admin">© BNGRC / OCHA (sisin-tanin\'ny fitantanana)</string><!-- [MG-REVIEW] -->
+    <string name="attribution_unofficial">Adiresy dia serivisy tsy ofisialy. Ny kaody tsy manan-kery ara-dalàna.</string><!-- [MG-REVIEW] -->
+    <string name="btn_close">Hidio</string><!-- [MG-REVIEW] -->
+
+    <!-- Search -->
+    <string name="search_hint">Karohy kaody, toerana, faritra…</string><!-- [MG-REVIEW] -->
+    <string name="label_recent_searches">Fikarohana vao haingana</string><!-- [MG-REVIEW] -->
+    <string name="btn_clear_history">Fafao ny tantara</string><!-- [MG-REVIEW] -->
+    <string name="search_type_code">Kaody</string>
+    <string name="search_type_place">Toerana</string><!-- [MG-REVIEW] -->
+    <string name="search_type_area">Faritra</string>
+    <string name="search_empty">Tsy hita valiny ho an\'ny « %s »</string><!-- [MG-REVIEW] -->
+
+    <!-- Settings -->
+    <string name="title_settings">Fandrindrana</string><!-- [MG-REVIEW] -->
+    <string name="label_language">Fiteny</string>
+    <string name="label_theme">Endrika</string><!-- [MG-REVIEW] -->
+    <string name="label_offline_data">Angon-tsarintany tsy mila anelanelana</string><!-- [MG-REVIEW] -->
+    <string name="label_about">Momba sy fankasitrahana</string><!-- [MG-REVIEW] -->
+    <string name="label_privacy">Tsiambaratelo</string><!-- [MG-REVIEW] -->
+
+    <!-- Theme options -->
+    <string name="theme_auto">Haikitra</string><!-- [MG-REVIEW] automatic/default -->
+    <string name="theme_light">Mazava</string><!-- bright/light -->
+    <string name="theme_dark">Maizina</string><!-- dark -->
+
+    <!-- Offline data screen -->
+    <string name="title_offline_data">Angon-tsarintany tsy mila anelanelana</string><!-- [MG-REVIEW] -->
+    <string name="offline_status_none">Tsy nalaina</string><!-- [MG-REVIEW] -->
+    <string name="offline_status_downloading">Alaina…</string><!-- [MG-REVIEW] -->
+    <string name="offline_status_progress">Alaina — %1$s MB / %2$s MB</string><!-- [MG-REVIEW] -->
+    <string name="offline_status_done">Efa vaovao (v%1$s, %2$s MB)</string><!-- [MG-REVIEW] -->
+    <string name="download_scope_national">Nasionaly (firenena manontolo)</string><!-- [MG-REVIEW] -->
+    <string name="download_scope_province">Araka ny faritany</string><!-- [MG-REVIEW] -->
+    <string name="label_national_tiles">Fijery nasionaly — Z12 (~43 Mo)</string><!-- [MG-REVIEW] -->
+    <string name="label_regional_tiles">Antsipiriany faritany — Z14 (sary-dalana)</string><!-- [MG-REVIEW] -->
+    <string name="label_choose_province">Faritany</string><!-- [MG-REVIEW] -->
+    <string name="province_antananarivo">Antananarivo</string>
+    <string name="province_fianarantsoa">Fianarantsoa</string>
+    <string name="province_toamasina">Toamasina</string>
+    <string name="province_mahajanga">Mahajanga</string>
+    <string name="province_toliara">Toliara</string>
+    <string name="province_antsiranana">Antsiranana</string>
+    <string name="download_size_mb">%s MB</string>
+    <string name="toggle_mobile_data">Mampiasa angon-databà finday</string><!-- [MG-REVIEW] -->
+    <string name="warning_mobile_data_title">Mampiasa angon-databà finday?</string><!-- [MG-REVIEW] -->
+    <string name="warning_mobile_data_message">Ny falaiana angon-tsarintany amin\'ny databà finday dia mety hampiasa angona be ary mety hiteraka saran\'asa fanampiny.</string><!-- [MG-REVIEW] -->
+    <string name="btn_download">Alaina</string><!-- [MG-REVIEW] -->
+    <string name="btn_delete_map_data">Fafao ny angon-tsarintany</string><!-- [MG-REVIEW] -->
+    <string name="confirm_delete_title">Fafao ny angon-tsarintany?</string><!-- [MG-REVIEW] -->
+    <string name="confirm_delete_message">Izany dia hamafa ny sarintany alaina rehetra. Azonao alaina indray amin\'ny fotoana rehetra.</string><!-- [MG-REVIEW] -->
+    <string name="btn_delete">Fafao</string><!-- [MG-REVIEW] -->
+    <string name="btn_cancel">Ajanony</string><!-- [MG-REVIEW] -->
+
+    <!-- About screen -->
+    <string name="title_about">Momba sy fankasitrahana</string><!-- [MG-REVIEW] -->
+    <string name="label_app_version">Dikan\'ny fampiharana</string><!-- [MG-REVIEW] -->
+    <string name="label_data_version">Dikan\'ny angon-tsarintany</string><!-- [MG-REVIEW] -->
+    <string name="data_version_none">Tsy nalaina</string><!-- [MG-REVIEW] -->
+    <string name="disclaimer_title">Serivisy tsy ofisialy</string><!-- [MG-REVIEW] -->
+    <string name="disclaimer_body">Adiresy dia serivisy fanondroana adiresy tsy ofisialy. Ny kaody adiresy dia manan-kery amin\'ity sehatra ity ihany ary tsy manan-kery ara-dalàna.</string><!-- [MG-REVIEW] -->
+    <string name="title_data_sources">Loharanon\'ny angona</string><!-- [MG-REVIEW] -->
+    <string name="link_adiresy">adiresy.mg</string>
+
+    <!-- Tiana (Bookmark) — [MG-REVIEW] all strings below -->
+    <string name="tab_saved">Tiana</string><!-- [MG-REVIEW] favourites -->
+    <string name="saved_empty_title">Tsy misy tiana mbola</string><!-- [MG-REVIEW] -->
+    <string name="saved_empty_body">Sokafy ny karatra kaody amin\'ny trano ary tsindrio ny famantarana bookmark mba ampidirina amin\'ny tiana.</string><!-- [MG-REVIEW] -->
+    <string name="save_to_list_title">Ampidiro amin\'ny tiana</string><!-- [MG-REVIEW] -->
+    <string name="new_list_label">+ Lisitra vaovao</string><!-- [MG-REVIEW] -->
+    <string name="list_name_hint">Anarana lisitra</string><!-- [MG-REVIEW] -->
+    <string name="list_description_hint">Famaritana (tsy voatery)</string><!-- [MG-REVIEW] -->
+    <string name="list_name_required_error">Ilaina ny anarana</string><!-- [MG-REVIEW] -->
+    <string name="list_name_too_long_error">Ny anarana dia tsy maintsy 40 litera na latsaky izany</string><!-- [MG-REVIEW] -->
+    <string name="bookmark_saved_to">Voatahiry ao amin\'ny %s</string><!-- [MG-REVIEW] -->
+    <string name="bookmark_moved_to">Nafindra ho ao amin\'ny %s</string><!-- [MG-REVIEW] -->
+    <string name="bookmark_removed_from">Esorina avy ao amin\'ny %s</string><!-- [MG-REVIEW] -->
+    <string name="bookmark_undo">Foano</string><!-- [MG-REVIEW] undo -->
+    <string name="bookmark_limit_warning">Efa feno saika — %d amin\'ny 500 toerana ampiasaina</string><!-- [MG-REVIEW] -->
+    <string name="bookmark_limit_reached">Tratra ny fetra 500 toerana</string><!-- [MG-REVIEW] -->
+    <string name="create_list_title">Lisitra vaovao</string><!-- [MG-REVIEW] -->
+    <string name="edit_list_title">Hanova lisitra</string><!-- [MG-REVIEW] -->
+    <string name="delete_list_title">Fafao ny lisitra?</string><!-- [MG-REVIEW] -->
+    <string name="delete_list_body">Fafao ny « %1$s »? Ny toerana %2$d voatahiry rehetra dia hofafaina koa.</string><!-- [MG-REVIEW] -->
+    <string name="delete_list_body_empty">Fafao ny « %s »?</string><!-- [MG-REVIEW] -->
+    <string name="edit_description_title">Hanova ny famaritana</string><!-- [MG-REVIEW] -->
+    <string name="edit_description_hint">Famaritana</string><!-- [MG-REVIEW] -->
+    <string name="move_to_list_title">Hafindra amin\'ny lisitra</string><!-- [MG-REVIEW] -->
+    <string name="saved_section_label">Tiana</string><!-- [MG-REVIEW] -->
+    <string name="btn_save">Tahiry</string><!-- [MG-REVIEW] -->
+    <string name="btn_edit">Hanova</string><!-- [MG-REVIEW] -->
+    <string name="btn_move">Hafindra</string><!-- [MG-REVIEW] -->
+    <string name="label_no_description">(Tsy misy famaritana)</string><!-- [MG-REVIEW] -->
+    <string name="label_saved_places">Toerana Tiana</string><!-- [MG-REVIEW] -->
+    <string name="emoji_picker_title">Misafidiana emoji</string><!-- [MG-REVIEW] -->
+    <string name="bookmark_name_hint">Anarana (tsy voatery, ohatra: Trano)</string><!-- [MG-REVIEW] -->
+    <string name="add_description_hint">Fanamarihana (tsy voatery)</string><!-- [MG-REVIEW] -->
+    <string name="places_count_one">1 toerana</string><!-- [MG-REVIEW] -->
+    <string name="places_count_other">%d toerana</string><!-- [MG-REVIEW] -->
+    <string name="saved_today">Anio</string><!-- [MG-REVIEW] -->
+    <string name="saved_yesterday">Omaly</string><!-- [MG-REVIEW] -->
+    <string name="saved_days_ago">%d andro lasa</string><!-- [MG-REVIEW] -->
+    <string name="export_bookmarks_label">Avoaka ny bookmark</string><!-- [MG-REVIEW] -->
+    <string name="import_bookmarks_label">Ampidira bookmark</string><!-- [MG-REVIEW] -->
+    <string name="export_chooser_title">Zarao ny bookmark</string><!-- [MG-REVIEW] -->
+    <string name="import_success">%d toerana nampidirina</string><!-- [MG-REVIEW] -->
+    <string name="import_truncated">%1$d amin\'ny %2$d toerana nampidirina — tratra ny fetra</string><!-- [MG-REVIEW] -->
+    <string name="import_error_schema">Ity rakitra ity dia natao tamin\'ny dikan\'ny Adiresy vaovao kokoa ka tsy azo ampidirina.</string><!-- [MG-REVIEW] -->
+    <string name="import_error_file">Tsy afaka namaky ny rakitra fandrosohana.</string><!-- [MG-REVIEW] -->
+    <string name="cd_bookmark_unsaved">Ampidiro amin\'ny tiana</string><!-- [MG-REVIEW] -->
+    <string name="cd_bookmark_saved">Esory amin\'ny tiana</string><!-- [MG-REVIEW] -->
+
+    <!-- Privacy screen -->
+    <string name="title_privacy">Tsiambaratelo</string><!-- [MG-REVIEW] -->
+    <string name="privacy_body">Ity fampiharana ity tsy mitaky kaonty ary tsy manangona angona famakafakana. Rehefa mitady trano akaikin\'ny toerana ianao, ny tanan\'ny GPS dia alefa any amin\'ny API adiresy.mg — tsy voatahiry ambanin\'ny faharetan\'ny fangatahana izy ireo ary tsy zaraina amin\'ny antoko fahatelo. Ny angona sarintany sy adiresy voatahiry dia voatahiry eo an-toerana amin\'ny fitaovanao ary azo hofafana amin\'ny fotoana rehetra ao amin\'ny Fandrindrana → Angon-tsarintany tsy mila anelanelana.</string><!-- [MG-REVIEW] -->
+
+    <!-- Map icon legend -->
+    <string name="cd_legend">Asehoy ny fanamarihana ny sary</string><!-- [MG-REVIEW] -->
+    <string name="title_legend">Sary amin\'ny sarintany</string><!-- [MG-REVIEW] -->
+    <string name="poi_label_healthcare">Fahasalamana – hopitaly, fitsaboana, dokotera</string><!-- [MG-REVIEW] -->
+    <string name="poi_label_education">Fanabeazana – sekoly, oniversite, kolejy</string><!-- [MG-REVIEW] -->
+    <string name="poi_label_food">Fisakafoanana – restoranta, kafee, bar</string><!-- [MG-REVIEW] -->
+    <string name="poi_label_finance">Vola – banky, ATM</string><!-- [MG-REVIEW] -->
+    <string name="poi_label_lodging">Fitoerana alina – hotely, auberge</string><!-- [MG-REVIEW] -->
+    <string name="poi_label_shopping">Fividy – fivarotana lehibe, boutique</string><!-- [MG-REVIEW] -->
+    <string name="poi_label_fuel">Toby solika</string><!-- [MG-REVIEW] -->
+    <string name="poi_label_default">Toerana mahaliana</string><!-- [MG-REVIEW] -->
+
+    <!-- Accessibility content descriptions -->
+    <string name="cd_copy_code">Adikao ny kaody adiresy any amin\'ny clipboard</string><!-- [MG-REVIEW] -->
+    <string name="cd_navigate">Tariho mankany amin\'ity adiresy ity</string><!-- [MG-REVIEW] -->
+    <string name="cd_explore">Hahalala ny faritra fitantanana</string><!-- [MG-REVIEW] -->
+    <string name="cd_back_level">Hiverina any amin\'ny ambaratonga fitantanana teo aloha</string><!-- [MG-REVIEW] -->
+    <string name="cd_clear_search_history">Fafao ny tantaran\'ny fikarohana rehetra</string><!-- [MG-REVIEW] -->
+    <string name="cd_map_view">Sarintany mifanerasera amin\'i Madagasikara</string><!-- [MG-REVIEW] -->
+</resources>

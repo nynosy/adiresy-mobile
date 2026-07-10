@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Locate me button + progress indicator -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp">
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_locate_me"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_locate_me"
+            android:contentDescription="@string/cd_locate_me"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:minHeight="48dp"
+            app:icon="@drawable/ic_nav_home" />
+
+        <com.google.android.material.progressindicator.CircularProgressIndicator
+            android:id="@+id/progress_locating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|end"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            app:indicatorColor="?attr/colorOnPrimary"
+            app:trackColor="@android:color/transparent"
+            style="@style/Widget.MaterialComponents.CircularProgressIndicator.Small" />
+
+    </FrameLayout>
+
+    <!-- Unofficial-service disclaimer -->
+    <TextView
+        android:id="@+id/label_disclaimer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/disclaimer_unofficial"
+        android:textAppearance="?attr/textAppearanceLabelSmall"
+        android:textColor="?android:attr/textColorSecondary"
+        android:gravity="center"
+        android:layout_marginBottom="16dp" />
+
+    <!-- Nearby buildings label -->
+    <TextView
+        android:id="@+id/label_nearby"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/label_nearby_buildings"
+        android:textAppearance="?attr/textAppearanceTitleMedium"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- Nearby buildings list -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_nearby"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="gone" />
+
+    <!-- Empty state shown when no nearby buildings found -->
+    <LinearLayout
+        android:id="@+id/empty_state"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/label_empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/nearby_empty_online"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?android:attr/textColorSecondary"
+            android:gravity="center" />
+
+    </LinearLayout>
+
+</LinearLayout>
