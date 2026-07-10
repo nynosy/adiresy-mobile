@@ -10,6 +10,12 @@ val localProps = Properties().apply {
 }
 val apiKey: String = localProps.getProperty("adiresy.api.key", "")
 
+val releaseKeystorePath: String = localProps.getProperty("release.keystore.path", "")
+val releaseKeystorePassword: String = localProps.getProperty("release.keystore.password", "")
+val releaseKeyAlias: String = localProps.getProperty("release.key.alias", "")
+val releaseKeyPassword: String = localProps.getProperty("release.key.password", "")
+val hasReleaseSigning = releaseKeystorePath.isNotBlank()
+
 android {
     namespace = "org.github.nynosy.adiresy_mobile"
     compileSdk {
@@ -23,7 +29,7 @@ android {
         minSdk = 24
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_KEY", "\"$apiKey\"")
@@ -48,6 +54,17 @@ android {
         }
     }
 
+    signingConfigs {
+        if (hasReleaseSigning) {
+            create("release") {
+                storeFile = rootProject.file(releaseKeystorePath)
+                storePassword = releaseKeystorePassword
+                keyAlias = releaseKeyAlias
+                keyPassword = releaseKeyPassword
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = true
@@ -56,6 +73,9 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            if (hasReleaseSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
 
