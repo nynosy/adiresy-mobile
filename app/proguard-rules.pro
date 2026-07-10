@@ -29,7 +29,7 @@
 -dontwarn androidx.room.**
 
 # App DTOs — keep all fields for Gson deserialization
--keep class cc.brigantinus.adiresy_mobile.data.api.dto.** { *; }
+-keep class org.github.nynosy.adiresy_mobile.data.api.dto.** { *; }
 
 # WorkManager
 -keep class * extends androidx.work.Worker
@@ -38,10 +38,10 @@
 }
 
 # Room entities and DAOs — keep all fields and method signatures
--keep class cc.brigantinus.adiresy_mobile.data.cache.** { *; }
+-keep class org.github.nynosy.adiresy_mobile.data.cache.** { *; }
 
 # ViewModel keep
 -keep class * extends androidx.lifecycle.ViewModel { *; }
 
 # Enum stability
--keepclassmembers enum cc.brigantinus.adiresy_mobile.** { *; }
+-keepclassmembers enum org.github.nynosy.adiresy_mobile.** { *; }
