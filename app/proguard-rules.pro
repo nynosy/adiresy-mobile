@@ -24,8 +24,10 @@
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
 
-# Room
--keep class * extends androidx.room.RoomDatabase
+# Room — RoomDatabase subclasses (including WorkManager's internal WorkDatabase)
+# are instantiated reflectively via Class.forName + getDeclaredConstructor,
+# so the generated _Impl classes need their constructors kept, not just the class shell.
+-keep class * extends androidx.room.RoomDatabase { *; }
 -dontwarn androidx.room.**
 
 # App DTOs — keep all fields for Gson deserialization
