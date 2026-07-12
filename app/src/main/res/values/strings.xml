@@ -29,7 +29,9 @@
     <string name="copied_to_clipboard">Code copied</string>
     <string name="tap_no_address">No address found for this building</string>
     <string name="tap_no_network">No connection — connect to look up this building</string>
-    <!-- %1$s = canonical code -->
+    <!-- %1$s and %2$s are both the canonical code — pass it twice at every
+         call site. The fr/mg translations only render %2$s, so a call
+         supplying just one arg throws MissingFormatArgumentException there. -->
     <string name="share_text">https://adiresy.mg/%1$s</string>
     <string name="share_chooser_title">Share address code</string>
 
@@ -46,6 +48,7 @@
     <string name="label_fokontany">Fokontany</string>
 
     <!-- Map / Explore -->
+    <string name="explore_empty">Nothing found here</string>
     <string name="btn_explore">Explore</string>
     <string name="map_offline_banner">Map data not available — download in Settings</string>
     <string name="title_attribution">Map data &amp; attributions</string>

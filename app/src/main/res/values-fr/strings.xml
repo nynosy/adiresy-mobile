@@ -23,9 +23,12 @@
     <string name="btn_share">Partager</string>
     <string name="btn_copy">Copier</string>
     <string name="btn_navigate">Itinéraire</string>
+    <string name="btn_open_maps">Ouvrir dans Maps</string>
     <string name="navigate_coming_soon">Disponible dans une prochaine mise à jour</string>
     <string name="navigate_external_hint">Ouvre une application de navigation externe</string>
     <string name="copied_to_clipboard">Code copié</string>
+    <string name="tap_no_address">Aucune adresse trouvée pour ce bâtiment</string>
+    <string name="tap_no_network">Aucune connexion — connectez-vous pour rechercher ce bâtiment</string>
     <string name="share_text">Trouvez ce bâtiment sur Adiresy : %2$s</string>
     <string name="share_chooser_title">Partager le code d\'adresse</string>
 
@@ -42,6 +45,7 @@
     <string name="label_fokontany">Fokontany</string>
 
     <!-- Map / Explore -->
+    <string name="explore_empty">Rien trouvé ici</string>
     <string name="btn_explore">Explorer</string>
     <string name="map_offline_banner">Données cartographiques non disponibles — téléchargez dans Paramètres</string>
     <string name="title_attribution">Données cartographiques et attributions</string>
@@ -82,6 +86,28 @@
     <string name="offline_download_failed">Échec du téléchargement — vérifiez votre connexion et réessayez</string>
     <string name="offline_status_progress">Téléchargement — %1$s Mo / %2$s Mo</string>
     <string name="offline_status_done">À jour (v%1$s, %2$s Mo)</string>
+    <!-- %1$s = tier (p. ex. "Z13"), %2$s = version, %3$s = taille en Mo -->
+    <string name="offline_national_done">National %1$s téléchargé · v%2$s · %3$s Mo</string>
+    <string name="offline_title_national">Données cartographiques nationales</string>
+    <string name="offline_desc_national">Couvre l\'ensemble de Madagascar au niveau de détail sélectionné. Téléchargez une fois et utilisez hors ligne partout dans le pays.</string>
+    <string name="offline_title_province">Packs de détail régionaux</string>
+    <string name="offline_desc_province">Ajoutez plus de détails pour des provinces spécifiques — utile pour les zones que vous visitez souvent. Seuls les niveaux de zoom supérieurs à votre pack national sont disponibles.</string>
+    <string name="offline_title_downloaded_packs">Packs régionaux téléchargés</string>
+    <string name="offline_no_packs">Aucun pack régional téléchargé</string>
+    <string name="offline_province_n14_note">Le niveau national Z14 inclut déjà le niveau de détail maximal. Les packs régionaux ne peuvent pas être ajoutés à un téléchargement national Z14.</string>
+    <string name="offline_zoom_z12_title">Aperçu régional · ~190 Mo</string>
+    <string name="offline_zoom_z12_label">Aperçu régional</string>
+    <string name="offline_zoom_z12_national_desc">Limites de district, routes principales et rivières</string>
+    <string name="offline_zoom_z13_title">Niveau ville · ~410 Mo</string>
+    <string name="offline_zoom_z13_label">Niveau ville</string>
+    <string name="offline_zoom_z13_national_desc">Rues, noms de quartiers et routes locales</string>
+    <string name="offline_zoom_z14_title">Détail complet · ~950 Mo</string>
+    <string name="offline_zoom_z14_label">Détail complet</string>
+    <string name="offline_zoom_z14_national_desc">Bâtiments individuels et tracé précis des rues</string>
+    <!-- %1$s unused (province name) — mirrors the English source string -->
+    <string name="offline_pack_downloaded">Déjà téléchargé · v%2$s · %3$s Mo</string>
+    <string name="offline_replace_national_title">Remplacer le pack national ?</string>
+    <string name="offline_replace_national_message">Vous avez déjà un pack national %1$s. Télécharger %2$s le supprimera et utilisera plus d\'espace de stockage. Continuer ?</string>
     <string name="download_scope_national">National (pays entier)</string>
     <string name="download_scope_province">Par province</string>
     <string name="label_national_tiles">Vue d\'ensemble nationale — Z12 (~43 Mo)</string>
@@ -103,6 +129,12 @@
     <string name="confirm_delete_message">Cela supprimera toutes les tuiles cartographiques téléchargées. Vous pourrez les télécharger à nouveau à tout moment.</string>
     <string name="btn_delete">Supprimer</string>
     <string name="btn_cancel">Annuler</string>
+    <string name="btn_pause">Pause</string>
+    <string name="btn_resume">Reprendre</string>
+    <string name="offline_status_paused">En pause</string>
+    <string name="offline_replace_province_title">Remplacer le pack régional ?</string>
+    <!-- %1$s = pack existant (p. ex. "Antananarivo Z12"), %2$s = nouveau pack (p. ex. "Antananarivo Z13") -->
+    <string name="offline_replace_province_message">Vous avez déjà un pack %1$s. Télécharger %2$s le supprimera et utilisera plus d\'espace de stockage. Continuer ?</string>
 
     <!-- About screen -->
     <string name="tab_about">À propos</string>
@@ -174,6 +206,13 @@
     <string name="cd_bookmark_unsaved">Ajouter aux favoris</string>
     <string name="cd_bookmark_saved">Retirer des favoris</string>
 
+    <!-- Location permission rationale -->
+    <string name="location_rationale_body">Adiresy a besoin de votre position pour trouver les bâtiments à proximité. Vos coordonnées GPS sont envoyées à l\'API adiresy.mg pour rechercher les bâtiments proches de vous. Elles ne sont pas conservées au-delà de la requête et ne sont pas partagées avec des tiers.</string>
+    <string name="btn_grant_permission">Autoriser</string>
+    <string name="location_failed_outdoors">Signal faible — réessayez à l\'extérieur</string>
+    <string name="location_permission_denied">Autorisation de localisation refusée — activez-la dans les Paramètres</string>
+    <string name="btn_open_settings">Ouvrir les Paramètres</string>
+
     <!-- Privacy screen -->
     <string name="title_privacy">Confidentialité</string>
     <string name="privacy_body">Cette application ne nécessite pas de compte et ne collecte aucune donnée analytique. Lors de la recherche de bâtiments à proximité, vos coordonnées GPS sont envoyées à l\'API adiresy.mg — elles ne sont pas conservées au-delà de la durée de la requête et ne sont pas partagées avec des tiers. Les données cartographiques et d\'adresses en cache sont stockées localement sur votre appareil et peuvent être supprimées à tout moment dans Paramètres → Données hors ligne.</string>
@@ -191,6 +230,8 @@
     <string name="poi_label_default">Point d\'intérêt</string>
 
     <!-- Accessibility content descriptions -->
+    <string name="cd_locate_me">Me localiser — trouver ma position GPS</string>
+    <string name="cd_share_code">Partager ce code d\'adresse</string>
     <string name="cd_copy_code">Copier le code d\'adresse dans le presse-papiers</string>
     <string name="cd_navigate">Itinéraire vers cette adresse</string>
     <string name="cd_explore">Explorer les zones administratives</string>

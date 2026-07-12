@@ -3,7 +3,6 @@ package org.github.nynosy.adiresy_mobile.data.api;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AddressCodeDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AdminUnitDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ApiResponse;
-import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.DeviceRegisterDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.SearchResponseDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.GeoJsonGeometryDto;
@@ -22,9 +21,12 @@ public interface AdiresyApi {
 
     /** First-launch anonymous device registration — no account required.
      *  Returns a per-install token to send as X-Adiresy-Key on every
-     *  subsequent request. See DeviceAuthManager for the retry/storage flow. */
+     *  subsequent request. See DeviceAuthManager for the retry/storage flow.
+     *  Like every other endpoint, the response body is wrapped in the
+     *  {"status":"ok","data":{...}} envelope — despite the live OpenAPI
+     *  schema showing DeviceRegister unwrapped, the server always wraps it. */
     @POST("api/v1/auth/device/register/")
-    Call<DeviceRegisterDto> registerDevice(@Body DeviceRegisterDto request);
+    Call<ApiResponse<DeviceRegisterDto>> registerDevice(@Body DeviceRegisterDto request);
 
     // ── Addresses ─────────────────────────────────────────────────────────────
 

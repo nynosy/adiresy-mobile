@@ -252,7 +252,7 @@ public class BookmarkListDetailFragment extends Fragment {
         if (bookmark.userDescription != null && !bookmark.userDescription.isEmpty()) {
             sb.append("\n").append(bookmark.userDescription);
         }
-        sb.append("\n").append(getString(R.string.share_text, bookmark.canonicalCode));
+        sb.append("\n").append(getString(R.string.share_text, bookmark.canonicalCode, bookmark.canonicalCode));
 
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("text/plain");

@@ -26,9 +26,12 @@
     <string name="btn_share">Zarao</string><!-- [MG-REVIEW] -->
     <string name="btn_copy">Adikao</string><!-- [MG-REVIEW] -->
     <string name="btn_navigate">Tariho</string><!-- [MG-REVIEW] -->
+    <string name="btn_open_maps">Sokafy ao amin\'ny Maps</string><!-- [MG-REVIEW] -->
     <string name="navigate_coming_soon">Hisy amin\'ny fanavaozana manaraka</string><!-- [MG-REVIEW] -->
     <string name="navigate_external_hint">Manokatra fampiharana sarintany ivelany</string><!-- [MG-REVIEW] -->
     <string name="copied_to_clipboard">Voadika ny kaody</string><!-- [MG-REVIEW] -->
+    <string name="tap_no_address">Tsy misy adiresy hita ho an\'ity trano ity</string><!-- [MG-REVIEW] -->
+    <string name="tap_no_network">Tsy misy fifandraisana — mifandraisa mba hikaroka ity trano ity</string><!-- [MG-REVIEW] -->
     <string name="share_text">Hitadiava ity trano ity amin\'ny Adiresy: %2$s</string><!-- [MG-REVIEW] -->
     <string name="share_chooser_title">Zarao ny kaody adiresy</string><!-- [MG-REVIEW] -->
 
@@ -45,6 +48,7 @@
     <string name="label_fokontany">Fokontany</string>
 
     <!-- Map / Explore -->
+    <string name="explore_empty">Tsy misy hita eto</string><!-- [MG-REVIEW] -->
     <string name="btn_explore">Hahalala</string><!-- [MG-REVIEW] explore/discover -->
     <string name="map_offline_banner">Tsy misy angon-tsarintany — alaina ao amin\'ny Fandrindrana</string><!-- [MG-REVIEW] -->
     <string name="title_attribution">Loharanon\'ny angona sy fankasitrahana</string><!-- [MG-REVIEW] -->
@@ -85,6 +89,26 @@
     <string name="offline_download_failed">Tsy nety ny fakana — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
     <string name="offline_status_progress">Alaina — %1$s MB / %2$s MB</string><!-- [MG-REVIEW] -->
     <string name="offline_status_done">Efa vaovao (v%1$s, %2$s MB)</string><!-- [MG-REVIEW] -->
+    <string name="offline_national_done">Nasionaly %1$s voaraka · v%2$s · %3$s MB</string><!-- [MG-REVIEW] -->
+    <string name="offline_title_national">Angon-tsarintany nasionaly</string><!-- [MG-REVIEW] -->
+    <string name="offline_desc_national">Mandrakotra an\'i Madagasikara manontolo amin\'ny haavon\'antsipiriany voafantina. Alao indray mandeha ary ampiasao tsy mila anelanelana na aiza na aiza any amin\'ny firenena.</string><!-- [MG-REVIEW] -->
+    <string name="offline_title_province">Fonosana antsipiriany isam-paritra</string><!-- [MG-REVIEW] -->
+    <string name="offline_desc_province">Ampio antsipiriany ho an\'ny faritra manokana — mahasoa ho an\'ny faritra ivezivezenao matetika. Ny haavon\'ny zoom ambony noho ny fonosana nasionalinao ihany no misy.</string><!-- [MG-REVIEW] -->
+    <string name="offline_title_downloaded_packs">Fonosana faritra voaraka</string><!-- [MG-REVIEW] -->
+    <string name="offline_no_packs">Tsy misy fonosana faritra voaraka</string><!-- [MG-REVIEW] -->
+    <string name="offline_province_n14_note">Efa mirakitra ny haavon\'antsipiriany avo indrindra ny Z14 nasionaly. Tsy azo ampiana fonosana faritra ny fakana nasionaly Z14.</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z12_title">Topi-maso faritra · ~190 MB</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z12_label">Topi-maso faritra</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z12_national_desc">Sisin-tanin\'ny distrika, lalana lehibe ary renirano</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z13_title">Haavo tanàna · ~410 MB</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z13_label">Haavo tanàna</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z13_national_desc">Arabe, anaran\'ny fokontany ary lalana eo an-toerana</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z14_title">Antsipiriany feno · ~950 MB</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z14_label">Antsipiriany feno</string><!-- [MG-REVIEW] -->
+    <string name="offline_zoom_z14_national_desc">Trano tsirairay ary firafitry ny arabe marina</string><!-- [MG-REVIEW] -->
+    <string name="offline_pack_downloaded">Efa voaraka · v%2$s · %3$s MB</string><!-- [MG-REVIEW] -->
+    <string name="offline_replace_national_title">Soloy ny fonosana nasionaly?</string><!-- [MG-REVIEW] -->
+    <string name="offline_replace_national_message">Efa manana fonosana nasionaly %1$s ianao. Ny fakana ny %2$s dia hamafa izany ary hampiasa toerana fitahirizana bebe kokoa. Hanohy ve?</string><!-- [MG-REVIEW] -->
     <string name="download_scope_national">Nasionaly (firenena manontolo)</string><!-- [MG-REVIEW] -->
     <string name="download_scope_province">Araka ny faritany</string><!-- [MG-REVIEW] -->
     <string name="label_national_tiles">Fijery nasionaly — Z12 (~43 Mo)</string><!-- [MG-REVIEW] -->
@@ -106,6 +130,11 @@
     <string name="confirm_delete_message">Izany dia hamafa ny sarintany alaina rehetra. Azonao alaina indray amin\'ny fotoana rehetra.</string><!-- [MG-REVIEW] -->
     <string name="btn_delete">Fafao</string><!-- [MG-REVIEW] -->
     <string name="btn_cancel">Ajanony</string><!-- [MG-REVIEW] -->
+    <string name="btn_pause">Ampiato</string><!-- [MG-REVIEW] -->
+    <string name="btn_resume">Tohizo</string><!-- [MG-REVIEW] -->
+    <string name="offline_status_paused">Miato</string><!-- [MG-REVIEW] -->
+    <string name="offline_replace_province_title">Soloy ny fonosana faritra?</string><!-- [MG-REVIEW] -->
+    <string name="offline_replace_province_message">Efa manana fonosana %1$s ianao. Ny fakana ny %2$s dia hamafa izany ary hampiasa toerana fitahirizana bebe kokoa. Hanohy ve?</string><!-- [MG-REVIEW] -->
 
     <!-- About screen -->
     <string name="tab_about">Momba</string><!-- [MG-REVIEW] -->
@@ -177,6 +206,13 @@
     <string name="cd_bookmark_unsaved">Ampidiro amin\'ny tiana</string><!-- [MG-REVIEW] -->
     <string name="cd_bookmark_saved">Esory amin\'ny tiana</string><!-- [MG-REVIEW] -->
 
+    <!-- Location permission rationale -->
+    <string name="location_rationale_body">Mila ny toerana misy anao ny Adiresy mba hitadiavana trano akaiky. Ny tanan\'ny GPS-nao dia alefa any amin\'ny API adiresy.mg mba hikarohana trano akaiky anao. Tsy voatahiry mihoatra ny fangatahana izy ireo ary tsy zaraina amin\'ny antoko fahatelo.</string><!-- [MG-REVIEW] -->
+    <string name="btn_grant_permission">Omeo alalana</string><!-- [MG-REVIEW] -->
+    <string name="location_failed_outdoors">Malemy ny fandrenesana — andramo any ivelany</string><!-- [MG-REVIEW] -->
+    <string name="location_permission_denied">Nolavina ny fahazoan-dàlana amin\'ny toerana — alefaso ao amin\'ny Fandrindrana</string><!-- [MG-REVIEW] -->
+    <string name="btn_open_settings">Sokafy ny Fandrindrana</string><!-- [MG-REVIEW] -->
+
     <!-- Privacy screen -->
     <string name="title_privacy">Tsiambaratelo</string><!-- [MG-REVIEW] -->
     <string name="privacy_body">Ity fampiharana ity tsy mitaky kaonty ary tsy manangona angona famakafakana. Rehefa mitady trano akaikin\'ny toerana ianao, ny tanan\'ny GPS dia alefa any amin\'ny API adiresy.mg — tsy voatahiry ambanin\'ny faharetan\'ny fangatahana izy ireo ary tsy zaraina amin\'ny antoko fahatelo. Ny angona sarintany sy adiresy voatahiry dia voatahiry eo an-toerana amin\'ny fitaovanao ary azo hofafana amin\'ny fotoana rehetra ao amin\'ny Fandrindrana → Angon-tsarintany tsy mila anelanelana.</string><!-- [MG-REVIEW] -->
@@ -194,6 +230,8 @@
     <string name="poi_label_default">Toerana mahaliana</string><!-- [MG-REVIEW] -->
 
     <!-- Accessibility content descriptions -->
+    <string name="cd_locate_me">Hitadiavo ny toerako — hitady ny toerana GPS-ko</string><!-- [MG-REVIEW] -->
+    <string name="cd_share_code">Zarao ity kaody adiresy ity</string><!-- [MG-REVIEW] -->
     <string name="cd_copy_code">Adikao ny kaody adiresy any amin\'ny clipboard</string><!-- [MG-REVIEW] -->
     <string name="cd_navigate">Tariho mankany amin\'ity adiresy ity</string><!-- [MG-REVIEW] -->
     <string name="cd_explore">Hahalala ny faritra fitantanana</string><!-- [MG-REVIEW] -->

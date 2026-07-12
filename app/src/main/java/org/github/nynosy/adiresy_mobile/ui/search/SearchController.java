@@ -78,8 +78,12 @@ public class SearchController {
             recycler.setVisibility(empty ? View.GONE : View.VISIBLE);
             emptyLabel.setVisibility(empty ? View.VISIBLE : View.GONE);
             if (empty) {
-                String q = editText.getText() != null ? editText.getText().toString() : "";
-                emptyLabel.setText(context.getString(R.string.search_empty, q));
+                if (result.isError()) {
+                    emptyLabel.setText(R.string.error_no_network);
+                } else {
+                    String q = editText.getText() != null ? editText.getText().toString() : "";
+                    emptyLabel.setText(context.getString(R.string.search_empty, q));
+                }
             }
         });
 

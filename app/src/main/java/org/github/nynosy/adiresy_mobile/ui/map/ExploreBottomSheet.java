@@ -12,7 +12,9 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import java.util.ArrayDeque;
+import java.util.Collections;
 import java.util.Deque;
+import java.util.List;
 
 import org.github.nynosy.adiresy_mobile.R;
 import org.github.nynosy.adiresy_mobile.data.cache.AdminUnitEntity;
@@ -76,8 +78,15 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
         binding.btnBack.setOnClickListener(v -> navigateBack());
 
         viewModel.getAdminUnits().observe(getViewLifecycleOwner(), result -> {
-            if (result != null && result.data != null) {
-                adapter.submitList(result.data);
+            if (result == null) return;
+            List<AdminUnitEntity> items = result.data != null ? result.data : Collections.emptyList();
+            adapter.submitList(items);
+            boolean empty = items.isEmpty();
+            binding.recyclerAdmin.setVisibility(empty ? View.GONE : View.VISIBLE);
+            binding.labelAdminEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
+            if (empty) {
+                binding.labelAdminEmpty.setText(
+                        result.isError() ? R.string.error_no_network : R.string.explore_empty);
             }
         });
 
@@ -179,21 +188,39 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
     private String levelLabel(String type) {
         if (type == null) return "";
         switch (type) {
-            case "region":    return getString(R.string.label_region);
-            case "district":  return getString(R.string.label_district);
-            case "commune":   return getString(R.string.label_commune);
-            case "fokontany": return getString(R.string.label_fokontany);
-            default:          return type;
+            case "region" -> {
+                return getString(R.string.label_region);
+            }
+            case "district" -> {
+                return getString(R.string.label_district);
+            }
+            case "commune" -> {
+                return getString(R.string.label_commune);
+            }
+            case "fokontany" -> {
+                return getString(R.string.label_fokontany);
+            }
+            default -> {
+                return type;
+            }
         }
     }
 
     private String childLevelLabel(String parentType) {
         if (parentType == null) return getString(R.string.label_region);
         switch (parentType) {
-            case "region":    return getString(R.string.label_district);
-            case "district":  return getString(R.string.label_commune);
-            case "commune":   return getString(R.string.label_fokontany);
-            default:          return getString(R.string.label_fokontany);
+            case "region" -> {
+                return getString(R.string.label_district);
+            }
+            case "district" -> {
+                return getString(R.string.label_commune);
+            }
+            case "commune" -> {
+                return getString(R.string.label_fokontany);
+            }
+            default -> {
+                return getString(R.string.label_fokontany);
+            }
         }
     }
 

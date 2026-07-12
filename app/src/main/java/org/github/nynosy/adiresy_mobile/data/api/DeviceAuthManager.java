@@ -3,6 +3,7 @@ package org.github.nynosy.adiresy_mobile.data.api;
 import android.content.Context;
 
 import org.github.nynosy.adiresy_mobile.BuildConfig;
+import org.github.nynosy.adiresy_mobile.data.api.dto.ApiResponse;
 import org.github.nynosy.adiresy_mobile.data.api.dto.DeviceRegisterDto;
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 
@@ -50,9 +51,11 @@ public class DeviceAuthManager {
             DeviceRegisterDto body = new DeviceRegisterDto();
             body.platform = "android";
             body.appVersion = BuildConfig.VERSION_NAME;
-            Response<DeviceRegisterDto> resp = api.registerDevice(body).execute();
-            if (resp.isSuccessful() && resp.body() != null && resp.body().token != null) {
-                prefs.setApiKey(resp.body().token);
+            Response<ApiResponse<DeviceRegisterDto>> resp = api.registerDevice(body).execute();
+            ApiResponse<DeviceRegisterDto> envelope = resp.body();
+            if (resp.isSuccessful() && envelope != null && envelope.isOk()
+                    && envelope.data.token != null) {
+                prefs.setApiKey(envelope.data.token);
             }
         } catch (Exception ignored) {
             // Offline, or the registration endpoint/its own rate limit was
