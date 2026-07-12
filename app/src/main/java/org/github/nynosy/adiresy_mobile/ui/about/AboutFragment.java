@@ -32,10 +32,15 @@ public class AboutFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         binding.labelVersion.setText(getString(R.string.label_app_version) + ": " + BuildConfig.VERSION_NAME);
 
-        binding.linkWebsite.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://adiresy.mg"));
-            startActivity(intent);
-        });
+        binding.linkWebsite.setOnClickListener(v -> openUrl("https://adiresy.mg"));
+        binding.linkRepoApp.setOnClickListener(v ->
+                openUrl("https://github.com/nynosy/adiresy-mobile"));
+        binding.linkRepoTiles.setOnClickListener(v ->
+                openUrl("https://github.com/nynosy/adiresy-tiles"));
+    }
+
+    private void openUrl(String url) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 
     @Override

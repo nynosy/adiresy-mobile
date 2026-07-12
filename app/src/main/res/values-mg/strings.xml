@@ -108,6 +108,7 @@
     <string name="btn_cancel">Ajanony</string><!-- [MG-REVIEW] -->
 
     <!-- About screen -->
+    <string name="tab_about">Momba</string><!-- [MG-REVIEW] -->
     <string name="title_about">Momba sy fankasitrahana</string><!-- [MG-REVIEW] -->
     <string name="label_app_version">Dikan\'ny fampiharana</string><!-- [MG-REVIEW] -->
     <string name="label_data_version">Dikan\'ny angon-tsarintany</string><!-- [MG-REVIEW] -->
@@ -116,6 +117,17 @@
     <string name="disclaimer_body">Adiresy dia serivisy fanondroana adiresy tsy ofisialy. Ny kaody adiresy dia manan-kery amin\'ity sehatra ity ihany ary tsy manan-kery ara-dalàna.</string><!-- [MG-REVIEW] -->
     <string name="title_data_sources">Loharanon\'ny angona</string><!-- [MG-REVIEW] -->
     <string name="link_adiresy">adiresy.mg</string>
+    <string name="about_section_source">Kaody loharano</string><!-- [MG-REVIEW] -->
+    <string name="link_repo_app">Fampiharana — github.com/nynosy/adiresy-mobile</string><!-- [MG-REVIEW] -->
+    <string name="link_repo_tiles">Angon-tsarintany — github.com/nynosy/adiresy-tiles</string><!-- [MG-REVIEW] -->
+
+    <string name="about_section_what">Inona no Adiresy?</string><!-- [MG-REVIEW] -->
+    <string name="about_what_body">Ny Adiresy dia rafitra fanondroana adiresy tsy ofisialy, naorin\'ny vondrom-piarahamonina, ho an\'i Madagasikara — tsy serivisy ara-panjakana izy io ary tsy manan-kery ara-dalàna ny kaody. Ny trano rehetra eto amin\'ny firenena — na trano an-tanàn-dehibe na trano ambanivohitra — dia afaka mahazo kaody tokana sy maharitra izay ahafahana mahita azy na dia tsy misy anaran-dalana na kaody paositra aza.\n\nAzo ampiasaina ho an\'ny fanaterana entana, ny serivisy vonjy taitra, ny taratasy ofisialy, ary ny fandrindrana fampandrosoana manerana ny faritra enina any Madagasikara ity rafitra ity.</string><!-- [MG-REVIEW] -->
+    <string name="about_section_codes">Ahoana no fiasan\'ny kaody</string><!-- [MG-REVIEW] -->
+    <string name="about_codes_body">Ny kaody tsirairay dia manaraka ny filaharan\'ny fitantanana ao Madagasikara: Faritra › Distrika › Kaominina › Fokontany › Trano. Ohatra, ny kaody 203-AMBS-01234 dia mamaritra tokana trano iray ao anatin\'ny fokontaniny.\n\nMaharitra ny kaody — mitazona ny kaodiny ny trano na dia miova tompony na fampiasana aza.</string><!-- [MG-REVIEW] -->
+    <string name="about_section_independent">Fampiharana mahaleo tena</string><!-- [MG-REVIEW] -->
+    <string name="about_independent_body">Ity fampiharana finday ity dia tetikasa mahaleo tena ary tsy noforonin\'ny, tsy tantanan\'ny, ary tsy eken\'ny ekipa ao ambadiky ny adiresy.mg. Mampiasa ny API miharihary omen\'ny adiresy.mg izy io mba hikarohana kaody trano sy faritra fitantanana.</string><!-- [MG-REVIEW] -->
+    <string name="about_section_website">Tranonkala ofisialy</string><!-- [MG-REVIEW] -->
 
     <!-- Tiana (Bookmark) — [MG-REVIEW] all strings below -->
     <string name="tab_saved">Tiana</string><!-- [MG-REVIEW] favourites -->

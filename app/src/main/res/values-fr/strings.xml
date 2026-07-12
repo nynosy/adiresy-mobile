@@ -105,6 +105,7 @@
     <string name="btn_cancel">Annuler</string>
 
     <!-- About screen -->
+    <string name="tab_about">À propos</string>
     <string name="title_about">À propos et attributions</string>
     <string name="label_app_version">Version de l\'application</string>
     <string name="label_data_version">Version des données cartographiques</string>
@@ -113,6 +114,17 @@
     <string name="disclaimer_body">Adiresy est un service d\'adressage non officiel. Les codes d\'adresses sont valables uniquement sur cette plateforme et n\'ont aucune valeur légale.</string>
     <string name="title_data_sources">Sources de données</string>
     <string name="link_adiresy">adiresy.mg</string>
+    <string name="about_section_source">Code source</string>
+    <string name="link_repo_app">Application — github.com/nynosy/adiresy-mobile</string>
+    <string name="link_repo_tiles">Données cartographiques — github.com/nynosy/adiresy-tiles</string>
+
+    <string name="about_section_what">Qu\'est-ce qu\'Adiresy ?</string>
+    <string name="about_what_body">Adiresy est un système d\'adressage non officiel, construit par la communauté, pour Madagascar — ce n\'est pas un service gouvernemental et les codes n\'ont aucune valeur légale. Chaque construction du pays — des appartements en ville aux maisons rurales — peut recevoir un code unique et permanent qui la rend repérable sans nom de rue ni code postal.\n\nCe système peut être utilisé pour les livraisons, les services d\'urgence, la correspondance officielle et la planification du développement dans les six provinces de Madagascar.</string>
+    <string name="about_section_codes">Comment fonctionnent les codes</string>
+    <string name="about_codes_body">Chaque code suit la hiérarchie administrative de Madagascar : Région › District › Commune › Fokontany › Bâtiment. Un code comme 203-AMBS-01234 identifie de façon unique un bâtiment au sein de son fokontany.\n\nLes codes sont permanents — un bâtiment garde son code même s\'il change de propriétaire ou d\'usage.</string>
+    <string name="about_section_independent">Application indépendante</string>
+    <string name="about_independent_body">Cette application mobile est un projet indépendant et n\'est ni développée, ni exploitée, ni approuvée par l\'équipe derrière adiresy.mg. Elle utilise l\'API publique fournie par adiresy.mg pour rechercher les codes de bâtiments et les zones administratives.</string>
+    <string name="about_section_website">Site officiel</string>
 
     <!-- Favoris (Signets) -->
     <string name="tab_saved">Favoris</string>

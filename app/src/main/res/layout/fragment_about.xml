@@ -110,6 +110,35 @@
             android:paddingVertical="4dp"
             android:background="?attr/selectableItemBackground" />
 
+        <!-- Source code links -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/about_section_source"
+            android:textAppearance="?attr/textAppearanceTitleMedium"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/link_repo_app"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/link_repo_app"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorPrimary"
+            android:paddingVertical="4dp"
+            android:background="?attr/selectableItemBackground" />
+
+        <TextView
+            android:id="@+id/link_repo_tiles"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/link_repo_tiles"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?attr/colorPrimary"
+            android:paddingVertical="4dp"
+            android:background="?attr/selectableItemBackground" />
+
     </LinearLayout>
 
 </ScrollView>

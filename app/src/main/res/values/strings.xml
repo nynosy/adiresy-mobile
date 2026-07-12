@@ -162,6 +162,9 @@
     <string name="about_section_independent">Independent app</string>
     <string name="about_independent_body">This mobile app is an independent project and is not developed, operated, or endorsed by the team behind adiresy.mg. It uses the public API provided by adiresy.mg to look up building codes and administrative areas.</string>
     <string name="about_section_website">Official website</string>
+    <string name="about_section_source">Source code</string>
+    <string name="link_repo_app">App — github.com/nynosy/adiresy-mobile</string>
+    <string name="link_repo_tiles">Map data — github.com/nynosy/adiresy-tiles</string>
 
     <!-- About screen (legacy dialog, now Attribution only) -->
     <string name="title_about">Attribution</string>
