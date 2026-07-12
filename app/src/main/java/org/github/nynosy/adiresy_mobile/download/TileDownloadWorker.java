@@ -9,9 +9,12 @@ import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import okhttp3.OkHttpClient;
@@ -24,6 +27,10 @@ public class TileDownloadWorker extends Worker {
 
     /** URL to download. */
     public static final String KEY_URL          = "download_url";
+    /** Expected SHA-256 hex digest, from manifest.json (see ManifestClient).
+     *  Optional — verification is skipped when absent (manifest unavailable),
+     *  never blocks a download that would otherwise have succeeded. */
+    public static final String KEY_SHA256       = "expected_sha256";
     /** Data version string to persist on success, e.g. "2026-Q3". */
     public static final String KEY_VERSION      = "data_version";
     /** Output filename inside getExternalFilesDir("map"), e.g. "madagascar-z12.pmtiles". */
@@ -40,6 +47,8 @@ public class TileDownloadWorker extends Worker {
     public static final String SCOPE_PROVINCE_PACK = "province_pack";
     /** Scope for the buildings layer of a province pack, keyed by {@link #KEY_PACK_KEY}. */
     public static final String SCOPE_PROVINCE_BUILDINGS = "province_buildings";
+    /** Scope for the low-zoom POI overlay of a province pack, keyed by {@link #KEY_PACK_KEY}. */
+    public static final String SCOPE_PROVINCE_POI = "province_poi";
     /** Composite pack key, e.g. "antananarivo-z13". Required when scope == SCOPE_PROVINCE_PACK. */
     public static final String KEY_PACK_KEY      = "pack_key";
     /** Zoom level (int 12/13/14) stored on success when scope == SCOPE_NATIONAL. */
@@ -48,6 +57,8 @@ public class TileDownloadWorker extends Worker {
     public static final String SCOPE_NATIONAL   = "national";
     public static final String SCOPE_REGIONAL   = "regional";
     public static final String SCOPE_BUILDINGS  = "buildings";
+    /** National low-zoom POI overlay (see docs/Issues.md issue 4). */
+    public static final String SCOPE_POI        = "poi";
     public static final String SCOPE_BOUNDARIES = "boundaries";
 
     /** Progress keys exposed via setProgressAsync(). */
@@ -85,11 +96,12 @@ public class TileDownloadWorker extends Worker {
     @NonNull
     @Override
     public Result doWork() {
-        String url      = getInputData().getString(KEY_URL);
-        String version  = getInputData().getString(KEY_VERSION);
-        String filename = getInputData().getString(KEY_DEST_FILENAME);
-        String scope    = getInputData().getString(KEY_SCOPE);
-        String region   = getInputData().getString(KEY_REGION_NAME);
+        String url            = getInputData().getString(KEY_URL);
+        String version        = getInputData().getString(KEY_VERSION);
+        String filename       = getInputData().getString(KEY_DEST_FILENAME);
+        String scope          = getInputData().getString(KEY_SCOPE);
+        String region         = getInputData().getString(KEY_REGION_NAME);
+        String expectedSha256 = getInputData().getString(KEY_SHA256);
 
         if (url == null || url.isEmpty()) return Result.failure();
         if (filename == null || filename.isEmpty()) return Result.failure();
@@ -136,6 +148,16 @@ public class TileDownloadWorker extends Worker {
                 }
             }
 
+            if (expectedSha256 != null && !expectedSha256.isEmpty()) {
+                String actual = sha256Of(dest);
+                if (actual == null || !actual.equalsIgnoreCase(expectedSha256)) {
+                    Log.e(TAG, "Checksum mismatch for " + filename
+                            + " (expected " + expectedSha256 + ", got " + actual + ")");
+                    dest.delete();
+                    return giveUpOrRetry();
+                }
+            }
+
             switch (scope) {
                 case SCOPE_PROVINCE_PACK: {
                     String packKey = getInputData().getString(KEY_PACK_KEY);
@@ -148,9 +170,18 @@ public class TileDownloadWorker extends Worker {
                     if (packKey != null) prefs.setProvinceBuildingsPath(packKey, dest.getAbsolutePath());
                     break;
                 }
+                case SCOPE_PROVINCE_POI: {
+                    String packKey = getInputData().getString(KEY_PACK_KEY);
+                    if (packKey != null) prefs.setProvincePoiPath(packKey, dest.getAbsolutePath());
+                    break;
+                }
                 case SCOPE_BUILDINGS:
                     prefs.setBuildingsPath(dest.getAbsolutePath());
                     if (version != null) prefs.setBuildingsVersion(version);
+                    break;
+                case SCOPE_POI:
+                    prefs.setPoiPath(dest.getAbsolutePath());
+                    if (version != null) prefs.setPoiVersion(version);
                     break;
                 case SCOPE_BOUNDARIES:
                     prefs.setBoundariesPath(dest.getAbsolutePath());
@@ -181,5 +212,25 @@ public class TileDownloadWorker extends Worker {
             return Result.failure();
         }
         return Result.retry();
+    }
+
+    /** Streams the file rather than loading it whole — tiers run up to ~300 MB. */
+    private static String sha256Of(File file) {
+        try (InputStream in = new FileInputStream(file)) {
+            MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            byte[] buf = new byte[8192];
+            int read;
+            while ((read = in.read(buf)) != -1) {
+                digest.update(buf, 0, read);
+            }
+            StringBuilder hex = new StringBuilder(64);
+            for (byte b : digest.digest()) {
+                hex.append(String.format("%02x", b));
+            }
+            return hex.toString();
+        } catch (IOException | NoSuchAlgorithmException e) {
+            Log.e(TAG, "Failed to hash " + file, e);
+            return null;
+        }
     }
 }

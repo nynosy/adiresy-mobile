@@ -24,6 +24,8 @@ public class AppPrefs {
     private static final String KEY_TILE_TIER         = "tile_tier";
     private static final String KEY_BUILDINGS_PATH    = "buildings_path";
     private static final String KEY_BUILDINGS_VERSION = "buildings_version";
+    private static final String KEY_POI_PATH          = "poi_path";
+    private static final String KEY_POI_VERSION       = "poi_version";
     private static final String KEY_BOUNDARIES_PATH   = "boundaries_path";
     private static final String KEY_BOUNDARIES_VERSION = "boundaries_version";
 
@@ -180,6 +182,30 @@ public class AppPrefs {
         return !p.isEmpty() && new java.io.File(p).exists();
     }
 
+    // ── POI overlay ───────────────────────────────────────────────────────────
+
+    /** Absolute path to the downloaded low-zoom POI overlay .pmtiles file, or "" if not present. */
+    public String getPoiPath() {
+        return prefs.getString(KEY_POI_PATH, "");
+    }
+
+    public void setPoiPath(String path) {
+        prefs.edit().putString(KEY_POI_PATH, path).apply();
+    }
+
+    public String getPoiVersion() {
+        return prefs.getString(KEY_POI_VERSION, "");
+    }
+
+    public void setPoiVersion(String version) {
+        prefs.edit().putString(KEY_POI_VERSION, version).apply();
+    }
+
+    public boolean hasPoi() {
+        String p = getPoiPath();
+        return !p.isEmpty() && new java.io.File(p).exists();
+    }
+
     // ── Boundaries overlay ────────────────────────────────────────────────────
 
     /** Absolute path to the downloaded boundaries.pmtiles file, or "" if not present. */
@@ -247,6 +273,7 @@ public class AppPrefs {
                 .remove("pack_path_" + packKey)
                 .remove("pack_ver_" + packKey)
                 .remove("pack_bld_" + packKey)
+                .remove("pack_poi_" + packKey)
                 .apply();
     }
 
@@ -269,6 +296,14 @@ public class AppPrefs {
 
     public void setProvinceBuildingsPath(String packKey, String path) {
         prefs.edit().putString("pack_bld_" + packKey, path).apply();
+    }
+
+    public String getProvincePoiPath(String packKey) {
+        return prefs.getString("pack_poi_" + packKey, "");
+    }
+
+    public void setProvincePoiPath(String packKey, String path) {
+        prefs.edit().putString("pack_poi_" + packKey, path).apply();
     }
 
     // ── Pause state — national ────────────────────────────────────────────────

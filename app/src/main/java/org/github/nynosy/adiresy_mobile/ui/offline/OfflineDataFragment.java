@@ -23,9 +23,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.github.nynosy.adiresy_mobile.R;
+import org.github.nynosy.adiresy_mobile.data.api.dto.ManifestDto;
 import org.github.nynosy.adiresy_mobile.databinding.FragmentOfflineDataBinding;
+import org.github.nynosy.adiresy_mobile.download.DownloadTarget;
+import org.github.nynosy.adiresy_mobile.download.ManifestClient;
 import org.github.nynosy.adiresy_mobile.download.TileDownloadWorker;
 
 public class OfflineDataFragment extends Fragment {
@@ -54,6 +59,12 @@ public class OfflineDataFragment extends Fragment {
 
     private FragmentOfflineDataBinding binding;
     private OfflineDataViewModel viewModel;
+    private final ExecutorService manifestExecutor = Executors.newSingleThreadExecutor();
+    /** Set (possibly to null on failure) once the background fetch in
+     *  onViewCreated() completes; volatile for safe cross-thread publication.
+     *  Every resolver call tolerates null and falls back to a constructed
+     *  URL with no checksum, so a slow/failed fetch never blocks a download. */
+    private volatile ManifestDto manifest;
 
     private int selectedNationalZoom = 12;
     private int selectedProvinceIndex = 0;
@@ -108,6 +119,8 @@ public class OfflineDataFragment extends Fragment {
 
         viewModel.getNationalWorkInfo().observe(getViewLifecycleOwner(), this::onNationalWorkInfo);
         viewModel.getProvinceWorkInfo().observe(getViewLifecycleOwner(), this::onProvinceWorkInfo);
+
+        manifestExecutor.execute(() -> manifest = ManifestClient.fetchSync());
     }
 
     // ── National zoom selection ───────────────────────────────────────────────
@@ -187,7 +200,8 @@ public class OfflineDataFragment extends Fragment {
         if (hasNational) {
             String version = viewModel.getNationalVersion();
             int mb = fileSizeMb(viewModel.getNationalTilePath())
-                    + fileSizeMb(viewModel.getNationalBuildingsPath());
+                    + fileSizeMb(viewModel.getNationalBuildingsPath())
+                    + fileSizeMb(viewModel.getNationalPoiPath());
             binding.labelNationalStatus.setText(
                     getString(R.string.offline_national_done, "Z" + storedZoom, version, mb));
             binding.btnNationalDelete.setVisibility(View.VISIBLE);
@@ -246,9 +260,16 @@ public class OfflineDataFragment extends Fragment {
 
     private void startNational(boolean allowMobile) {
         int zoom = selectedNationalZoom;
-        String url = BASE_URL + "madagascar-z" + zoom + ".pmtiles";
+        String tier = "z" + zoom;
+        ManifestDto m = manifest;
+        DownloadTarget mapTarget = resolveTarget(m != null ? m.files : null, "national", tier,
+                BASE_URL + "madagascar-z" + zoom + ".pmtiles");
+        DownloadTarget buildingsTarget = resolveTarget(m != null ? m.buildings : null, "national", tier,
+                BASE_URL + "buildings-madagascar-z" + zoom + ".pmtiles");
+        DownloadTarget poiTarget = resolveTarget(m != null ? m.poi : null, "national", tier,
+                BASE_URL + "poi-madagascar-z" + zoom + ".pmtiles");
         showNationalDownloading();
-        viewModel.startNationalDownload(url, DATA_VERSION, zoom, allowMobile);
+        viewModel.startNationalDownload(mapTarget, buildingsTarget, poiTarget, DATA_VERSION, zoom, allowMobile);
     }
 
     private void maybePromptMobileAndResumeNational() {
@@ -267,9 +288,16 @@ public class OfflineDataFragment extends Fragment {
     private void resumeNational(boolean allowMobile) {
         int zoom = viewModel.getNationalPausedZoom();
         if (zoom == 0) zoom = selectedNationalZoom;
-        String url = BASE_URL + "madagascar-z" + zoom + ".pmtiles";
+        String tier = "z" + zoom;
+        ManifestDto m = manifest;
+        DownloadTarget mapTarget = resolveTarget(m != null ? m.files : null, "national", tier,
+                BASE_URL + "madagascar-z" + zoom + ".pmtiles");
+        DownloadTarget buildingsTarget = resolveTarget(m != null ? m.buildings : null, "national", tier,
+                BASE_URL + "buildings-madagascar-z" + zoom + ".pmtiles");
+        DownloadTarget poiTarget = resolveTarget(m != null ? m.poi : null, "national", tier,
+                BASE_URL + "poi-madagascar-z" + zoom + ".pmtiles");
         showNationalDownloading();
-        viewModel.resumeNationalDownload(url, DATA_VERSION, zoom, allowMobile);
+        viewModel.resumeNationalDownload(mapTarget, buildingsTarget, poiTarget, DATA_VERSION, zoom, allowMobile);
     }
 
     private void showNationalDownloading() {
@@ -405,7 +433,8 @@ public class OfflineDataFragment extends Fragment {
         if (alreadyDownloaded) {
             String version = viewModel.getProvincePackVersion(packKey);
             int mb = fileSizeMb(viewModel.getProvincePackPath(packKey))
-                    + fileSizeMb(viewModel.getProvinceBuildingsPath(packKey));
+                    + fileSizeMb(viewModel.getProvinceBuildingsPath(packKey))
+                    + fileSizeMb(viewModel.getProvincePoiPath(packKey));
             binding.labelProvinceStatus.setText(
                     getString(R.string.offline_pack_downloaded,
                             provinceLabels()[selectedProvinceIndex], version, mb));
@@ -466,9 +495,17 @@ public class OfflineDataFragment extends Fragment {
 
     private void startProvince(boolean allowMobile) {
         String packKey = currentProvincePackKey();
-        String url = BASE_URL + "province-" + packKey + ".pmtiles";
+        String province = PROVINCE_KEYS[selectedProvinceIndex];
+        String tier = "z" + selectedProvinceZoom;
+        ManifestDto m = manifest;
+        DownloadTarget mapTarget = resolveTarget(m != null ? m.files : null, province, tier,
+                BASE_URL + "province-" + packKey + ".pmtiles");
+        DownloadTarget buildingsTarget = resolveTarget(m != null ? m.buildings : null, province, tier,
+                BASE_URL + "buildings-province-" + packKey + ".pmtiles");
+        DownloadTarget poiTarget = resolveTarget(m != null ? m.poi : null, province, tier,
+                BASE_URL + "poi-province-" + packKey + ".pmtiles");
         showProvinceDownloading();
-        viewModel.startProvincePackDownload(packKey, url, DATA_VERSION, allowMobile);
+        viewModel.startProvincePackDownload(packKey, mapTarget, buildingsTarget, poiTarget, DATA_VERSION, allowMobile);
     }
 
     private void maybePromptMobileAndResumeProvince() {
@@ -487,9 +524,16 @@ public class OfflineDataFragment extends Fragment {
     private void resumeProvince(boolean allowMobile) {
         String packKey = viewModel.getProvincePausedKey();
         if (packKey.isEmpty()) packKey = currentProvincePackKey();
-        String url = BASE_URL + "province-" + packKey + ".pmtiles";
+        String[] parts = splitPackKey(packKey);
+        ManifestDto m = manifest;
+        DownloadTarget mapTarget = resolveTarget(m != null ? m.files : null, parts[0], parts[1],
+                BASE_URL + "province-" + packKey + ".pmtiles");
+        DownloadTarget buildingsTarget = resolveTarget(m != null ? m.buildings : null, parts[0], parts[1],
+                BASE_URL + "buildings-province-" + packKey + ".pmtiles");
+        DownloadTarget poiTarget = resolveTarget(m != null ? m.poi : null, parts[0], parts[1],
+                BASE_URL + "poi-province-" + packKey + ".pmtiles");
         showProvinceDownloading();
-        viewModel.resumeProvincePackDownload(packKey, url, DATA_VERSION, allowMobile);
+        viewModel.resumeProvincePackDownload(packKey, mapTarget, buildingsTarget, poiTarget, DATA_VERSION, allowMobile);
     }
 
     private void showProvinceDownloading() {
@@ -602,7 +646,8 @@ public class OfflineDataFragment extends Fragment {
         String displayName = packDisplayName(packKey);
         String version = viewModel.getProvincePackVersion(packKey);
         int mb = fileSizeMb(viewModel.getProvincePackPath(packKey))
-                + fileSizeMb(viewModel.getProvinceBuildingsPath(packKey));
+                + fileSizeMb(viewModel.getProvinceBuildingsPath(packKey))
+                + fileSizeMb(viewModel.getProvincePoiPath(packKey));
 
         View row = LayoutInflater.from(requireContext())
                 .inflate(R.layout.item_province_pack, binding.containerDownloadedPacks, false);
@@ -640,6 +685,23 @@ public class OfflineDataFragment extends Fragment {
                 getString(R.string.province_toliara),
                 getString(R.string.province_antsiranana)
         };
+    }
+
+    /** Resolves a download target from the manifest (see ManifestClient), falling
+     *  back to a constructed URL with no checksum if the manifest is unavailable
+     *  or doesn't have this entry — never blocks a download either way. */
+    private DownloadTarget resolveTarget(ManifestDto.LayerDto layer, String scope, String tier,
+                                         String fallbackUrl) {
+        DownloadTarget resolved = ManifestClient.resolve(layer, scope, tier);
+        return resolved != null ? resolved : new DownloadTarget(fallbackUrl, null);
+    }
+
+    /** "antananarivo-z13" → {"antananarivo", "z13"}. */
+    private String[] splitPackKey(String packKey) {
+        int dash = packKey.lastIndexOf('-');
+        return dash < 0
+                ? new String[]{packKey, ""}
+                : new String[]{packKey.substring(0, dash), packKey.substring(dash + 1)};
     }
 
     private String packDisplayName(String packKey) {
@@ -698,6 +760,7 @@ public class OfflineDataFragment extends Fragment {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        manifestExecutor.shutdownNow();
         binding = null;
     }
 }

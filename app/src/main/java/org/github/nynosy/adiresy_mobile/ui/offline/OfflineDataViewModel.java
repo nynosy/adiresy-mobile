@@ -14,10 +14,12 @@ import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
+import org.github.nynosy.adiresy_mobile.download.DownloadTarget;
 import org.github.nynosy.adiresy_mobile.download.TileDownloadWorker;
 
 public class OfflineDataViewModel extends AndroidViewModel {
@@ -42,25 +44,32 @@ public class OfflineDataViewModel extends AndroidViewModel {
                 OfflineDataViewModel::pickActive);
     }
 
-    public void startNationalDownload(String url, String version, int zoom, boolean allowMobileData) {
+    public void startNationalDownload(DownloadTarget map, DownloadTarget buildings, DownloadTarget poi,
+                                      String version, int zoom, boolean allowMobileData) {
         prefs.setNationalPaused(false, 0);
         Data mapInput = new Data.Builder()
-                .putString(TileDownloadWorker.KEY_URL, url)
+                .putString(TileDownloadWorker.KEY_URL, map.url())
+                .putString(TileDownloadWorker.KEY_SHA256, map.sha256())
                 .putString(TileDownloadWorker.KEY_VERSION, version)
                 .putString(TileDownloadWorker.KEY_DEST_FILENAME, "madagascar-z" + zoom + ".pmtiles")
                 .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_NATIONAL)
                 .putInt(TileDownloadWorker.KEY_NATIONAL_ZOOM, zoom)
                 .build();
-        // Base URL derived from map URL: replace filename
-        String buildingsUrl = url.substring(0, url.lastIndexOf('/') + 1)
-                + "buildings-madagascar-z" + zoom + ".pmtiles";
         Data buildingsInput = new Data.Builder()
-                .putString(TileDownloadWorker.KEY_URL, buildingsUrl)
+                .putString(TileDownloadWorker.KEY_URL, buildings.url())
+                .putString(TileDownloadWorker.KEY_SHA256, buildings.sha256())
                 .putString(TileDownloadWorker.KEY_VERSION, version)
                 .putString(TileDownloadWorker.KEY_DEST_FILENAME, "buildings-madagascar-z" + zoom + ".pmtiles")
                 .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_BUILDINGS)
                 .build();
-        enqueueChain(mapInput, buildingsInput, WORK_TAG_NATIONAL, allowMobileData);
+        Data poiInput = new Data.Builder()
+                .putString(TileDownloadWorker.KEY_URL, poi.url())
+                .putString(TileDownloadWorker.KEY_SHA256, poi.sha256())
+                .putString(TileDownloadWorker.KEY_VERSION, version)
+                .putString(TileDownloadWorker.KEY_DEST_FILENAME, "poi-madagascar-z" + zoom + ".pmtiles")
+                .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_POI)
+                .build();
+        enqueueChain(List.of(mapInput, buildingsInput, poiInput), WORK_TAG_NATIONAL, allowMobileData);
     }
 
     public void pauseNationalDownload(int zoom) {
@@ -68,9 +77,10 @@ public class OfflineDataViewModel extends AndroidViewModel {
         prefs.setNationalPaused(true, zoom);
     }
 
-    public void resumeNationalDownload(String url, String version, int zoom, boolean allowMobileData) {
+    public void resumeNationalDownload(DownloadTarget map, DownloadTarget buildings, DownloadTarget poi,
+                                       String version, int zoom, boolean allowMobileData) {
         prefs.setNationalPaused(false, 0);
-        startNationalDownload(url, version, zoom, allowMobileData);
+        startNationalDownload(map, buildings, poi, version, zoom, allowMobileData);
     }
 
     public void discardNationalDownload() {
@@ -82,6 +92,7 @@ public class OfflineDataViewModel extends AndroidViewModel {
             if (mapDir != null) {
                 new java.io.File(mapDir, "madagascar-z" + zoom + ".pmtiles").delete();
                 new java.io.File(mapDir, "buildings-madagascar-z" + zoom + ".pmtiles").delete();
+                new java.io.File(mapDir, "poi-madagascar-z" + zoom + ".pmtiles").delete();
             }
         }
         prefs.setNationalPaused(false, 0);
@@ -99,16 +110,20 @@ public class OfflineDataViewModel extends AndroidViewModel {
         workManager.cancelAllWorkByTag(WORK_TAG_NATIONAL);
     }
 
-    /** Deletes national map + buildings tiles and clears all national prefs. */
+    /** Deletes national map + buildings + POI tiles and clears all national prefs. */
     public void deleteNationalData() {
         String path = prefs.getDataPath();
         if (!path.isEmpty()) new File(path).delete();
         String bPath = prefs.getBuildingsPath();
         if (!bPath.isEmpty()) new File(bPath).delete();
+        String pPath = prefs.getPoiPath();
+        if (!pPath.isEmpty()) new File(pPath).delete();
         prefs.setDataPath("");
         prefs.setDataVersion("");
         prefs.setBuildingsPath("");
         prefs.setBuildingsVersion("");
+        prefs.setPoiPath("");
+        prefs.setPoiVersion("");
         prefs.setNationalZoom(0);
     }
 
@@ -138,29 +153,36 @@ public class OfflineDataViewModel extends AndroidViewModel {
     }
 
     /**
-     * @param packKey  composite key, e.g. "antananarivo-z13"
-     * @param url      download URL for the province map tile file
+     * @param packKey composite key, e.g. "antananarivo-z13"
      */
-    public void startProvincePackDownload(String packKey, String url, String version,
-                                          boolean allowMobileData) {
+    public void startProvincePackDownload(String packKey, DownloadTarget map, DownloadTarget buildings,
+                                          DownloadTarget poi, String version, boolean allowMobileData) {
         prefs.setProvincePaused(false, null);
         Data mapInput = new Data.Builder()
-                .putString(TileDownloadWorker.KEY_URL, url)
+                .putString(TileDownloadWorker.KEY_URL, map.url())
+                .putString(TileDownloadWorker.KEY_SHA256, map.sha256())
                 .putString(TileDownloadWorker.KEY_VERSION, version)
                 .putString(TileDownloadWorker.KEY_DEST_FILENAME, "province-" + packKey + ".pmtiles")
                 .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_PROVINCE_PACK)
                 .putString(TileDownloadWorker.KEY_PACK_KEY, packKey)
                 .build();
-        String buildingsUrl = url.substring(0, url.lastIndexOf('/') + 1)
-                + "buildings-province-" + packKey + ".pmtiles";
         Data buildingsInput = new Data.Builder()
-                .putString(TileDownloadWorker.KEY_URL, buildingsUrl)
+                .putString(TileDownloadWorker.KEY_URL, buildings.url())
+                .putString(TileDownloadWorker.KEY_SHA256, buildings.sha256())
                 .putString(TileDownloadWorker.KEY_VERSION, version)
                 .putString(TileDownloadWorker.KEY_DEST_FILENAME, "buildings-province-" + packKey + ".pmtiles")
                 .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_PROVINCE_BUILDINGS)
                 .putString(TileDownloadWorker.KEY_PACK_KEY, packKey)
                 .build();
-        enqueueChain(mapInput, buildingsInput, WORK_TAG_PROVINCE, allowMobileData);
+        Data poiInput = new Data.Builder()
+                .putString(TileDownloadWorker.KEY_URL, poi.url())
+                .putString(TileDownloadWorker.KEY_SHA256, poi.sha256())
+                .putString(TileDownloadWorker.KEY_VERSION, version)
+                .putString(TileDownloadWorker.KEY_DEST_FILENAME, "poi-province-" + packKey + ".pmtiles")
+                .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_PROVINCE_POI)
+                .putString(TileDownloadWorker.KEY_PACK_KEY, packKey)
+                .build();
+        enqueueChain(List.of(mapInput, buildingsInput, poiInput), WORK_TAG_PROVINCE, allowMobileData);
     }
 
     public void pauseProvinceDownload(String packKey) {
@@ -168,10 +190,10 @@ public class OfflineDataViewModel extends AndroidViewModel {
         prefs.setProvincePaused(true, packKey);
     }
 
-    public void resumeProvincePackDownload(String packKey, String url, String version,
-                                           boolean allowMobileData) {
+    public void resumeProvincePackDownload(String packKey, DownloadTarget map, DownloadTarget buildings,
+                                           DownloadTarget poi, String version, boolean allowMobileData) {
         prefs.setProvincePaused(false, null);
-        startProvincePackDownload(packKey, url, version, allowMobileData);
+        startProvincePackDownload(packKey, map, buildings, poi, version, allowMobileData);
     }
 
     public void discardProvinceDownload() {
@@ -182,6 +204,7 @@ public class OfflineDataViewModel extends AndroidViewModel {
             if (mapDir != null) {
                 new java.io.File(mapDir, "province-" + packKey + ".pmtiles").delete();
                 new java.io.File(mapDir, "buildings-province-" + packKey + ".pmtiles").delete();
+                new java.io.File(mapDir, "poi-province-" + packKey + ".pmtiles").delete();
             }
         }
         prefs.setProvincePaused(false, null);
@@ -204,6 +227,8 @@ public class OfflineDataViewModel extends AndroidViewModel {
         if (!path.isEmpty()) new File(path).delete();
         String bPath = prefs.getProvinceBuildingsPath(packKey);
         if (!bPath.isEmpty()) new File(bPath).delete();
+        String pPath = prefs.getProvincePoiPath(packKey);
+        if (!pPath.isEmpty()) new File(pPath).delete();
         prefs.removeProvincePack(packKey);
     }
 
@@ -219,8 +244,16 @@ public class OfflineDataViewModel extends AndroidViewModel {
         return prefs.getBuildingsPath();
     }
 
+    public String getNationalPoiPath() {
+        return prefs.getPoiPath();
+    }
+
     public String getProvinceBuildingsPath(String packKey) {
         return prefs.getProvinceBuildingsPath(packKey);
+    }
+
+    public String getProvincePoiPath(String packKey) {
+        return prefs.getProvincePoiPath(packKey);
     }
 
     public String getProvincePackVersion(String packKey) {
@@ -245,16 +278,24 @@ public class OfflineDataViewModel extends AndroidViewModel {
         return list.get(list.size() - 1);
     }
 
-    private void enqueueChain(Data first, Data second, String tag, boolean allowMobileData) {
+    /** Runs each Data input as a strictly sequential stage (map, then
+     *  buildings, then POI) — not androidx.work.WorkContinuation.then(List),
+     *  which runs its items in parallel instead. */
+    private void enqueueChain(List<Data> inputs, String tag, boolean allowMobileData) {
         Constraints constraints = new Constraints.Builder()
                 .setRequiredNetworkType(
                         allowMobileData ? NetworkType.CONNECTED : NetworkType.UNMETERED)
                 .build();
-        OneTimeWorkRequest req1 = new OneTimeWorkRequest.Builder(TileDownloadWorker.class)
-                .setConstraints(constraints).setInputData(first).addTag(tag).build();
-        OneTimeWorkRequest req2 = new OneTimeWorkRequest.Builder(TileDownloadWorker.class)
-                .setConstraints(constraints).setInputData(second).addTag(tag).build();
-        workManager.beginWith(req1).then(req2).enqueue();
+        List<OneTimeWorkRequest> requests = new ArrayList<>();
+        for (Data input : inputs) {
+            requests.add(new OneTimeWorkRequest.Builder(TileDownloadWorker.class)
+                    .setConstraints(constraints).setInputData(input).addTag(tag).build());
+        }
+        androidx.work.WorkContinuation continuation = workManager.beginWith(requests.get(0));
+        for (int i = 1; i < requests.size(); i++) {
+            continuation = continuation.then(requests.get(i));
+        }
+        continuation.enqueue();
     }
 
     private void enqueue(Data input, String tag, boolean allowMobileData) {

@@ -26,6 +26,7 @@ public class StyleLoader {
 
         String buildingsPath   = prefs.hasBuildings()   ? prefs.getBuildingsPath()   : null;
         String boundariesPath  = prefs.hasBoundaries()  ? prefs.getBoundariesPath()  : null;
+        String poiPath         = prefs.hasPoi()         ? prefs.getPoiPath()         : null;
 
         String nationalPath = prefs.getDataPath();
         if (!nationalPath.isEmpty()) {
@@ -34,7 +35,7 @@ public class StyleLoader {
             if (styleFile.exists()) return styleFile.toURI().toString();
             if (nationalFile.exists())
                 return buildInlineStyle(nationalFile.getAbsolutePath(), darkMode,
-                        buildingsPath, boundariesPath);
+                        buildingsPath, boundariesPath, poiPath);
         }
 
         return "asset://map/" + styleName;
@@ -55,7 +56,7 @@ public class StyleLoader {
     }
 
     private static String buildInlineStyle(String absolutePath, boolean darkMode,
-                                           String buildingsPath, String boundariesPath) {
+                                           String buildingsPath, String boundariesPath, String poiPath) {
         // MapLibre Native Android 11.7+: local PMTiles via pmtiles://file:// prefix
         String tilesUrl = "pmtiles://file://" + jsonStr(absolutePath);
 
@@ -76,6 +77,7 @@ public class StyleLoader {
 
         String buildingsUrl  = buildingsPath  != null ? "pmtiles://file://" + jsonStr(buildingsPath)  : null;
         String boundariesUrl = boundariesPath != null ? "pmtiles://file://" + jsonStr(boundariesPath) : null;
+        String poiUrl        = poiPath        != null ? "pmtiles://file://" + jsonStr(poiPath)        : null;
 
         // Extra sources appended after the base source
         StringBuilder extraSources = new StringBuilder();
@@ -85,10 +87,23 @@ public class StyleLoader {
         if (boundariesUrl != null)
             extraSources.append(",\"boundaries\":{\"type\":\"vector\",\"url\":\"")
                         .append(boundariesUrl).append("\"}");
+        if (poiUrl != null)
+            extraSources.append(",\"poi\":{\"type\":\"vector\",\"url\":\"")
+                        .append(poiUrl).append("\"}");
 
         // Legacy filter syntax: ["in", "property", value1, value2, ...]
         // Light: upper-left source → shadow falls on right/bottom faces of extruded buildings
         String lightIntensity = darkMode ? "0.25" : "0.35";
+
+        // POI: prefer the dedicated low-zoom overlay (min_zoom 12, class holds the
+        // specific category) when downloaded; fall back to the base map's own
+        // OpenMapTiles poi layer, gated to z14 by upstream and filtered to the
+        // top-3-ranked features per tile (the overlay has no "rank" field, so
+        // that filter would exclude everything there -- use "match everything"
+        // instead when reading from it).
+        String poiSource   = poiUrl != null ? "poi" : "omtiles";
+        int    poiMinzoom  = poiUrl != null ? 12 : 14;
+        String poiFilter   = poiUrl != null ? "[\"all\"]" : "[\"<=\",\"rank\",3]";
         return "{"
             + "\"version\":8,"
             + "\"name\":\"Adiresy Dev\","
@@ -195,9 +210,9 @@ public class StyleLoader {
             // POI icons + labels — single layer so icon and text are treated as one unit.
             // icon-optional:false keeps the icon visible; text-optional:true drops the label
             // if there is not enough space, preventing the label from hiding its own icon.
-            + "{\"id\":\"poi-symbol\",\"type\":\"symbol\",\"source\":\"omtiles\",\"source-layer\":\"poi\","
-            +  "\"minzoom\":14,"
-            +  "\"filter\":[\"<=\",\"rank\",3],"
+            + "{\"id\":\"poi-symbol\",\"type\":\"symbol\",\"source\":\"" + poiSource + "\",\"source-layer\":\"poi\","
+            +  "\"minzoom\":" + poiMinzoom + ","
+            +  "\"filter\":" + poiFilter + ","
             +  "\"layout\":{"
             +   "\"icon-image\":[\"match\",[\"get\",\"class\"],"
             +    "[\"hospital\",\"doctor\",\"pharmacy\"],\"poi_healthcare\","
