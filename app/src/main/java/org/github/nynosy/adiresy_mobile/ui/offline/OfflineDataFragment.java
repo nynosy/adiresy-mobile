@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.work.WorkInfo;
 
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -303,7 +304,9 @@ public class OfflineDataFragment extends Fragment {
                     showNationalDownloading();
                 } else {
                     binding.progressNational.setIndeterminate(true);
-                    binding.labelNationalStatus.setText(R.string.offline_status_downloading);
+                    binding.labelNationalStatus.setText(info.getRunAttemptCount() > 0
+                            ? R.string.offline_status_retrying
+                            : R.string.offline_status_downloading);
                 }
                 break;
             case RUNNING:
@@ -319,6 +322,13 @@ public class OfflineDataFragment extends Fragment {
                 updateProvinceCard();
                 break;
             case FAILED:
+                if (viewModel.isNationalPaused()) {
+                    showNationalPaused();
+                } else {
+                    updateNationalCard();
+                    showDownloadFailedSnackbar();
+                }
+                break;
             case CANCELLED:
                 if (viewModel.isNationalPaused()) {
                     showNationalPaused();
@@ -511,7 +521,9 @@ public class OfflineDataFragment extends Fragment {
                     showProvinceDownloading();
                 } else {
                     binding.progressProvince.setIndeterminate(true);
-                    binding.labelProvinceStatus.setText(R.string.offline_status_downloading);
+                    binding.labelProvinceStatus.setText(info.getRunAttemptCount() > 0
+                            ? R.string.offline_status_retrying
+                            : R.string.offline_status_downloading);
                 }
                 break;
             case RUNNING:
@@ -532,22 +544,38 @@ public class OfflineDataFragment extends Fragment {
                 refreshDownloadedPacksList();
                 break;
             case FAILED:
+                if (viewModel.isProvincePaused()) {
+                    showProvincePaused();
+                } else {
+                    resetProvinceButtonsAfterStop();
+                    showDownloadFailedSnackbar();
+                }
+                break;
             case CANCELLED:
                 if (viewModel.isProvincePaused()) {
                     showProvincePaused();
                 } else {
-                    binding.progressProvince.setVisibility(View.GONE);
-                    binding.btnProvincePause.setVisibility(View.GONE);
-                    binding.btnProvinceResume.setVisibility(View.GONE);
-                    binding.btnProvinceCancel.setVisibility(View.GONE);
-                    binding.btnProvinceDownload.setVisibility(View.VISIBLE);
-                    binding.btnProvinceDownload.setEnabled(true);
-                    binding.labelProvinceStatus.setVisibility(View.GONE);
+                    resetProvinceButtonsAfterStop();
                 }
                 break;
             default:
                 break;
         }
+    }
+
+    private void resetProvinceButtonsAfterStop() {
+        binding.progressProvince.setVisibility(View.GONE);
+        binding.btnProvincePause.setVisibility(View.GONE);
+        binding.btnProvinceResume.setVisibility(View.GONE);
+        binding.btnProvinceCancel.setVisibility(View.GONE);
+        binding.btnProvinceDownload.setVisibility(View.VISIBLE);
+        binding.btnProvinceDownload.setEnabled(true);
+        binding.labelProvinceStatus.setVisibility(View.GONE);
+    }
+
+    private void showDownloadFailedSnackbar() {
+        if (binding == null) return;
+        Snackbar.make(binding.getRoot(), R.string.offline_download_failed, Snackbar.LENGTH_LONG).show();
     }
 
     // ── Downloaded packs list ─────────────────────────────────────────────────
