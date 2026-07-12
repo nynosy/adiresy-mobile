@@ -8,7 +8,6 @@ val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
     if (f.exists()) load(f.inputStream())
 }
-val apiKey: String = localProps.getProperty("adiresy.api.key", "")
 
 val releaseKeystorePath: String = localProps.getProperty("release.keystore.path", "")
 val releaseKeystorePassword: String = localProps.getProperty("release.keystore.password", "")
@@ -32,7 +31,6 @@ android {
         versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "API_KEY", "\"$apiKey\"")
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments["room.schemaLocation"] = "$projectDir/schemas"

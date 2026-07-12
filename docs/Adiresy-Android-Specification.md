@@ -243,11 +243,19 @@ Every endpoint requires an API key passed as:
 - **Header (preferred):** `X-Adiresy-Key: {key}`, or
 - **Query param:** `?api_key={key}`
 
-Keys are generated at `adiresy.mg/dashboard` after sign-in. **Rate limit:** 100 requests/hour per key, 200/hour per account across all keys.
+**Anonymous device registration** — `POST /api/v1/auth/device/register/` — issues a per-install token without sign-in or a dashboard-generated key:
 
-> **OQ-7 (API key strategy):** ✓ Interim decision — option (a) bundled developer key for development and early testing. Long-term recommended approach is option (c): server-issued anonymous per-install tokens (zero user friction, per-install rate limiting, revocable). Discussion document for the adiresy.mg owner: `docs/API-Key-Strategy-Discussion.md`. Migration from (a) to (c) only requires changing `ApiKeyInterceptor` — no other app code changes.
+```
+POST /api/v1/auth/device/register/
+{ "platform": "android", "app_version": "1.0.3" }
+→ 201 { "token": "…" }
+```
 
-The key is stored in `AppPrefs` (encrypted SharedPreferences) and injected into every OkHttp request via an interceptor.
+Called once, lazily, the first time the app is about to make an authenticated call (never blocking app startup — see NFR-1/NFR-7). The returned `token` is sent as `X-Adiresy-Key` on every subsequent request. **Rate limits:** 10 registrations/hour/IP for this endpoint; 60 requests/hour for anonymous device tokens (vs. 100/hour per key, 200/hour per account for dashboard-issued keys).
+
+> **OQ-7 (API key strategy):** ✓ Resolved — option (c), anonymous per-install tokens via `/auth/device/register/`, replacing the earlier interim bundled developer key (option a). `DeviceAuthManager` owns the flow: `ensureToken()` registers only if no token is stored (called from `AdiresyRepository` before every authenticated network call), and `invalidateToken()` clears the stored token on a `401` so the next call re-registers. No build-time secret, no CI-injected key.
+
+The token is stored in `AppPrefs` (`EncryptedSharedPreferences`, via `androidx.security.crypto`) and injected into every OkHttp request via `ApiKeyInterceptor`, which reads it fresh from prefs on each call.
 
 ### 9.2 Endpoints
 
@@ -258,7 +266,9 @@ The key is stored in `AppPrefs` (encrypted SharedPreferences) and injected into 
 | `/api/v1/addresses/{canonical_code}/` | GET | path: `canonical_code` | `AddressCode` | Code detail, deep link resolve |
 | `/api/v1/addresses/reverse/` | GET | `?lat=&lng=` | `AddressCode` (best match) | Locate-me (single result) |
 | `/api/v1/addresses/reverse/` | GET | `?lat=&lng=&limit=N&radius=R` | `AddressCode` + `candidates[]` | **Nearby buildings** |
-| `/api/v1/addresses/` | GET | `?fokontany={pcode}&page=` | `PaginatedAddressCodeList` | Admin-level listing |
+| `/api/v1/addresses/` | GET | `?fokontany={uuid}` or `?fokontany_pcode={pcode}`, `&page=` | `PaginatedAddressCodeList` | Admin-level listing |
+
+`/api/v1/addresses/` also accepts `building` (uuid), `commune_short`, `district_code`, `is_verified`, `ordering`, and `search` as additional filters.
 
 **Nearby buildings via `/reverse/` with `limit` + `radius`:**
 
@@ -271,7 +281,9 @@ GET /api/v1/addresses/reverse/?lat=-18.9080&lng=47.5260&limit=20&radius=200
 
 This is the **preferred approach** for nearby buildings — one call, distance-sorted, no fokontany lookup required.
 
-> **Known bug (fix in progress):** `?fokontany={uuid}` on `/api/v1/addresses/` returns 0 results with a UUID; the pcode form (`MG11101001001`) works correctly. API developer is fixing this alongside formally documenting `limit`/`radius`. See `docs/bug-fokontany-filter.md`.
+`limit` (default 1, max 20) and `radius` (metres, default 50) are now formally documented in the live OpenAPI schema.
+
+> **Fixed:** `/api/v1/addresses/` previously accepted only `?fokontany={value}` and silently returned 0 results when given a pcode instead of a uuid (`MG11101001001` worked only by accident, via a different filter path). The API now exposes two distinct params — `fokontany` (uuid) and `fokontany_pcode` (pcode string) — pass exactly one. `AdiresyApi.addressesByFokontany()` takes both parameters accordingly; callers pass whichever identifier they have and leave the other null.
 
 **Geo — admin hierarchy**
 

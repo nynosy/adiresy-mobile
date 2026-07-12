@@ -32,7 +32,7 @@
     <!-- Code detail errors -->
     <string name="error_code_not_found">Impossible de résoudre ce code — vérifiez votre connexion et réessayez</string>
     <string name="error_no_network">Pas de connexion réseau</string>
-    <string name="error_api_key">Clé API manquante — veuillez vérifier les paramètres</string>
+    <string name="error_api_key">Impossible de vérifier cet appareil — vérifiez votre connexion et réessayez</string>
     <string name="btn_retry">Réessayer</string>
 
     <!-- Admin hierarchy labels -->
@@ -78,6 +78,8 @@
     <string name="title_offline_data">Données cartographiques hors ligne</string>
     <string name="offline_status_none">Non téléchargé</string>
     <string name="offline_status_downloading">Téléchargement…</string>
+    <string name="offline_status_retrying">Problème de connexion — nouvelle tentative…</string>
+    <string name="offline_download_failed">Échec du téléchargement — vérifiez votre connexion et réessayez</string>
     <string name="offline_status_progress">Téléchargement — %1$s Mo / %2$s Mo</string>
     <string name="offline_status_done">À jour (v%1$s, %2$s Mo)</string>
     <string name="download_scope_national">National (pays entier)</string>

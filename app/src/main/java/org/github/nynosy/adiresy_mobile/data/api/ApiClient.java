@@ -40,7 +40,7 @@ public class ApiClient {
                 .cache(cache)
                 .connectTimeout(CONNECT_TO_S, TimeUnit.SECONDS)
                 .readTimeout(READ_TO_S, TimeUnit.SECONDS)
-                .addInterceptor(new ApiKeyInterceptor(BuildConfig.API_KEY));
+                .addInterceptor(new ApiKeyInterceptor(context));
 
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();

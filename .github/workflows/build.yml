@@ -19,9 +19,6 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Inject secrets into local.properties
-        run: echo "adiresy.api.key=${{ secrets.ADIRESY_API_KEY }}" >> local.properties
-
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 

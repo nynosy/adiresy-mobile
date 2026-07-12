@@ -27,7 +27,6 @@ jobs:
       - name: Write local.properties
         run: |
           cat >> local.properties <<EOF
-          adiresy.api.key=${{ secrets.ADIRESY_API_KEY }}
           release.keystore.path=release.keystore
           release.keystore.password=${{ secrets.RELEASE_KEYSTORE_PASSWORD }}
           release.key.alias=${{ secrets.RELEASE_KEY_ALIAS }}

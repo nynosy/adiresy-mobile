@@ -36,7 +36,7 @@
     <!-- Code detail errors -->
     <string name="error_code_not_found">Could not resolve this code — check your connection and try again</string>
     <string name="error_no_network">No network connection</string>
-    <string name="error_api_key">API key missing — please check Settings</string>
+    <string name="error_api_key">Couldn\'t verify this device — check your connection and try again</string>
     <string name="btn_retry">Retry</string>
 
     <!-- Admin hierarchy labels -->
@@ -82,6 +82,10 @@
     <string name="title_offline_data">Offline map data</string>
     <string name="offline_status_none">Not downloaded</string>
     <string name="offline_status_downloading">Downloading…</string>
+    <!-- Shown while WorkManager backs off after a failed attempt, before the next retry -->
+    <string name="offline_status_retrying">Connection issue — retrying…</string>
+    <!-- Shown once retries are exhausted after repeated failures -->
+    <string name="offline_download_failed">Download failed — check your connection and try again</string>
     <!-- %1$s = downloaded MB (int), %2$s = total MB (int) -->
     <string name="offline_status_progress">Downloading — %1$s MB / %2$s MB</string>
     <!-- %1$s = version string, %2$s = size in MB (int) -->

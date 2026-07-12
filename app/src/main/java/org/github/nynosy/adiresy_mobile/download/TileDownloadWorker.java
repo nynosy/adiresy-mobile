@@ -54,6 +54,16 @@ public class TileDownloadWorker extends Worker {
     public static final String KEY_BYTES_TOTAL = "bytes_total";
     public static final String KEY_BYTES_DONE  = "bytes_done";
 
+    /**
+     * Give up after this many attempts instead of retrying forever. Without
+     * a cap, a permanently broken URL/server retries silently via
+     * WorkManager's backoff indefinitely — from the UI this is
+     * indistinguishable from a hung download (see onNationalWorkInfo /
+     * onProvinceWorkInfo, which only leave the indeterminate spinner on
+     * RUNNING/ENQUEUED and never reach FAILED).
+     */
+    private static final int MAX_ATTEMPTS = 6;
+
     private static volatile OkHttpClient sharedClient;
 
     private static OkHttpClient httpClient() {
@@ -103,7 +113,7 @@ public class TileDownloadWorker extends Worker {
                 Log.d(TAG, "HTTP 416 — file already complete: " + filename);
             } else if (!response.isSuccessful() && response.code() != 206) {
                 Log.e(TAG, "Download failed: " + response.code());
-                return Result.retry();
+                return giveUpOrRetry();
             } else {
                 long contentLength = response.body() != null
                         ? response.body().contentLength() : -1;
@@ -158,7 +168,18 @@ public class TileDownloadWorker extends Worker {
 
         } catch (IOException e) {
             Log.e(TAG, "Download IO error", e);
-            return Result.retry();
+            return giveUpOrRetry();
         }
+    }
+
+    /** Result.retry() until MAX_ATTEMPTS is reached, then Result.failure()
+     *  so a permanently broken download surfaces to the UI instead of
+     *  backing off forever. */
+    private Result giveUpOrRetry() {
+        if (getRunAttemptCount() + 1 >= MAX_ATTEMPTS) {
+            Log.e(TAG, "Giving up after " + (getRunAttemptCount() + 1) + " attempts");
+            return Result.failure();
+        }
+        return Result.retry();
     }
 }

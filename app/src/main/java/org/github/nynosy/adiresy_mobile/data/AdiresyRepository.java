@@ -14,6 +14,7 @@ import java.util.concurrent.Executors;
 
 import org.github.nynosy.adiresy_mobile.data.api.AdiresyApi;
 import org.github.nynosy.adiresy_mobile.data.api.ApiClient;
+import org.github.nynosy.adiresy_mobile.data.api.DeviceAuthManager;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AddressCodeDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ApiResponse;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AdminUnitDto;
@@ -39,6 +40,7 @@ public class AdiresyRepository {
     private static volatile AdiresyRepository instance;
 
     private final AdiresyApi api;
+    private final DeviceAuthManager deviceAuth;
     private final AddressDao addressDao;
     private final AdminUnitDao adminUnitDao;
     private final SearchHistoryDao searchHistoryDao;
@@ -50,6 +52,7 @@ public class AdiresyRepository {
     private AdiresyRepository(Context context) {
         Context appCtx = context.getApplicationContext();
         api = ApiClient.get(appCtx);
+        deviceAuth = new DeviceAuthManager(appCtx, api);
         AppDatabase db = AppDatabase.getInstance(appCtx);
         addressDao = db.addressDao();
         adminUnitDao = db.adminUnitDao();
@@ -78,6 +81,7 @@ public class AdiresyRepository {
             }
             // 2. Network
             try {
+                deviceAuth.ensureToken();
                 Response<ApiResponse<AddressCodeDto>> resp = api.resolveCode(canonicalCode).execute();
                 ApiResponse<AddressCodeDto> body = resp.body();
                 if (resp.isSuccessful() && body != null && body.isOk()) {
@@ -85,6 +89,7 @@ public class AdiresyRepository {
                     addressDao.insert(entity);
                     out.postValue(Result.success(entity));
                 } else {
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
                     // Serve stale cache rather than an empty error if available
                     out.postValue(cached != null
                             ? Result.stale(cached)
@@ -113,6 +118,7 @@ public class AdiresyRepository {
         MutableLiveData<Result<AddressEntity>> out = new MutableLiveData<>();
         executor.execute(() -> {
             try {
+                deviceAuth.ensureToken();
                 Response<ApiResponse<AddressCodeDto>> resp =
                         api.reverseGeocode(lat, lng, 1, TAP_RADIUS).execute();
                 ApiResponse<AddressCodeDto> body = resp.body();
@@ -121,6 +127,7 @@ public class AdiresyRepository {
                     addressDao.insert(entity);
                     out.postValue(Result.success(entity));
                 } else {
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(resp.code(), resp.message()));
                 }
             } catch (Exception e) {
@@ -141,6 +148,7 @@ public class AdiresyRepository {
         MutableLiveData<Result<List<AddressEntity>>> out = new MutableLiveData<>();
         executor.execute(() -> {
             try {
+                deviceAuth.ensureToken();
                 Response<ApiResponse<AddressCodeDto>> resp =
                         api.reverseGeocode(lat, lng, NEARBY_LIMIT, NEARBY_RADIUS).execute();
                 ApiResponse<AddressCodeDto> body = resp.body();
@@ -154,6 +162,7 @@ public class AdiresyRepository {
                     }
                     out.postValue(Result.success(entities));
                 } else {
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(
                             resp.code(), resp.message() != null ? resp.message() : "no candidates"));
                 }
@@ -197,6 +206,7 @@ public class AdiresyRepository {
             }
 
             try {
+                deviceAuth.ensureToken();
                 PaginatedDto<AdminUnitDto> page = fetchAllAdminPages(type, parentUuid);
                 if (page != null && page.results != null) {
                     List<AdminUnitEntity> entities = new ArrayList<>();
@@ -228,11 +238,14 @@ public class AdiresyRepository {
                 return;
             }
             try {
+                deviceAuth.ensureToken();
                 Response<GeoJsonGeometryDto> resp = geometryCall(type, pcode).execute();
                 if (resp.isSuccessful() && resp.body() != null) {
                     String json = gson.toJson(resp.body());
                     adminUnitDao.updateGeometry(pcode, json);
                     out.postValue(json);
+                } else if (resp.code() == 401) {
+                    deviceAuth.invalidateToken();
                 }
             } catch (Exception ignored) {
                 out.postValue(null);
@@ -247,10 +260,12 @@ public class AdiresyRepository {
         MutableLiveData<Result<List<AutocompleteDto.Item>>> out = new MutableLiveData<>();
         executor.execute(() -> {
             try {
+                deviceAuth.ensureToken();
                 retrofit2.Response<SearchResponseDto> resp = api.autocomplete(query, 20).execute();
                 if (resp.isSuccessful() && resp.body() != null && resp.body().data != null) {
                     out.postValue(Result.success(flattenSearchResponse(resp.body().data)));
                 } else {
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(resp.code(), resp.message()));
                 }
             } catch (Exception e) {
@@ -403,6 +418,7 @@ public class AdiresyRepository {
                 default:         resp = api.listFokontany(parentUuid, page).execute(); break;
             }
             if (!resp.isSuccessful() || resp.body() == null) {
+                if (resp.code() == 401) deviceAuth.invalidateToken();
                 return gotFirstPage ? syntheticPage(all) : null;
             }
             gotFirstPage = true;

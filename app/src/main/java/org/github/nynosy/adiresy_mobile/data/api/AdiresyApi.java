@@ -4,16 +4,27 @@ import org.github.nynosy.adiresy_mobile.data.api.dto.AddressCodeDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AdminUnitDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ApiResponse;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.DeviceRegisterDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.SearchResponseDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.GeoJsonGeometryDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.PaginatedDto;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 // Base URL: https://adiresy.mg/
 public interface AdiresyApi {
+
+    // ── Auth ──────────────────────────────────────────────────────────────────
+
+    /** First-launch anonymous device registration — no account required.
+     *  Returns a per-install token to send as X-Adiresy-Key on every
+     *  subsequent request. See DeviceAuthManager for the retry/storage flow. */
+    @POST("api/v1/auth/device/register/")
+    Call<DeviceRegisterDto> registerDevice(@Body DeviceRegisterDto request);
 
     // ── Addresses ─────────────────────────────────────────────────────────────
 
@@ -26,9 +37,12 @@ public interface AdiresyApi {
                                                      @Query("limit") int limit,
                                                      @Query("radius") int radiusMetres);
 
+    /** Pass exactly one of fokontanyUuid / fokontanyPcode — the API now
+     *  distinguishes the two instead of accepting either under `fokontany`. */
     @GET("api/v1/addresses/")
     Call<PaginatedDto<AddressCodeDto>> addressesByFokontany(
-            @Query("fokontany") String fokontanyPcode,
+            @Query("fokontany") String fokontanyUuid,
+            @Query("fokontany_pcode") String fokontanyPcode,
             @Query("page") int page);
 
     // ── Geo — regions ─────────────────────────────────────────────────────────

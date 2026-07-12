@@ -35,7 +35,7 @@
     <!-- Code detail errors -->
     <string name="error_code_not_found">Tsy afaka namaha ity kaody ity — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
     <string name="error_no_network">Tsy misy fifandraisana amin\'ny tambajotra</string><!-- [MG-REVIEW] -->
-    <string name="error_api_key">Tsy misy fanalahidy API — jereo ny Fandrindrana</string><!-- [MG-REVIEW] -->
+    <string name="error_api_key">Tsy voamarina ity fitaovana ity — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
     <string name="btn_retry">Andramo indray</string><!-- [MG-REVIEW] -->
 
     <!-- Admin hierarchy labels -->
@@ -81,6 +81,8 @@
     <string name="title_offline_data">Angon-tsarintany tsy mila anelanelana</string><!-- [MG-REVIEW] -->
     <string name="offline_status_none">Tsy nalaina</string><!-- [MG-REVIEW] -->
     <string name="offline_status_downloading">Alaina…</string><!-- [MG-REVIEW] -->
+    <string name="offline_status_retrying">Olana amin\'ny fifandraisana — miezaka indray…</string><!-- [MG-REVIEW] -->
+    <string name="offline_download_failed">Tsy nety ny fakana — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
     <string name="offline_status_progress">Alaina — %1$s MB / %2$s MB</string><!-- [MG-REVIEW] -->
     <string name="offline_status_done">Efa vaovao (v%1$s, %2$s MB)</string><!-- [MG-REVIEW] -->
     <string name="download_scope_national">Nasionaly (firenena manontolo)</string><!-- [MG-REVIEW] -->

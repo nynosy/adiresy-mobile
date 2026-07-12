@@ -2,10 +2,19 @@ package org.github.nynosy.adiresy_mobile.data.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
+
+import androidx.security.crypto.EncryptedSharedPreferences;
+import androidx.security.crypto.MasterKey;
+
+import java.security.GeneralSecurityException;
+import java.io.IOException;
 
 public class AppPrefs {
 
+    private static final String TAG            = "AppPrefs";
     private static final String PREF_FILE         = "adiresy_prefs";
+    private static final String SECURE_PREF_FILE   = "adiresy_secure_prefs";
     private static final String KEY_FIRST_RUN         = "first_run";
     private static final String KEY_LANGUAGE          = "language";
     private static final String KEY_THEME             = "theme";
@@ -29,10 +38,33 @@ public class AppPrefs {
     private static volatile AppPrefs instance;
 
     private final SharedPreferences prefs;
+    private final SharedPreferences securePrefs;
 
     private AppPrefs(Context context) {
-        prefs = context.getApplicationContext()
-                       .getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        Context appCtx = context.getApplicationContext();
+        prefs = appCtx.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
+        securePrefs = createSecurePrefs(appCtx);
+    }
+
+    private static SharedPreferences createSecurePrefs(Context context) {
+        try {
+            MasterKey masterKey = new MasterKey.Builder(context)
+                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+                    .build();
+            return EncryptedSharedPreferences.create(
+                    context,
+                    SECURE_PREF_FILE,
+                    masterKey,
+                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
+        } catch (GeneralSecurityException | IOException e) {
+            // Fall back to a plain, still device-private file. The device
+            // token is per-install and low-value (governs only its own rate
+            // limit bucket), so this is a degraded-but-safe fallback, not a
+            // security hole.
+            Log.w(TAG, "EncryptedSharedPreferences unavailable, falling back to plain prefs", e);
+            return context.getSharedPreferences(SECURE_PREF_FILE, Context.MODE_PRIVATE);
+        }
     }
 
     public static AppPrefs get(Context context) {
@@ -77,15 +109,16 @@ public class AppPrefs {
     }
 
     // ── API key ───────────────────────────────────────────────────────────────
-    // Stored as plain text for now (option a — bundled key).
-    // Migrate to EncryptedSharedPreferences when switching to option (c).
+    // Per-install device token from POST /api/v1/auth/device/register/ (see
+    // DeviceAuthManager) — not a single key baked into the build. Stored in
+    // EncryptedSharedPreferences since it's a bearer credential.
 
     public String getApiKey() {
-        return prefs.getString(KEY_API_KEY, "");
+        return securePrefs.getString(KEY_API_KEY, "");
     }
 
     public void setApiKey(String apiKey) {
-        prefs.edit().putString(KEY_API_KEY, apiKey).apply();
+        securePrefs.edit().putString(KEY_API_KEY, apiKey).apply();
     }
 
     // ── Offline map data — national Z12 ──────────────────────────────────────

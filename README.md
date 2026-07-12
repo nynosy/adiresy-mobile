@@ -58,15 +58,16 @@ See [`docs/Adiresy-Android-Specification.md`](docs/Adiresy-Android-Specification
 
 - Android Studio (or the command-line SDK) with a recent Android SDK installed
 - JDK 21
-- An Adiresy API key — request one at [adiresy.mg/dashboard](https://adiresy.mg/dashboard)
+
+No API key is needed — the app registers itself anonymously against the
+Adiresy API on first use (see [the technical specification, §9](docs/Adiresy-Android-Specification.md#9-adiresy-api-integration)).
 
 ### Setup
 
 1. Clone the repo and open it in Android Studio, or build from the command line.
-2. Create/edit `local.properties` in the project root (already gitignored — never commit real keys) with:
+2. Create/edit `local.properties` in the project root (already gitignored) with:
    ```properties
    sdk.dir=/path/to/your/Android/sdk
-   adiresy.api.key=YOUR_API_KEY
    ```
 3. Build and run:
    ```bash
