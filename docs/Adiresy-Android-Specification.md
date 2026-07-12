@@ -478,7 +478,7 @@ A separate **Buildings** download card, clearly labelled with its own size, appe
 
 If the `buildings` key is absent from the current manifest (possible when the upstream VIDA extraction failed), hide the buildings card entirely — do not treat it as an error.
 
-Attribution required when buildings overlay is loaded: _"Building data: Google Open Buildings, Microsoft, OpenStreetMap (via VIDA)"_
+Attribution required when buildings overlay is loaded: _"© Google Open Buildings, Microsoft Building Footprints, OpenStreetMap contributors — merged by VIDA (ODbL)"_ — implemented as `attribution_buildings`.
 
 ### 13.3 Boundaries overlay
 
@@ -486,7 +486,7 @@ A single `boundaries.pmtiles` (~13 MB, whole country) covering all four Malagasy
 
 If the `boundaries` key is absent from the manifest, omit the download silently.
 
-Attribution pending: BNGRC/OCHA source is CC BY-IGO — a legally distinct license from ODbL/CC-BY; a precise credit line has not yet been drafted (tracked as TG-15).
+Attribution: ✓ Resolved (TG-15). BNGRC/OCHA source is CC BY-IGO — a legally distinct license from ODbL/CC-BY, requiring source org, work title, and license URI per §4(b). The exact required credit line is sourced from `adiresy-tiles`' README and implemented as `attribution_admin` (shown in the map's attribution bottom sheet and Settings → About & attributions, alongside `attribution_buildings`, which was also missing two of its three credited sources).
 
 ### 13.4 Shared download behaviours
 

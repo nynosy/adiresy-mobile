@@ -47,8 +47,8 @@
     <string name="title_attribution">Données cartographiques et attributions</string>
     <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
     <string name="attribution_osm">© Contributeurs OpenStreetMap (ODbL)</string>
-    <string name="attribution_buildings">© Google Open Buildings</string>
-    <string name="attribution_admin">© BNGRC / OCHA (limites administratives)</string>
+    <string name="attribution_buildings">© Google Open Buildings, Microsoft Building Footprints, contributeurs OpenStreetMap — fusionnés par VIDA (ODbL)</string>
+    <string name="attribution_admin">Limites administratives : Bureau National de Gestion des Risques et des Catastrophes (BNGRC), via la Section des services d\'information sur le terrain d\'OCHA — « Madagascar - Subnational Administrative Boundaries », Creative Commons Attribution pour les organisations intergouvernementales (CC BY-IGO 3.0) — http://creativecommons.org/licenses/by/3.0/igo/</string>
     <string name="attribution_unofficial">Adiresy est un service non officiel. Les codes n\'ont aucune valeur légale.</string>
     <string name="btn_close">Fermer</string>
 

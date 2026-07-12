@@ -50,8 +50,8 @@
     <string name="title_attribution">Loharanon\'ny angona sy fankasitrahana</string><!-- [MG-REVIEW] -->
     <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
     <string name="attribution_osm">© Mpandray anjara amin\'ny OpenStreetMap (ODbL)</string><!-- [MG-REVIEW] -->
-    <string name="attribution_buildings">© Google Open Buildings</string>
-    <string name="attribution_admin">© BNGRC / OCHA (sisin-tanin\'ny fitantanana)</string><!-- [MG-REVIEW] -->
+    <string name="attribution_buildings">© Google Open Buildings, Microsoft Building Footprints, mpandray anjara amin\'ny OpenStreetMap — nakamban\'ny VIDA (ODbL)</string><!-- [MG-REVIEW] -->
+    <string name="attribution_admin">Sisin-tanin\'ny fitantanana: Bureau National de Gestion des Risques et des Catastrophes (BNGRC), amin\'ny alalan\'ny Sampana Serivisy Fampahalalana an-toerana an\'ny OCHA — “Madagascar - Subnational Administrative Boundaries,” Creative Commons Attribution ho an\'ny fikambanana iraisam-pirenena (CC BY-IGO 3.0) — http://creativecommons.org/licenses/by/3.0/igo/</string><!-- [MG-REVIEW] -->
     <string name="attribution_unofficial">Adiresy dia serivisy tsy ofisialy. Ny kaody tsy manan-kery ara-dalàna.</string><!-- [MG-REVIEW] -->
     <string name="btn_close">Hidio</string><!-- [MG-REVIEW] -->
 

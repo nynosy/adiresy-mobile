@@ -51,8 +51,10 @@
     <string name="title_attribution">Map data &amp; attributions</string>
     <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
     <string name="attribution_osm">© OpenStreetMap contributors (ODbL)</string>
-    <string name="attribution_buildings">© Google Open Buildings</string>
-    <string name="attribution_admin">© BNGRC / OCHA (administrative boundaries)</string>
+    <string name="attribution_buildings">© Google Open Buildings, Microsoft Building Footprints, OpenStreetMap contributors — merged by VIDA (ODbL)</string>
+    <!-- Required credit per CC BY-IGO 3.0 §4(b): source org, work title, and license URI.
+         See the "Data sources & licences" section of the adiresy-tiles repo README. -->
+    <string name="attribution_admin">Administrative boundaries: Madagascar National Disaster Management Office (BNGRC), via OCHA Field Information Services Section — “Madagascar - Subnational Administrative Boundaries,” Creative Commons Attribution for Intergovernmental Organisations (CC BY-IGO 3.0) — http://creativecommons.org/licenses/by/3.0/igo/</string>
     <string name="attribution_unofficial">Adiresy is an unofficial service. Codes have no legal value.</string>
     <string name="btn_close">Close</string>
 
