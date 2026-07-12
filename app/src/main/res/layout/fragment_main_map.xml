@@ -39,17 +39,16 @@
         android:hint="@string/search_hint"
         app:navigationIcon="@drawable/ic_nav_search" />
 
-    <!-- Legend FAB (above Locate Me) -->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_legend"
+        style="@style/Widget.Material3.FloatingActionButton.Small.Surface"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="88dp"
         android:src="@drawable/ic_legend"
         android:contentDescription="@string/cd_legend"
-        app:fabSize="mini"
         app:backgroundTint="?attr/colorSurface"
         app:tint="?attr/colorPrimary" />
 
