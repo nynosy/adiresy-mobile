@@ -23,7 +23,6 @@
         android:gravity="center"
         android:layout_marginBottom="48dp" />
 
-    <!-- Button text is hardcoded — NOT translated — so each is legible before a locale is chosen -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_malagasy"
         android:layout_width="match_parent"
@@ -40,8 +39,7 @@
         android:layout_marginBottom="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:text="Français"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+        android:text="Français" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_english"
@@ -49,7 +47,6 @@
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:text="English"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+        android:text="English" />
 
 </LinearLayout>

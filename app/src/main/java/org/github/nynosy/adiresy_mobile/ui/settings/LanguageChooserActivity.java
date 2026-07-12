@@ -1,9 +1,14 @@
 package org.github.nynosy.adiresy_mobile.ui.settings;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.color.MaterialColors;
 
 import org.github.nynosy.adiresy_mobile.MainActivity;
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
@@ -19,13 +24,12 @@ public class LanguageChooserActivity extends AppCompatActivity {
                 ActivityLanguageChooserBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Pre-select the system-locale language button
+        // Pre-select the button matching the system locale (falls back to "mg" —
+        // see LocaleHelper.defaultLanguageCode()); the other two render outlined.
         String defaultLang = LocaleHelper.defaultLanguageCode();
-        if ("fr".equals(defaultLang)) {
-            applyOutlineStyle(binding);
-        } else if ("mg".equals(defaultLang)) {
-            applyOutlineStyle(binding);
-        }
+        applySelectionStyle(binding.btnMalagasy, "mg".equals(defaultLang));
+        applySelectionStyle(binding.btnFrench, "fr".equals(defaultLang));
+        applySelectionStyle(binding.btnEnglish, "en".equals(defaultLang));
 
         binding.btnEnglish.setOnClickListener(v -> choose("en"));
         binding.btnFrench.setOnClickListener(v -> choose("fr"));
@@ -43,7 +47,24 @@ public class LanguageChooserActivity extends AppCompatActivity {
         finish();
     }
 
-    // Makes the default-language button filled, others outlined — no-op for now;
-    // button styles are set in XML. Real visual selection added in M6 polish pass.
-    private void applyOutlineStyle(ActivityLanguageChooserBinding b) {}
+    /** Filled (colorPrimary fill) for the pre-selected button, outlined for the rest.
+     *  Read from theme attrs via MaterialColors so it stays correct in light/dark. */
+    private void applySelectionStyle(MaterialButton button, boolean selected) {
+        int primary = MaterialColors.getColor(button, com.google.android.material.R.attr.colorPrimary);
+        if (selected) {
+            int onPrimary = MaterialColors.getColor(button, com.google.android.material.R.attr.colorOnPrimary);
+            button.setBackgroundTintList(ColorStateList.valueOf(primary));
+            button.setStrokeWidth(0);
+            button.setTextColor(onPrimary);
+        } else {
+            button.setBackgroundTintList(ColorStateList.valueOf(Color.TRANSPARENT));
+            button.setStrokeColor(ColorStateList.valueOf(primary));
+            button.setStrokeWidth(strokeWidthPx());
+            button.setTextColor(primary);
+        }
+    }
+
+    private int strokeWidthPx() {
+        return Math.round(1 * getResources().getDisplayMetrics().density);
+    }
 }
