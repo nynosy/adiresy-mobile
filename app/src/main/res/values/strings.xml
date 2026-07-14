@@ -99,41 +99,15 @@
     <string name="offline_national_done">National %1$s downloaded · v%2$s · %3$s MB</string>
     <string name="offline_title_national">National map data</string>
     <string name="offline_desc_national">Covers all of Madagascar at the selected detail level. Download once and use offline anywhere in the country.</string>
-    <string name="offline_title_province">Province detail packs</string>
-    <string name="offline_desc_province">Add extra detail for specific provinces — useful for areas you visit often. Only zoom levels above your national pack are available.</string>
-    <string name="offline_title_downloaded_packs">Downloaded province packs</string>
-    <string name="offline_no_packs">No province packs downloaded</string>
-    <string name="offline_province_n14_note">National Z14 already includes the maximum detail level. Province packs cannot be added on top of a Z14 national download.</string>
     <!-- Zoom level labels for selectable rows -->
     <string name="offline_zoom_z12_title">Regional overview · ~190 MB</string>
-    <string name="offline_zoom_z12_label">Regional overview</string>
     <string name="offline_zoom_z12_national_desc">District borders, major roads and rivers</string>
     <string name="offline_zoom_z13_title">City level · ~410 MB</string>
-    <string name="offline_zoom_z13_label">City level</string>
     <string name="offline_zoom_z13_national_desc">Streets, neighbourhood names and local roads</string>
-    <string name="offline_zoom_z14_title">Full detail · ~950 MB</string>
-    <string name="offline_zoom_z14_label">Full detail</string>
-    <string name="offline_zoom_z14_national_desc">Individual buildings and precise street layout</string>
-    <!-- Province pack already downloaded for selected province+zoom -->
-    <!-- %1$s = pack display name, %2$s = version, %3$s = size MB -->
-    <string name="offline_pack_downloaded">Already downloaded · v%2$s · %3$s MB</string>
     <!-- Warning when replacing national pack -->
     <string name="offline_replace_national_title">Replace national pack?</string>
     <!-- %1$s = existing zoom (e.g. "Z12"), %2$s = new zoom (e.g. "Z13") -->
     <string name="offline_replace_national_message">You already have a national %1$s pack. Downloading %2$s will delete it and use more storage. Continue?</string>
-    <string name="download_scope_national">National (full country)</string>
-    <string name="download_scope_province">Per province</string>
-    <string name="label_national_tiles">National overview — Z12 (~43 MB)</string>
-    <string name="label_regional_tiles">Regional detail — Z14 (street level)</string>
-    <string name="label_choose_province">Province</string>
-    <string name="province_antananarivo">Antananarivo</string>
-    <string name="province_fianarantsoa">Fianarantsoa</string>
-    <string name="province_toamasina">Toamasina</string>
-    <string name="province_mahajanga">Mahajanga</string>
-    <string name="province_toliara">Toliara</string>
-    <string name="province_antsiranana">Antsiranana</string>
-    <!-- %s = size in MB -->
-    <string name="download_size_mb">%s MB</string>
     <string name="toggle_mobile_data">Use mobile data</string>
     <string name="warning_mobile_data_title">Use mobile data?</string>
     <string name="warning_mobile_data_message">Downloading map data over mobile data may use a significant amount of data and incur costs on your plan.</string>
@@ -146,9 +120,6 @@
     <string name="btn_pause">Pause</string>
     <string name="btn_resume">Resume</string>
     <string name="offline_status_paused">Paused</string>
-    <string name="offline_replace_province_title">Replace province pack?</string>
-    <!-- %1$s = existing pack (e.g. "Antananarivo Z12"), %2$s = new pack (e.g. "Antananarivo Z13") -->
-    <string name="offline_replace_province_message">You already have a %1$s pack. Downloading %2$s will delete it and use more storage. Continue?</string>
 
     <!-- About tab -->
     <string name="tab_about">About</string>
@@ -161,7 +132,7 @@
     <string name="link_adiresy">adiresy.mg</string>
 
     <string name="about_section_what">What is Adiresy?</string>
-    <string name="about_what_body">Adiresy is an unofficial, community-built addressing system for Madagascar — it is not a government service and codes have no legal standing. Every structure in the country — from city apartments to rural homes — can receive a unique, permanent code that makes it findable without a street name or postcode.\n\nThe system can be used for deliveries, emergency services, official correspondence, and development planning across all six provinces of Madagascar.</string>
+    <string name="about_what_body">Adiresy is an unofficial, community-built addressing system for Madagascar — it is not a government service and codes have no legal standing. Every structure in the country — from city apartments to rural homes — can receive a unique, permanent code that makes it findable without a street name or postcode.\n\nThe system can be used for deliveries, emergency services, official correspondence, and development planning across all 24 regions of Madagascar.</string>
     <string name="about_section_codes">How codes work</string>
     <string name="about_codes_body">Each code follows the administrative hierarchy of Madagascar: Region › District › Commune › Fokontany › Building. A code like 203-AMBS-01234 uniquely identifies a single building within its fokontany.\n\nCodes are permanent — a building keeps its code even if it changes hands or use.</string>
     <string name="about_section_independent">Independent app</string>

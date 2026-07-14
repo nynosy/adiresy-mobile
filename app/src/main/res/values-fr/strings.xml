@@ -90,36 +90,12 @@
     <string name="offline_national_done">National %1$s téléchargé · v%2$s · %3$s Mo</string>
     <string name="offline_title_national">Données cartographiques nationales</string>
     <string name="offline_desc_national">Couvre l\'ensemble de Madagascar au niveau de détail sélectionné. Téléchargez une fois et utilisez hors ligne partout dans le pays.</string>
-    <string name="offline_title_province">Packs de détail régionaux</string>
-    <string name="offline_desc_province">Ajoutez plus de détails pour des provinces spécifiques — utile pour les zones que vous visitez souvent. Seuls les niveaux de zoom supérieurs à votre pack national sont disponibles.</string>
-    <string name="offline_title_downloaded_packs">Packs régionaux téléchargés</string>
-    <string name="offline_no_packs">Aucun pack régional téléchargé</string>
-    <string name="offline_province_n14_note">Le niveau national Z14 inclut déjà le niveau de détail maximal. Les packs régionaux ne peuvent pas être ajoutés à un téléchargement national Z14.</string>
     <string name="offline_zoom_z12_title">Aperçu régional · ~190 Mo</string>
-    <string name="offline_zoom_z12_label">Aperçu régional</string>
     <string name="offline_zoom_z12_national_desc">Limites de district, routes principales et rivières</string>
     <string name="offline_zoom_z13_title">Niveau ville · ~410 Mo</string>
-    <string name="offline_zoom_z13_label">Niveau ville</string>
     <string name="offline_zoom_z13_national_desc">Rues, noms de quartiers et routes locales</string>
-    <string name="offline_zoom_z14_title">Détail complet · ~950 Mo</string>
-    <string name="offline_zoom_z14_label">Détail complet</string>
-    <string name="offline_zoom_z14_national_desc">Bâtiments individuels et tracé précis des rues</string>
-    <!-- %1$s unused (province name) — mirrors the English source string -->
-    <string name="offline_pack_downloaded">Déjà téléchargé · v%2$s · %3$s Mo</string>
     <string name="offline_replace_national_title">Remplacer le pack national ?</string>
     <string name="offline_replace_national_message">Vous avez déjà un pack national %1$s. Télécharger %2$s le supprimera et utilisera plus d\'espace de stockage. Continuer ?</string>
-    <string name="download_scope_national">National (pays entier)</string>
-    <string name="download_scope_province">Par province</string>
-    <string name="label_national_tiles">Vue d\'ensemble nationale — Z12 (~43 Mo)</string>
-    <string name="label_regional_tiles">Détail régional — Z14 (niveau rue)</string>
-    <string name="label_choose_province">Province</string>
-    <string name="province_antananarivo">Antananarivo</string>
-    <string name="province_fianarantsoa">Fianarantsoa</string>
-    <string name="province_toamasina">Toamasina</string>
-    <string name="province_mahajanga">Mahajanga</string>
-    <string name="province_toliara">Toliara</string>
-    <string name="province_antsiranana">Antsiranana</string>
-    <string name="download_size_mb">%s Mo</string>
     <string name="toggle_mobile_data">Utiliser les données mobiles</string>
     <string name="warning_mobile_data_title">Utiliser les données mobiles ?</string>
     <string name="warning_mobile_data_message">Le téléchargement des données cartographiques via les données mobiles peut consommer une quantité importante de données et entraîner des frais supplémentaires.</string>
@@ -132,9 +108,6 @@
     <string name="btn_pause">Pause</string>
     <string name="btn_resume">Reprendre</string>
     <string name="offline_status_paused">En pause</string>
-    <string name="offline_replace_province_title">Remplacer le pack régional ?</string>
-    <!-- %1$s = pack existant (p. ex. "Antananarivo Z12"), %2$s = nouveau pack (p. ex. "Antananarivo Z13") -->
-    <string name="offline_replace_province_message">Vous avez déjà un pack %1$s. Télécharger %2$s le supprimera et utilisera plus d\'espace de stockage. Continuer ?</string>
 
     <!-- About screen -->
     <string name="tab_about">À propos</string>
@@ -151,7 +124,7 @@
     <string name="link_repo_tiles">Données cartographiques — github.com/nynosy/adiresy-tiles</string>
 
     <string name="about_section_what">Qu\'est-ce qu\'Adiresy ?</string>
-    <string name="about_what_body">Adiresy est un système d\'adressage non officiel, construit par la communauté, pour Madagascar — ce n\'est pas un service gouvernemental et les codes n\'ont aucune valeur légale. Chaque construction du pays — des appartements en ville aux maisons rurales — peut recevoir un code unique et permanent qui la rend repérable sans nom de rue ni code postal.\n\nCe système peut être utilisé pour les livraisons, les services d\'urgence, la correspondance officielle et la planification du développement dans les six provinces de Madagascar.</string>
+    <string name="about_what_body">Adiresy est un système d\'adressage non officiel, construit par la communauté, pour Madagascar — ce n\'est pas un service gouvernemental et les codes n\'ont aucune valeur légale. Chaque construction du pays — des appartements en ville aux maisons rurales — peut recevoir un code unique et permanent qui la rend repérable sans nom de rue ni code postal.\n\nCe système peut être utilisé pour les livraisons, les services d\'urgence, la correspondance officielle et la planification du développement dans les 24 régions de Madagascar.</string>
     <string name="about_section_codes">Comment fonctionnent les codes</string>
     <string name="about_codes_body">Chaque code suit la hiérarchie administrative de Madagascar : Région › District › Commune › Fokontany › Bâtiment. Un code comme 203-AMBS-01234 identifie de façon unique un bâtiment au sein de son fokontany.\n\nLes codes sont permanents — un bâtiment garde son code même s\'il change de propriétaire ou d\'usage.</string>
     <string name="about_section_independent">Application indépendante</string>

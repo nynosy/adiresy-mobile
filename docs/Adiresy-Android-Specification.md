@@ -46,7 +46,7 @@ These constraints are first-class requirements, not caveats. Sources are listed 
 
 | Phase | Theme | Ships |
 |-------|-------|-------|
-| **1** | Core offline addressing | Offline map, locate-me, nearby buildings, code resolve, share, admin exploration, search, trilingual UI, settings, offline data manager (national Z12 overview + regional Z14 detail), favourites (named bookmark lists with user name, notes, and emoji symbol) |
+| **1** | Core offline addressing | Offline map, locate-me, nearby buildings, code resolve, share, admin exploration, search, trilingual UI, settings, offline data manager (national Z12 overview / Z13 detailed — user picks one), favourites (named bookmark lists with user name, notes, and emoji symbol) |
 | **2** | Offline routing | On-device A→B route calculation from user location to an Adiresy code; route drawn on map; textual step list |
 | **3** | Turn-by-turn UI | Guided navigation view: maneuver banner, distance-to-next, off-route re-routing, arrival — built with default Android UI |
 | **4** | Voice guidance | Spoken turn-by-turn in English, French, and Malagasy, fully offline. Tech stack TBD. |
@@ -65,7 +65,7 @@ Each phase is independently shippable and leaves the app in a coherent, releasab
 | NFR-2 | Cold start on low-end device | ≤ 2.5 s to interactive on a 2 GB Android Go phone |
 | NFR-3 | Map pan/zoom | Visually smooth (≥ 30 fps) on 2 GB devices; no ANRs |
 | NFR-4 | Install size (APK/AAB delivered) | ≤ 25 MB before map/graph data |
-| NFR-5 | First-run data download | Over Wi-Fi by default; resumable; national or per-region choice |
+| NFR-5 | First-run data download | Over Wi-Fi by default; resumable; national only, user picks Z12 or Z13 |
 | NFR-6 | Peak RAM | Comfortable within a 2 GB device; functional on 1 GB |
 | NFR-7 | Mobile-data use in normal operation | Zero required; any network use is explicit and opt-in |
 | NFR-8 | Battery | No background location or wake-locks outside active navigation |
@@ -111,7 +111,7 @@ app/
 ├─ data/
 │   ├─ api/       AdiresyApi (Retrofit) + AdiresyRepository + adapter/DTOs
 │   ├─ cache/     Room DB: resolved codes, admin units, search history, bookmark lists, bookmarks
-│   └─ prefs/     App settings (language, theme, downloaded regions)
+│   └─ prefs/     App settings (language, theme, downloaded map data)
 ├─ routing/       Phase 2: GraphHopper wrapper (RouteEngine interface)
 ├─ nav/           Phase 3: guidance state machine, off-route detection
 ├─ voice/         Phase 3b: VoiceGuide (TTS + Malagasy audio clips)
@@ -163,29 +163,24 @@ java -Ddw.graphhopper.datareader.file=madagascar-latest.osm.pbf \
 # Ship the resulting graph-cache/ directory (zipped) as the routing asset.
 ```
 
-**C. Buildings overlay** — Google Open Buildings v3 + Microsoft GlobalMLBuildingFootprints + OSM, merged by VIDA (ODbL). A separate `.pmtiles` file per region/tier, rendered as a second MapLibre vector source. Roughly **triples** download size at each tier. Optional — user must explicitly opt in.
+**C. Buildings overlay** — Google Open Buildings v3 + Microsoft GlobalMLBuildingFootprints + OSM, merged by VIDA (ODbL). A separate `.pmtiles` file per tier, rendered as a second MapLibre vector source. Roughly **triples** download size at each tier. This is the app's main feature, not an optional extra — downloaded automatically as part of the same chained download as the base map (map → buildings → POI, one sequential `WorkContinuation`, no separate opt-in step).
 
-**D. Boundaries overlay** — BNGRC/OCHA administrative boundaries (CC BY-IGO) for all four Malagasy admin levels (region / district / commune / fokontany). A single `boundaries.pmtiles` file (~13 MB) covering the whole country; not split by tier or province. Rendered as a third MapLibre vector source with zoom-stop filters per `admLevel`.
+**D. Boundaries overlay** — BNGRC/OCHA administrative boundaries (CC BY-IGO) for all four Malagasy admin levels (region / district / commune / fokontany). A single `boundaries.pmtiles` file (~13 MB) covering the whole country; not split by tier. Rendered as a third MapLibre vector source with zoom-stop filters per `admLevel`.
 
 **Base map style.** Two variants: `style-light.json` and `style-dark.json`. Glyphs currently fetched from `https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf` (MapLibre public CDN, cached by MapLibre after first fetch). Long-term target: self-host glyphs in `assets/` for guaranteed offline rendering.
 
-**Manifest schema.** `manifest.json` is nested by quality tier. `files.national` and `provinces.{name}` are each an object keyed by tier:
+**Manifest schema.** `manifest.json` is nested by quality tier. `files.national` is an object keyed by tier — national only, no per-region split (see `docs/National-Only-Simplification-Implementation-Spec.md`):
 
 ```json
 {
   "files": {
     "national": {
       "z12": { "filename": "madagascar-z12.pmtiles", "url": "…", "size_bytes": 43073104, "sha256": "…" },
-      "z13": { "filename": "madagascar-z13.pmtiles", "url": "…", "size_bytes": 102044208, "sha256": "…" },
-      "z14": { "filename": "madagascar-z14.pmtiles", "url": "…", "size_bytes": 301805319, "sha256": "…" }
+      "z13": { "filename": "madagascar-z13.pmtiles", "url": "…", "size_bytes": 102044208, "sha256": "…" }
     }
   },
-  "provinces": {
-    "antananarivo": { "z12": {…}, "z13": {…}, "z14": {…} }
-  },
   "buildings": {
-    "national": { "z12": {…}, "z13": {…}, "z14": {…} },
-    "provinces": { "antananarivo": { "z12": {…}, … } }
+    "national": { "z12": {…}, "z13": {…} }
   },
   "boundaries": { "filename": "boundaries.pmtiles", "url": "…", "size_bytes": 13278117, "sha256": "…" }
 }
@@ -199,18 +194,17 @@ java -Ddw.graphhopper.datareader.file=madagascar-latest.osm.pbf \
 
 - Manifest: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/manifest.json`
 - Base map: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/madagascar-{tier}.pmtiles`
-- Buildings: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/madagascar-buildings-{tier}.pmtiles`
+- Buildings: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/buildings-madagascar-{tier}.pmtiles`
 - Boundaries: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/boundaries.pmtiles`
 
 **Tile quality tiers** (national base map, measured from 2026-07-05 build):
 
-| Tier key | User-facing label | National size | Province size | Detail |
-|---|---|---|---|---|
-| `z12` | Overview | ~43 MB | varies | Main roads and towns — coarse detail |
-| `z13` | Standard _(recommended)_ | ~102 MB | varies | Block-level detail |
-| `z14` | Detailed | ~302 MB | varies | Street-level — best for walking navigation |
+| Tier key | User-facing label | National size | Detail |
+|---|---|---|---|
+| `z12` | Overview | ~43 MB | Main roads and towns — coarse detail |
+| `z13` | Standard _(recommended)_ | ~102 MB | Block-level detail |
 
-Province sizes vary significantly (e.g. Fianarantsoa Detailed ≈ 137 MB, Mahajanga Detailed ≈ 22 MB) — always show the actual `size_bytes` from the manifest, not a flat estimate. Buildings overlay roughly triples each of these figures.
+Always show the actual `size_bytes` from the manifest, not a flat estimate. Buildings overlay roughly triples each of these figures. No Z14/Detailed tier and no per-region split — see `docs/National-Only-Simplification-Implementation-Spec.md`.
 
 **Data freshness — three independent cycles:**
 - **Base map** (roads, labels, places): quarterly refresh from live OSM. `manifest.json`'s `osm_extract_date` reflects this.
@@ -224,7 +218,7 @@ Do not surface a single "data as of" date that implies freshness for all three.
 | Source id | File | Source layer(s) | Notes |
 |---|---|---|---|
 | `omtiles` | base map `.pmtiles` | `landcover`, `water`, `waterway`, `transportation`, `place`, etc. | Always present when any tile downloaded |
-| `buildings` | buildings overlay `.pmtiles` | `buildings` | Add only when buildings file is present; opt-in download |
+| `buildings` | buildings overlay `.pmtiles` | `buildings` | Add only when buildings file is present — downloaded automatically alongside the base map, not opt-in |
 | `boundaries` | `boundaries.pmtiles` | `boundaries` | Add when present; `admLevel` property: 1=region, 2=district, 3=commune, 4=fokontany, 99=coastline |
 
 Boundaries `admLevel` zoom-stop filter convention: region ≥ Z4, district ≥ Z7, commune ≥ Z10, fokontany ≥ Z12.
@@ -430,7 +424,7 @@ Two `style.json` variants (light/dark) keep the *map* legible in each theme and 
 | Road (trunk/national) | `#f6a623` | `#5a4a2a` |
 | Admin boundary | `#c8a870` | `#4a3a2a` |
 
-**3D buildings**: the buildings overlay (`buildings-fill`) uses `fill-extrusion` at a fixed height of **5 m** (VIDA footprint tiles carry no height data). A directional `light` at azimuth 210° / polar 35° (viewport-anchored) creates shadow faces on the right and bottom sides of each building, matching the website's rendering. Opacity 0.95; visible at zoom ≥ 14.
+**3D buildings**: the buildings overlay (`buildings-fill`) uses `fill-extrusion` at a fixed height of **5 m** (VIDA footprint tiles carry no height data). A directional `light` at azimuth 210° / polar 35° (viewport-anchored) creates shadow faces on the right and bottom sides of each building, matching the website's rendering. Opacity 0.95; visible at zoom ≥ 14 — a *viewport* zoom threshold, not a requirement for Z14 source data: the base map's max tier is Z13 (§13.1), and MapLibre overzooms that Z13 source to satisfy the layer's minzoom once the user zooms the viewport in past 14. Confirmed rendering correctly on-device.
 
 ### 11.2 Typography, iconography, spacing
 
@@ -456,27 +450,26 @@ No background location outside active navigation. No account, no analytics by de
 
 ## 13. Offline data management
 
-A dedicated **Offline data** screen manages up to three independent downloadable tile files per selected region/tier.
+A dedicated **Offline data** screen manages three chained downloadable tile files (base map → buildings → POI) for the national map data.
 
 ### 13.1 Base map download
 
-The user selects a **scope** (National or one of six provinces) and a **quality tier**:
+The user picks one of two **quality tiers** — national only, no per-region split (see
+`docs/National-Only-Simplification-Implementation-Spec.md` for why a per-region download split and
+a third Z14/Detailed tier were both built and evaluated, then dropped):
 
 | Tier key | Label | National size | Detail |
 |---|---|---|---|
 | `z12` | Overview | ~43 MB | Main roads and towns |
 | `z13` | Standard _(recommended default)_ | ~102 MB | Block-level detail |
-| `z14` | Detailed | ~302 MB | Street-level |
 
-Province options: Antananarivo, Fianarantsoa, Toamasina, Mahajanga, Toliara, Antsiranana. Province sizes vary — always show the actual `size_bytes` from the manifest for the selected region/tier, not a flat estimate.
+Always show the actual `size_bytes` from the manifest for the selected tier, not a flat estimate. Downloading either tier replaces whichever tier (if any) was previously downloaded — only one national map file is kept on disk at a time.
 
-The national base map and one regional base map can be held simultaneously. The map renderer prefers the regional file when the viewport is within that province; the national file is the country-wide fallback.
+### 13.2 Buildings overlay
 
-### 13.2 Buildings overlay (opt-in)
+The app's main feature, not an optional extra. Downloaded automatically as the second stage of the same chained download as the base map (`OfflineDataViewModel.startNationalDownload` — map → buildings → POI, one sequential `WorkContinuation`, no separate opt-in step or toggle) — despite roughly tripling the download size at every tier. There is no separate "Buildings" card; the single national download button's shown size (`updateNationalCard()`) already sums map + buildings + POI together.
 
-A separate **Buildings** download card, clearly labelled with its own size, appears below the base map card. It is an explicit secondary opt-in — never bundled silently with the base map download — because it roughly triples the download size at every tier. The card must show the overlay's individual `size_bytes` from the manifest.
-
-If the `buildings` key is absent from the current manifest (possible when the upstream VIDA extraction failed), hide the buildings card entirely — do not treat it as an error.
+If the `buildings` key is absent from the current manifest (possible when the upstream VIDA extraction failed), that stage of the chain has no target to resolve against and `ManifestClient.resolve` returns null — `OfflineDataFragment.resolveTarget` falls back to a constructed URL with no checksum rather than skipping the stage, so a manifest gap degrades gracefully instead of silently dropping buildings.
 
 Attribution required when buildings overlay is loaded: _"© Google Open Buildings, Microsoft Building Footprints, OpenStreetMap contributors — merged by VIDA (ODbL)"_ — implemented as `attribution_buildings`.
 
@@ -627,7 +620,7 @@ Known constraints that the chosen stack must satisfy:
 - **APK/AAB:** per-ABI splits, resource shrinking, `minifyShrinkResources`, WebP assets; no bundled map/graph data in the base install.
 - **Animations:** minimal; honour system "reduce animations"; avoid continuous repaint.
 - **Battery:** no background location outside navigation; batch location updates; stop the foreground service promptly on arrival/stop.
-- **Storage:** per-region downloads; show sizes before download; make everything deletable.
+- **Storage:** national-only downloads (Z12 or Z13, user's choice); show sizes before download; make everything deletable.
 - **Data:** Wi-Fi-only downloads by default; OkHttp caching; never poll.
 
 ---
@@ -673,7 +666,7 @@ Off by default. If any crash reporting is added later, it must be privacy-preser
 | OSM road/building gaps in rural areas | Routing/nearby fails where data thin | Straight-line fallback; crowd-fix path to OSM; set expectations in UI |
 | Adiresy API schema differs from assumptions | Integration rework | All wire format behind `AdiresyApi` adapter (§9) |
 | Malagasy TTS unavailable | No native voice | Pre-recorded clip library (§14.3b) |
-| Data/graph size vs tiny storage | Users can't download | Per-region downloads; size shown up front; deletable |
+| Data/graph size vs tiny storage | Users can't download | Two national tiers (Z12/Z13) to choose from; size shown up front; deletable |
 | Android Go / OEM skin quirks | Crashes, ANRs | Low-end device matrix; conservative memory budget |
 | Offline reverse-geocode not bundleable | Locate-me weaker offline | Pin-drop fallback; online resolve when available |
 | Battery drain in navigation | User distrust | Foreground service discipline; prompt stop on arrival |

@@ -35,27 +35,13 @@ public class TileDownloadWorker extends Worker {
     public static final String KEY_VERSION      = "data_version";
     /** Output filename inside getExternalFilesDir("map"), e.g. "madagascar-z12.pmtiles". */
     public static final String KEY_DEST_FILENAME = "dest_filename";
-    /**
-     * Scope of the download: "national" saves to the national prefs keys;
-     * "regional" saves to the regional prefs keys.
-     */
+    /** Scope of the download: which prefs entry the downloaded file's path/version
+     *  gets saved to on success. */
     public static final String KEY_SCOPE        = "scope";
-    /** Province key when scope == "regional", e.g. "antananarivo". */
-    public static final String KEY_REGION_NAME  = "region_name";
-
-    /** Scope for a province detail pack keyed by {@link #KEY_PACK_KEY}. */
-    public static final String SCOPE_PROVINCE_PACK = "province_pack";
-    /** Scope for the buildings layer of a province pack, keyed by {@link #KEY_PACK_KEY}. */
-    public static final String SCOPE_PROVINCE_BUILDINGS = "province_buildings";
-    /** Scope for the low-zoom POI overlay of a province pack, keyed by {@link #KEY_PACK_KEY}. */
-    public static final String SCOPE_PROVINCE_POI = "province_poi";
-    /** Composite pack key, e.g. "antananarivo-z13". Required when scope == SCOPE_PROVINCE_PACK. */
-    public static final String KEY_PACK_KEY      = "pack_key";
-    /** Zoom level (int 12/13/14) stored on success when scope == SCOPE_NATIONAL. */
+    /** Zoom level (int 12/13) stored on success when scope == SCOPE_NATIONAL. */
     public static final String KEY_NATIONAL_ZOOM = "national_zoom_dl";
 
     public static final String SCOPE_NATIONAL   = "national";
-    public static final String SCOPE_REGIONAL   = "regional";
     public static final String SCOPE_BUILDINGS  = "buildings";
     /** National low-zoom POI overlay (see docs/Issues.md issue 4). */
     public static final String SCOPE_POI        = "poi";
@@ -69,9 +55,9 @@ public class TileDownloadWorker extends Worker {
      * Give up after this many attempts instead of retrying forever. Without
      * a cap, a permanently broken URL/server retries silently via
      * WorkManager's backoff indefinitely — from the UI this is
-     * indistinguishable from a hung download (see onNationalWorkInfo /
-     * onProvinceWorkInfo, which only leave the indeterminate spinner on
-     * RUNNING/ENQUEUED and never reach FAILED).
+     * indistinguishable from a hung download (see onNationalWorkInfo, which
+     * only leaves the indeterminate spinner on RUNNING/ENQUEUED and never
+     * reaches FAILED).
      */
     private static final int MAX_ATTEMPTS = 6;
 
@@ -100,7 +86,6 @@ public class TileDownloadWorker extends Worker {
         String version        = getInputData().getString(KEY_VERSION);
         String filename       = getInputData().getString(KEY_DEST_FILENAME);
         String scope          = getInputData().getString(KEY_SCOPE);
-        String region         = getInputData().getString(KEY_REGION_NAME);
         String expectedSha256 = getInputData().getString(KEY_SHA256);
 
         if (url == null || url.isEmpty()) return Result.failure();
@@ -159,22 +144,6 @@ public class TileDownloadWorker extends Worker {
             }
 
             switch (scope) {
-                case SCOPE_PROVINCE_PACK: {
-                    String packKey = getInputData().getString(KEY_PACK_KEY);
-                    if (packKey != null) prefs.addProvincePack(packKey, dest.getAbsolutePath(),
-                            version != null ? version : "");
-                    break;
-                }
-                case SCOPE_PROVINCE_BUILDINGS: {
-                    String packKey = getInputData().getString(KEY_PACK_KEY);
-                    if (packKey != null) prefs.setProvinceBuildingsPath(packKey, dest.getAbsolutePath());
-                    break;
-                }
-                case SCOPE_PROVINCE_POI: {
-                    String packKey = getInputData().getString(KEY_PACK_KEY);
-                    if (packKey != null) prefs.setProvincePoiPath(packKey, dest.getAbsolutePath());
-                    break;
-                }
                 case SCOPE_BUILDINGS:
                     prefs.setBuildingsPath(dest.getAbsolutePath());
                     if (version != null) prefs.setBuildingsVersion(version);
@@ -187,7 +156,7 @@ public class TileDownloadWorker extends Worker {
                     prefs.setBoundariesPath(dest.getAbsolutePath());
                     if (version != null) prefs.setBoundariesVersion(version);
                     break;
-                default: // SCOPE_NATIONAL (and legacy SCOPE_REGIONAL)
+                default: // SCOPE_NATIONAL
                     prefs.setDataPath(dest.getAbsolutePath());
                     if (version != null) prefs.setDataVersion(version);
                     int zoom = getInputData().getInt(KEY_NATIONAL_ZOOM, 12);

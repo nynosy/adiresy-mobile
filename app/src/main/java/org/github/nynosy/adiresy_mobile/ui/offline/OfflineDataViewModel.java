@@ -16,7 +16,6 @@ import androidx.work.WorkManager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import org.github.nynosy.adiresy_mobile.download.DownloadTarget;
@@ -25,7 +24,6 @@ import org.github.nynosy.adiresy_mobile.download.TileDownloadWorker;
 public class OfflineDataViewModel extends AndroidViewModel {
 
     private static final String WORK_TAG_NATIONAL = "tile_download_national";
-    private static final String WORK_TAG_PROVINCE = "tile_download_province";
 
     private final WorkManager workManager;
     private final AppPrefs prefs;
@@ -139,105 +137,9 @@ public class OfflineDataViewModel extends AndroidViewModel {
         return prefs.getDataPath();
     }
 
-    /** 12, 13 or 14; 0 if not downloaded. */
+    /** 12 or 13; 0 if not downloaded. */
     public int getNationalZoom() {
         return prefs.getNationalZoom();
-    }
-
-    // ── Province packs ────────────────────────────────────────────────────────
-
-    public LiveData<WorkInfo> getProvinceWorkInfo() {
-        return Transformations.map(
-                workManager.getWorkInfosByTagLiveData(WORK_TAG_PROVINCE),
-                OfflineDataViewModel::pickActive);
-    }
-
-    /**
-     * @param packKey composite key, e.g. "antananarivo-z13"
-     */
-    public void startProvincePackDownload(String packKey, DownloadTarget map, DownloadTarget buildings,
-                                          DownloadTarget poi, String version, boolean allowMobileData) {
-        prefs.setProvincePaused(false, null);
-        Data mapInput = new Data.Builder()
-                .putString(TileDownloadWorker.KEY_URL, map.url())
-                .putString(TileDownloadWorker.KEY_SHA256, map.sha256())
-                .putString(TileDownloadWorker.KEY_VERSION, version)
-                .putString(TileDownloadWorker.KEY_DEST_FILENAME, "province-" + packKey + ".pmtiles")
-                .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_PROVINCE_PACK)
-                .putString(TileDownloadWorker.KEY_PACK_KEY, packKey)
-                .build();
-        Data buildingsInput = new Data.Builder()
-                .putString(TileDownloadWorker.KEY_URL, buildings.url())
-                .putString(TileDownloadWorker.KEY_SHA256, buildings.sha256())
-                .putString(TileDownloadWorker.KEY_VERSION, version)
-                .putString(TileDownloadWorker.KEY_DEST_FILENAME, "buildings-province-" + packKey + ".pmtiles")
-                .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_PROVINCE_BUILDINGS)
-                .putString(TileDownloadWorker.KEY_PACK_KEY, packKey)
-                .build();
-        Data poiInput = new Data.Builder()
-                .putString(TileDownloadWorker.KEY_URL, poi.url())
-                .putString(TileDownloadWorker.KEY_SHA256, poi.sha256())
-                .putString(TileDownloadWorker.KEY_VERSION, version)
-                .putString(TileDownloadWorker.KEY_DEST_FILENAME, "poi-province-" + packKey + ".pmtiles")
-                .putString(TileDownloadWorker.KEY_SCOPE, TileDownloadWorker.SCOPE_PROVINCE_POI)
-                .putString(TileDownloadWorker.KEY_PACK_KEY, packKey)
-                .build();
-        enqueueChain(List.of(mapInput, buildingsInput, poiInput), WORK_TAG_PROVINCE, allowMobileData);
-    }
-
-    public void pauseProvinceDownload(String packKey) {
-        workManager.cancelAllWorkByTag(WORK_TAG_PROVINCE);
-        prefs.setProvincePaused(true, packKey);
-    }
-
-    public void resumeProvincePackDownload(String packKey, DownloadTarget map, DownloadTarget buildings,
-                                           DownloadTarget poi, String version, boolean allowMobileData) {
-        prefs.setProvincePaused(false, null);
-        startProvincePackDownload(packKey, map, buildings, poi, version, allowMobileData);
-    }
-
-    public void discardProvinceDownload() {
-        workManager.cancelAllWorkByTag(WORK_TAG_PROVINCE);
-        String packKey = prefs.getProvincePausedKey();
-        if (!packKey.isEmpty()) {
-            java.io.File mapDir = getApplication().getExternalFilesDir("map");
-            if (mapDir != null) {
-                new java.io.File(mapDir, "province-" + packKey + ".pmtiles").delete();
-                new java.io.File(mapDir, "buildings-province-" + packKey + ".pmtiles").delete();
-                new java.io.File(mapDir, "poi-province-" + packKey + ".pmtiles").delete();
-            }
-        }
-        prefs.setProvincePaused(false, null);
-    }
-
-    public boolean isProvincePaused() {
-        return prefs.isProvincePaused();
-    }
-
-    public String getProvincePausedKey() {
-        return prefs.getProvincePausedKey();
-    }
-
-    public void cancelProvinceDownload() {
-        workManager.cancelAllWorkByTag(WORK_TAG_PROVINCE);
-    }
-
-    public void deleteProvincePack(String packKey) {
-        String path = prefs.getProvincePackPath(packKey);
-        if (!path.isEmpty()) new File(path).delete();
-        String bPath = prefs.getProvinceBuildingsPath(packKey);
-        if (!bPath.isEmpty()) new File(bPath).delete();
-        String pPath = prefs.getProvincePoiPath(packKey);
-        if (!pPath.isEmpty()) new File(pPath).delete();
-        prefs.removeProvincePack(packKey);
-    }
-
-    public Set<String> getDownloadedProvincePackKeys() {
-        return prefs.getProvincePackKeys();
-    }
-
-    public String getProvincePackPath(String packKey) {
-        return prefs.getProvincePackPath(packKey);
     }
 
     public String getNationalBuildingsPath() {
@@ -246,22 +148,6 @@ public class OfflineDataViewModel extends AndroidViewModel {
 
     public String getNationalPoiPath() {
         return prefs.getPoiPath();
-    }
-
-    public String getProvinceBuildingsPath(String packKey) {
-        return prefs.getProvinceBuildingsPath(packKey);
-    }
-
-    public String getProvincePoiPath(String packKey) {
-        return prefs.getProvincePoiPath(packKey);
-    }
-
-    public String getProvincePackVersion(String packKey) {
-        return prefs.getProvincePackVersion(packKey);
-    }
-
-    public boolean hasProvincePack(String packKey) {
-        return prefs.hasProvincePack(packKey);
     }
 
     // ── Internal ──────────────────────────────────────────────────────────────

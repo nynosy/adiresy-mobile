@@ -18,12 +18,12 @@ public class ManifestDto {
     @SerializedName("boundaries") public ManifestFileEntry boundaries;
 
     /**
-     * Shape shared by files/buildings/poi: a "national" entry per tier, plus
-     * an optional per-province map of the same. Keyed by tier string ("z12",
-     * "z13", "z14") so new tiers don't need a schema change.
+     * Shape shared by files/buildings/poi: a "national" entry per tier.
+     * Keyed by tier string ("z12", "z13") so new tiers don't need a schema
+     * change. National-only — no region packs, see
+     * docs/National-Only-Simplification-Implementation-Spec.md.
      */
     public static class LayerDto {
-        @SerializedName("national")  public Map<String, ManifestFileEntry> national;
-        @SerializedName("provinces") public Map<String, Map<String, ManifestFileEntry>> provinces;
+        @SerializedName("national") public Map<String, ManifestFileEntry> national;
     }
 }

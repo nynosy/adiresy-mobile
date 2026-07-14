@@ -2,7 +2,6 @@ package org.github.nynosy.adiresy_mobile.download;
 
 import com.google.gson.Gson;
 
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.github.nynosy.adiresy_mobile.data.api.dto.ManifestDto;
@@ -52,20 +51,16 @@ public final class ManifestClient {
     }
 
     /**
-     * Resolves a download target for one (layer, scope, tier) combination.
+     * Resolves a download target for one (layer, tier) combination. National-only
+     * — no region scope, see docs/National-Only-Simplification-Implementation-Spec.md.
      * @param layer manifest.files / manifest.buildings / manifest.poi (may be null)
-     * @param scope "national" or a province key, e.g. "antananarivo"
-     * @param tier  "z12" / "z13" / "z14"
+     * @param tier  "z12" / "z13"
      * @return the resolved target, or null if the manifest/layer/entry is unavailable
      */
-    public static DownloadTarget resolve(ManifestDto.LayerDto layer, String scope, String tier) {
-        if (layer == null) return null;
-        Map<String, ManifestFileEntry> tiers = "national".equals(scope)
-                ? layer.national
-                : (layer.provinces != null ? layer.provinces.get(scope) : null);
-        if (tiers == null) return null;
-        ManifestFileEntry entry = tiers.get(tier);
+    public static DownloadTarget resolve(ManifestDto.LayerDto layer, String tier) {
+        if (layer == null || layer.national == null) return null;
+        ManifestFileEntry entry = layer.national.get(tier);
         if (entry == null || entry.url == null) return null;
-        return new DownloadTarget(entry.url, entry.sha256);
+        return new DownloadTarget(entry.url, entry.sha256, entry.sizeBytes);
     }
 }

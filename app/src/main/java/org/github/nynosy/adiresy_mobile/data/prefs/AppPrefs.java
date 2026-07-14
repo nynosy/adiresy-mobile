@@ -21,7 +21,6 @@ public class AppPrefs {
     private static final String KEY_API_KEY           = "api_key";
     private static final String KEY_DATA_VERSION      = "data_version";
     private static final String KEY_DATA_PATH         = "data_path";
-    private static final String KEY_TILE_TIER         = "tile_tier";
     private static final String KEY_BUILDINGS_PATH    = "buildings_path";
     private static final String KEY_BUILDINGS_VERSION = "buildings_version";
     private static final String KEY_POI_PATH          = "poi_path";
@@ -35,7 +34,6 @@ public class AppPrefs {
 
     public static final String TIER_Z12 = "z12";
     public static final String TIER_Z13 = "z13";
-    public static final String TIER_Z14 = "z14";
 
     private static volatile AppPrefs instance;
 
@@ -147,17 +145,6 @@ public class AppPrefs {
         return !getDataPath().isEmpty();
     }
 
-    // ── Tile quality tier ─────────────────────────────────────────────────────
-
-    /** Returns the selected tier key: "z12", "z13", or "z14". Defaults to "z12". */
-    public String getTileTier() {
-        return prefs.getString(KEY_TILE_TIER, TIER_Z12);
-    }
-
-    public void setTileTier(String tier) {
-        prefs.edit().putString(KEY_TILE_TIER, tier).apply();
-    }
-
     // ── Buildings overlay ─────────────────────────────────────────────────────
 
     /** Absolute path to the downloaded buildings overlay .pmtiles file, or "" if not present. */
@@ -234,76 +221,13 @@ public class AppPrefs {
 
     private static final String KEY_NATIONAL_ZOOM = "national_zoom";
 
-    /** 12, 13 or 14 — zoom level of the downloaded national pack; 0 = not downloaded. */
+    /** 12 or 13 — zoom level of the downloaded national pack; 0 = not downloaded. */
     public int getNationalZoom() {
         return prefs.getInt(KEY_NATIONAL_ZOOM, 0);
     }
 
     public void setNationalZoom(int zoom) {
         prefs.edit().putInt(KEY_NATIONAL_ZOOM, zoom).apply();
-    }
-
-    // ── Province packs (multi-pack) ───────────────────────────────────────────
-
-    private static final String KEY_PROVINCE_PACK_KEYS = "province_pack_keys";
-
-    /**
-     * Returns the set of downloaded province pack keys, e.g. {"antananarivo-z13", "toliara-z14"}.
-     */
-    public java.util.Set<String> getProvincePackKeys() {
-        return new java.util.HashSet<>(
-                prefs.getStringSet(KEY_PROVINCE_PACK_KEYS, new java.util.HashSet<>()));
-    }
-
-    public void addProvincePack(String packKey, String path, String version) {
-        java.util.Set<String> keys = getProvincePackKeys();
-        keys.add(packKey);
-        prefs.edit()
-                .putStringSet(KEY_PROVINCE_PACK_KEYS, keys)
-                .putString("pack_path_" + packKey, path)
-                .putString("pack_ver_" + packKey, version)
-                .apply();
-    }
-
-    public void removeProvincePack(String packKey) {
-        java.util.Set<String> keys = getProvincePackKeys();
-        keys.remove(packKey);
-        prefs.edit()
-                .putStringSet(KEY_PROVINCE_PACK_KEYS, keys)
-                .remove("pack_path_" + packKey)
-                .remove("pack_ver_" + packKey)
-                .remove("pack_bld_" + packKey)
-                .remove("pack_poi_" + packKey)
-                .apply();
-    }
-
-    public String getProvincePackPath(String packKey) {
-        return prefs.getString("pack_path_" + packKey, "");
-    }
-
-    public String getProvincePackVersion(String packKey) {
-        return prefs.getString("pack_ver_" + packKey, "");
-    }
-
-    public boolean hasProvincePack(String packKey) {
-        String path = getProvincePackPath(packKey);
-        return !path.isEmpty() && new java.io.File(path).exists();
-    }
-
-    public String getProvinceBuildingsPath(String packKey) {
-        return prefs.getString("pack_bld_" + packKey, "");
-    }
-
-    public void setProvinceBuildingsPath(String packKey, String path) {
-        prefs.edit().putString("pack_bld_" + packKey, path).apply();
-    }
-
-    public String getProvincePoiPath(String packKey) {
-        return prefs.getString("pack_poi_" + packKey, "");
-    }
-
-    public void setProvincePoiPath(String packKey, String path) {
-        prefs.edit().putString("pack_poi_" + packKey, path).apply();
     }
 
     // ── Pause state — national ────────────────────────────────────────────────
@@ -324,25 +248,5 @@ public class AppPrefs {
 
     public int getNationalPausedZoom() {
         return prefs.getInt(KEY_NATIONAL_PAUSED_ZOOM, 0);
-    }
-
-    // ── Pause state — province ────────────────────────────────────────────────
-
-    private static final String KEY_PROVINCE_PAUSED     = "province_paused";
-    private static final String KEY_PROVINCE_PAUSED_KEY = "province_paused_key";
-
-    public boolean isProvincePaused() {
-        return prefs.getBoolean(KEY_PROVINCE_PAUSED, false);
-    }
-
-    public void setProvincePaused(boolean paused, String packKey) {
-        prefs.edit()
-                .putBoolean(KEY_PROVINCE_PAUSED, paused)
-                .putString(KEY_PROVINCE_PAUSED_KEY, packKey != null ? packKey : "")
-                .apply();
-    }
-
-    public String getProvincePausedKey() {
-        return prefs.getString(KEY_PROVINCE_PAUSED_KEY, "");
     }
 }

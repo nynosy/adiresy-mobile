@@ -92,35 +92,12 @@
     <string name="offline_national_done">Nasionaly %1$s voaraka · v%2$s · %3$s MB</string><!-- [MG-REVIEW] -->
     <string name="offline_title_national">Angon-tsarintany nasionaly</string><!-- [MG-REVIEW] -->
     <string name="offline_desc_national">Mandrakotra an\'i Madagasikara manontolo amin\'ny haavon\'antsipiriany voafantina. Alao indray mandeha ary ampiasao tsy mila anelanelana na aiza na aiza any amin\'ny firenena.</string><!-- [MG-REVIEW] -->
-    <string name="offline_title_province">Fonosana antsipiriany isam-paritra</string><!-- [MG-REVIEW] -->
-    <string name="offline_desc_province">Ampio antsipiriany ho an\'ny faritra manokana — mahasoa ho an\'ny faritra ivezivezenao matetika. Ny haavon\'ny zoom ambony noho ny fonosana nasionalinao ihany no misy.</string><!-- [MG-REVIEW] -->
-    <string name="offline_title_downloaded_packs">Fonosana faritra voaraka</string><!-- [MG-REVIEW] -->
-    <string name="offline_no_packs">Tsy misy fonosana faritra voaraka</string><!-- [MG-REVIEW] -->
-    <string name="offline_province_n14_note">Efa mirakitra ny haavon\'antsipiriany avo indrindra ny Z14 nasionaly. Tsy azo ampiana fonosana faritra ny fakana nasionaly Z14.</string><!-- [MG-REVIEW] -->
     <string name="offline_zoom_z12_title">Topi-maso faritra · ~190 MB</string><!-- [MG-REVIEW] -->
-    <string name="offline_zoom_z12_label">Topi-maso faritra</string><!-- [MG-REVIEW] -->
     <string name="offline_zoom_z12_national_desc">Sisin-tanin\'ny distrika, lalana lehibe ary renirano</string><!-- [MG-REVIEW] -->
     <string name="offline_zoom_z13_title">Haavo tanàna · ~410 MB</string><!-- [MG-REVIEW] -->
-    <string name="offline_zoom_z13_label">Haavo tanàna</string><!-- [MG-REVIEW] -->
     <string name="offline_zoom_z13_national_desc">Arabe, anaran\'ny fokontany ary lalana eo an-toerana</string><!-- [MG-REVIEW] -->
-    <string name="offline_zoom_z14_title">Antsipiriany feno · ~950 MB</string><!-- [MG-REVIEW] -->
-    <string name="offline_zoom_z14_label">Antsipiriany feno</string><!-- [MG-REVIEW] -->
-    <string name="offline_zoom_z14_national_desc">Trano tsirairay ary firafitry ny arabe marina</string><!-- [MG-REVIEW] -->
-    <string name="offline_pack_downloaded">Efa voaraka · v%2$s · %3$s MB</string><!-- [MG-REVIEW] -->
     <string name="offline_replace_national_title">Soloy ny fonosana nasionaly?</string><!-- [MG-REVIEW] -->
     <string name="offline_replace_national_message">Efa manana fonosana nasionaly %1$s ianao. Ny fakana ny %2$s dia hamafa izany ary hampiasa toerana fitahirizana bebe kokoa. Hanohy ve?</string><!-- [MG-REVIEW] -->
-    <string name="download_scope_national">Nasionaly (firenena manontolo)</string><!-- [MG-REVIEW] -->
-    <string name="download_scope_province">Araka ny faritany</string><!-- [MG-REVIEW] -->
-    <string name="label_national_tiles">Fijery nasionaly — Z12 (~43 Mo)</string><!-- [MG-REVIEW] -->
-    <string name="label_regional_tiles">Antsipiriany faritany — Z14 (sary-dalana)</string><!-- [MG-REVIEW] -->
-    <string name="label_choose_province">Faritany</string><!-- [MG-REVIEW] -->
-    <string name="province_antananarivo">Antananarivo</string>
-    <string name="province_fianarantsoa">Fianarantsoa</string>
-    <string name="province_toamasina">Toamasina</string>
-    <string name="province_mahajanga">Mahajanga</string>
-    <string name="province_toliara">Toliara</string>
-    <string name="province_antsiranana">Antsiranana</string>
-    <string name="download_size_mb">%s MB</string>
     <string name="toggle_mobile_data">Mampiasa angon-databà finday</string><!-- [MG-REVIEW] -->
     <string name="warning_mobile_data_title">Mampiasa angon-databà finday?</string><!-- [MG-REVIEW] -->
     <string name="warning_mobile_data_message">Ny falaiana angon-tsarintany amin\'ny databà finday dia mety hampiasa angona be ary mety hiteraka saran\'asa fanampiny.</string><!-- [MG-REVIEW] -->
@@ -133,8 +110,6 @@
     <string name="btn_pause">Ampiato</string><!-- [MG-REVIEW] -->
     <string name="btn_resume">Tohizo</string><!-- [MG-REVIEW] -->
     <string name="offline_status_paused">Miato</string><!-- [MG-REVIEW] -->
-    <string name="offline_replace_province_title">Soloy ny fonosana faritra?</string><!-- [MG-REVIEW] -->
-    <string name="offline_replace_province_message">Efa manana fonosana %1$s ianao. Ny fakana ny %2$s dia hamafa izany ary hampiasa toerana fitahirizana bebe kokoa. Hanohy ve?</string><!-- [MG-REVIEW] -->
 
     <!-- About screen -->
     <string name="tab_about">Momba</string><!-- [MG-REVIEW] -->
@@ -151,7 +126,7 @@
     <string name="link_repo_tiles">Angon-tsarintany — github.com/nynosy/adiresy-tiles</string><!-- [MG-REVIEW] -->
 
     <string name="about_section_what">Inona no Adiresy?</string><!-- [MG-REVIEW] -->
-    <string name="about_what_body">Ny Adiresy dia rafitra fanondroana adiresy tsy ofisialy, naorin\'ny vondrom-piarahamonina, ho an\'i Madagasikara — tsy serivisy ara-panjakana izy io ary tsy manan-kery ara-dalàna ny kaody. Ny trano rehetra eto amin\'ny firenena — na trano an-tanàn-dehibe na trano ambanivohitra — dia afaka mahazo kaody tokana sy maharitra izay ahafahana mahita azy na dia tsy misy anaran-dalana na kaody paositra aza.\n\nAzo ampiasaina ho an\'ny fanaterana entana, ny serivisy vonjy taitra, ny taratasy ofisialy, ary ny fandrindrana fampandrosoana manerana ny faritra enina any Madagasikara ity rafitra ity.</string><!-- [MG-REVIEW] -->
+    <string name="about_what_body">Ny Adiresy dia rafitra fanondroana adiresy tsy ofisialy, naorin\'ny vondrom-piarahamonina, ho an\'i Madagasikara — tsy serivisy ara-panjakana izy io ary tsy manan-kery ara-dalàna ny kaody. Ny trano rehetra eto amin\'ny firenena — na trano an-tanàn-dehibe na trano ambanivohitra — dia afaka mahazo kaody tokana sy maharitra izay ahafahana mahita azy na dia tsy misy anaran-dalana na kaody paositra aza.\n\nAzo ampiasaina ho an\'ny fanaterana entana, ny serivisy vonjy taitra, ny taratasy ofisialy, ary ny fandrindrana fampandrosoana manerana ny faritra 24 any Madagasikara ity rafitra ity.</string><!-- [MG-REVIEW] -->
     <string name="about_section_codes">Ahoana no fiasan\'ny kaody</string><!-- [MG-REVIEW] -->
     <string name="about_codes_body">Ny kaody tsirairay dia manaraka ny filaharan\'ny fitantanana ao Madagasikara: Faritra › Distrika › Kaominina › Fokontany › Trano. Ohatra, ny kaody 203-AMBS-01234 dia mamaritra tokana trano iray ao anatin\'ny fokontaniny.\n\nMaharitra ny kaody — mitazona ny kaodiny ny trano na dia miova tompony na fampiasana aza.</string><!-- [MG-REVIEW] -->
     <string name="about_section_independent">Fampiharana mahaleo tena</string><!-- [MG-REVIEW] -->
