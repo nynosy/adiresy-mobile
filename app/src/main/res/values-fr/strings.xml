@@ -20,11 +20,12 @@
     <string name="nearby_empty_offline">Connectez-vous pour trouver les bâtiments à proximité</string>
 
     <!-- Code card / code detail -->
+    <string name="label_code_headline">Votre code d\'adresse</string>
+    <string name="btn_full_details">Détails complets de l\'adresse ›</string>
     <string name="btn_share">Partager</string>
     <string name="btn_copy">Copier</string>
     <string name="btn_navigate">Itinéraire</string>
     <string name="btn_open_maps">Ouvrir dans Maps</string>
-    <string name="navigate_coming_soon">Disponible dans une prochaine mise à jour</string>
     <string name="navigate_external_hint">Ouvre une application de navigation externe</string>
     <string name="copied_to_clipboard">Code copié</string>
     <string name="tap_no_address">Aucune adresse trouvée pour ce bâtiment</string>
@@ -43,6 +44,11 @@
     <string name="label_district">District</string>
     <string name="label_commune">Commune</string>
     <string name="label_fokontany">Fokontany</string>
+
+    <!-- Code detail — admin hierarchy card and GPS coordinates card -->
+    <string name="label_gps_coordinates">Coordonnées GPS</string>
+    <string name="label_latitude">Latitude</string>
+    <string name="label_longitude">Longitude</string>
 
     <!-- Map / Explore -->
     <string name="explore_empty">Rien trouvé ici</string>
@@ -207,6 +213,7 @@
     <string name="cd_share_code">Partager ce code d\'adresse</string>
     <string name="cd_copy_code">Copier le code d\'adresse dans le presse-papiers</string>
     <string name="cd_navigate">Itinéraire vers cette adresse</string>
+    <string name="cd_qr_code">Code QR menant à cette adresse</string>
     <string name="cd_explore">Explorer les zones administratives</string>
     <string name="cd_back_level">Revenir au niveau administratif précédent</string>
     <string name="cd_clear_search_history">Effacer tout l\'historique de recherche</string>

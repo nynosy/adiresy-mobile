@@ -23,11 +23,12 @@
     <string name="nearby_empty_offline">Mampifandray mba hahita trano akaikin\'ny toerana</string><!-- [MG-REVIEW] -->
 
     <!-- Code card / code detail -->
+    <string name="label_code_headline">Ny kaody adiresinao</string><!-- [MG-REVIEW] -->
+    <string name="btn_full_details">Antsipiriany feno momba ny adiresy ›</string><!-- [MG-REVIEW] -->
     <string name="btn_share">Zarao</string><!-- [MG-REVIEW] -->
     <string name="btn_copy">Adikao</string><!-- [MG-REVIEW] -->
     <string name="btn_navigate">Tariho</string><!-- [MG-REVIEW] -->
     <string name="btn_open_maps">Sokafy ao amin\'ny Maps</string><!-- [MG-REVIEW] -->
-    <string name="navigate_coming_soon">Hisy amin\'ny fanavaozana manaraka</string><!-- [MG-REVIEW] -->
     <string name="navigate_external_hint">Manokatra fampiharana sarintany ivelany</string><!-- [MG-REVIEW] -->
     <string name="copied_to_clipboard">Voadika ny kaody</string><!-- [MG-REVIEW] -->
     <string name="tap_no_address">Tsy misy adiresy hita ho an\'ity trano ity</string><!-- [MG-REVIEW] -->
@@ -46,6 +47,11 @@
     <string name="label_district">Distrika</string>
     <string name="label_commune">Kaominina</string>
     <string name="label_fokontany">Fokontany</string>
+
+    <!-- Code detail — admin hierarchy card and GPS coordinates card -->
+    <string name="label_gps_coordinates">Toerana GPS</string><!-- [MG-REVIEW] -->
+    <string name="label_latitude">Latitude</string><!-- [MG-REVIEW] -->
+    <string name="label_longitude">Longitude</string><!-- [MG-REVIEW] -->
 
     <!-- Map / Explore -->
     <string name="explore_empty">Tsy misy hita eto</string><!-- [MG-REVIEW] -->
@@ -209,6 +215,7 @@
     <string name="cd_share_code">Zarao ity kaody adiresy ity</string><!-- [MG-REVIEW] -->
     <string name="cd_copy_code">Adikao ny kaody adiresy any amin\'ny clipboard</string><!-- [MG-REVIEW] -->
     <string name="cd_navigate">Tariho mankany amin\'ity adiresy ity</string><!-- [MG-REVIEW] -->
+    <string name="cd_qr_code">Kaody QR mitondra any amin\'ity adiresy ity</string><!-- [MG-REVIEW] -->
     <string name="cd_explore">Hahalala ny faritra fitantanana</string><!-- [MG-REVIEW] -->
     <string name="cd_back_level">Hiverina any amin\'ny ambaratonga fitantanana teo aloha</string><!-- [MG-REVIEW] -->
     <string name="cd_clear_search_history">Fafao ny tantaran\'ny fikarohana rehetra</string><!-- [MG-REVIEW] -->

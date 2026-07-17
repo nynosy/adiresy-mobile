@@ -114,6 +114,9 @@ dependencies {
     implementation(libs.work.runtime)
     implementation(libs.security.crypto)
 
+    // QR code generation (address-link QR on the code card / code detail screens)
+    implementation(libs.zxing.core)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

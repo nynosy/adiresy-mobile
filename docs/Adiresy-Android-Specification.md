@@ -1,14 +1,14 @@
 # Adiresy Android — Technical Specification
 
-**Document status:** Draft v0.1 · for review
-**Date:** 4 July 2026
+**Document status:** Draft v0.2 · for review
+**Date:** 17 July 2026
 **Author:** (to be assigned)
 **Language of this document:** English
 **Product languages:** English (en), French (fr), Malagasy (mg)
 **Implementation language:** Java (Android)
 **Related services:** Adiresy public REST API (`https://adiresy.mg`)
 
-> Adiresy is an *unofficial* addressing service: each building in Madagascar receives a short, permanent code anchored to GPS coordinates (e.g. `101-6EAR-50418`). This document specifies a native Android client that works on low-end phones and, progressively, fully offline — from map display through routing, turn-by-turn navigation, and trilingual voice guidance.
+> Adiresy is an *unofficial* addressing service: each building in Madagascar receives a short, permanent code anchored to GPS coordinates (e.g. `101-6EAR-50418`). This document specifies a native Android client that works on low-end phones and fully offline — map display, code resolution, search, and favourites. There is no in-app routing or navigation; the "Navigate" action hands off to an external maps app.
 
 ---
 
@@ -18,7 +18,7 @@ The app lets a person in Madagascar:
 
 1. Find the Adiresy code for a building and share it as a link.
 2. Resolve a shared code and see the building on a map.
-3. Navigate to that building — eventually with offline routing, turn-by-turn UI, and spoken guidance in their own language.
+3. Hand off to an external maps app to get directions to that building.
 
 Design north-star: **a person on a 2 GB Transsion or Xiaomi phone, on 2G or with no signal at all, on a low battery, who is more comfortable in Malagasy than French, must be able to find and reach an address.** Every decision in this document is measured against that user.
 
@@ -28,7 +28,7 @@ Non-goals: account systems, social features, server-side user data, ad monetisat
 
 ## 2. Target context (Madagascar)
 
-These constraints are first-class requirements, not caveats. Sources are listed in §22.
+These constraints are first-class requirements, not caveats. Sources are listed in §21.
 
 **Connectivity.** Around 20% of the population used the internet at the start of 2025; roughly 80% were offline. Mobile data is expensive and rising (a basic monthly telecom basket averaged ~US$8 in 2025, up ~55% year on year), and 4G coverage is roughly a third of the country, concentrated in towns. **Implication:** the app must be usable with the radio off, must never require a connection for core tasks, and must treat every byte of mobile data as costly.
 
@@ -42,18 +42,11 @@ These constraints are first-class requirements, not caveats. Sources are listed 
 
 ---
 
-## 3. Scope and phasing
+## 3. Scope
 
-| Phase | Theme | Ships |
-|-------|-------|-------|
-| **1** | Core offline addressing | Offline map, locate-me, nearby buildings, code resolve, share, admin exploration, search, trilingual UI, settings, offline data manager (national Z12 overview / Z13 detailed — user picks one), favourites (named bookmark lists with user name, notes, and emoji symbol) |
-| **2** | Offline routing | On-device A→B route calculation from user location to an Adiresy code; route drawn on map; textual step list |
-| **3** | Turn-by-turn UI | Guided navigation view: maneuver banner, distance-to-next, off-route re-routing, arrival — built with default Android UI |
-| **4** | Voice guidance | Spoken turn-by-turn in English, French, and Malagasy, fully offline. Tech stack TBD. |
+Core offline addressing: offline map, locate-me, nearby buildings, code resolve, share, admin exploration, search, trilingual UI, settings, offline data manager (national Z12 overview / Z13 detailed — user picks one), favourites (named bookmark lists with user name, notes, and emoji symbol).
 
-Phase 3 delivers visual navigation only. Voice guidance is a separate Phase 4, allowing the navigation UI to stabilise before adding audio. The voice tech stack is open — see §14.4.
-
-Each phase is independently shippable and leaves the app in a coherent, releasable state.
+There is no in-app routing, turn-by-turn navigation, or voice guidance, and none is planned. "Navigate" always hands off to an external maps app via intent.
 
 ---
 
@@ -61,17 +54,17 @@ Each phase is independently shippable and leaves the app in a coherent, releasab
 
 | # | Requirement | Target |
 |---|-------------|--------|
-| NFR-1 | Core tasks work fully offline | 100% of Phase 1 + 2 features function with no network |
+| NFR-1 | Core tasks work fully offline | 100% of the app's offline-map, browse, and favourites features function with no network |
 | NFR-2 | Cold start on low-end device | ≤ 2.5 s to interactive on a 2 GB Android Go phone |
 | NFR-3 | Map pan/zoom | Visually smooth (≥ 30 fps) on 2 GB devices; no ANRs |
-| NFR-4 | Install size (APK/AAB delivered) | ≤ 25 MB before map/graph data |
+| NFR-4 | Install size (APK delivered) | ≤ 25 MB before map data |
 | NFR-5 | First-run data download | Over Wi-Fi by default; resumable; national only, user picks Z12 or Z13 |
 | NFR-6 | Peak RAM | Comfortable within a 2 GB device; functional on 1 GB |
 | NFR-7 | Mobile-data use in normal operation | Zero required; any network use is explicit and opt-in |
-| NFR-8 | Battery | No background location or wake-locks outside active navigation |
+| NFR-8 | Battery | No background location or wake-locks; all location use is foreground and on-demand |
 | NFR-9 | Accessibility | Large touch targets, high-contrast text, TalkBack labels, scalable fonts |
 | NFR-10 | Languages | Full parity across en / fr / mg for all user-facing strings |
-| NFR-11 | Privacy | No account, no analytics by default; coordinates are sent to the Adiresy API only for explicit, user-initiated lookups (locate-me, building tap, search, routing fallback), never tracked or persisted server-side by the app |
+| NFR-11 | Privacy | No account, no analytics by default; coordinates are sent to the Adiresy API only for explicit, user-initiated lookups (locate-me, building tap, search), never tracked or persisted server-side by the app |
 
 ---
 
@@ -81,13 +74,13 @@ Each phase is independently shippable and leaves the app in a coherent, releasab
 |------|-------|-----------|
 | Language | **Java 21** | Entire codebase and samples in Java; Java 21 is the current LTS and is fully supported by AGP 9.x + D8/R8 desugaring down to `minSdk 24` |
 | Core library desugaring | **Enabled** (`desugar_jdk_libs 2.1.x`) | Backports Java 9–21 standard-library APIs (streams, new collection methods, etc.) to API 24+; small runtime cost (~few hundred KB) |
-| `minSdkVersion` | **24 (Android 7.0)** | Inclusive floor that still captures older budget devices while remaining supported by MapLibre and GraphHopper. Can drop to 21 if field data shows a meaningful older tail. |
+| `minSdkVersion` | **24 (Android 7.0)** | Inclusive floor that still captures older budget devices while remaining supported by MapLibre. Can drop to 21 if field data shows a meaningful older tail. |
 | `targetSdkVersion` | **API 36.1 (Android 16.1)** | Current stable; required by Play; keep current as new versions release |
 | `compileSdkVersion` | **API 36.1** (matches target) | AGP 9.x DSL: `release(36) { minorApiLevel = 1 }` |
 | Architecture ABIs | `armeabi-v7a` + `arm64-v8a` | Covers budget (32-bit) and modern devices; split per-ABI in the AAB to shrink native payload |
 | UI toolkit | Android Views + **Material Components for Android** (default widgets) | Per requirement to use default Android UI elements |
 | Min screen width | 320 dp | Small budget displays |
-| Orientation | Portrait primary; navigation view supports landscape |
+| Orientation | Portrait primary |
 
 No Jetpack Compose (keeps the app light and matches the "default Android UI" and Java requirements; Compose adds runtime weight undesirable on Android Go).
 
@@ -97,52 +90,46 @@ No Jetpack Compose (keeps the app light and matches the "default Android UI" and
 
 Single-activity is avoided in favour of a small set of activities plus fragments, to keep memory graphs simple on low-end hardware. Pattern: **MVVM with AndroidX** (`ViewModel` + `LiveData`), all in Java.
 
+Package layout:
+
 ```
 app/
 ├─ ui/            Activities, Fragments, adapters (Material widgets)
-│   ├─ home/      Locate, nearby buildings, code card, share
-│   ├─ map/       MapLibre MapView host + explore
-│   ├─ search/    Unified search
-│   ├─ code/      Resolved-code detail screen
+│   ├─ mainmap/   MainMapFragment — full-screen map host (Home + Map + Search combined)
+│   ├─ home/      HomeViewModel, CodeCardBottomSheet, NearbyAdapter, location rationale
+│   ├─ map/       MapFragment, MapViewModel, ExploreBottomSheet, AdminUnitAdapter
+│   ├─ search/    SearchFragment, SearchViewModel, SearchController, SearchAdapter, HistoryAdapter
+│   ├─ code/      CodeDetailActivity, CodeDetailViewModel — resolved-code detail screen
 │   ├─ saved/     SavedFragment, BookmarkListDetailFragment, SavedViewModel, BookmarkAdapter
-│   ├─ nav/       Phase 3: turn-by-turn UI
-│   └─ settings/  Language, theme, offline data, about/attribution
-├─ map/           MapLibre setup, style loading, offline tile source, markers
+│   ├─ offline/   OfflineDataFragment, OfflineDataViewModel
+│   ├─ about/     AboutFragment — version + project links
+│   └─ settings/  Language, theme, offline data, export/import, about/privacy dialogs
+├─ map/           MapController, StyleLoader, PoiIconFactory, BookmarkPinController, AttributionBottomSheet
 ├─ data/
 │   ├─ api/       AdiresyApi (Retrofit) + AdiresyRepository + adapter/DTOs
 │   ├─ cache/     Room DB: resolved codes, admin units, search history, bookmark lists, bookmarks
-│   └─ prefs/     App settings (language, theme, downloaded map data)
-├─ routing/       Phase 2: GraphHopper wrapper (RouteEngine interface)
-├─ nav/           Phase 3: guidance state machine, off-route detection
-├─ voice/         Phase 3b: VoiceGuide (TTS + Malagasy audio clips)
+│   └─ prefs/     App settings (language, theme, downloaded map data paths/versions)
 ├─ i18n/          Locale management, string resolution helpers
-└─ download/      WorkManager jobs for map/graph data (resumable)
+└─ download/      WorkManager jobs for map/buildings/POI data (resumable)
 ```
 
-Key interfaces (kept abstract so implementations can be swapped):
-
-- `AddressResolver` — code → coordinates + admin hierarchy; reverse (coords → nearby buildings); search. Backed **online** by the Adiresy API and **offline** by the Room cache and any bundled admin data.
-- `RouteEngine` (Phase 2) — `route(from, to) → Route`. Backed by GraphHopper offline; could later wrap Valhalla without touching callers.
-- `MapController` — thin wrapper over MapLibre for markers, camera, route layers.
-- `VoiceGuide` (Phase 3b) — `speak(Maneuver, Locale)`.
+`MapController` is a thin wrapper over MapLibre for markers and camera control. There is no `routing/`, `nav/`, or `voice/` package, and none is planned — the app does not do in-app routing, turn-by-turn navigation, or voice guidance.
 
 ---
 
 ## 7. Technology stack
 
-| Concern | Choice | Notes |
-|---------|--------|-------|
-| Map rendering | **MapLibre Native Android** (`org.maplibre.gl:android-sdk`, 11.11.x) | Free, open-source, GPU vector tiles, no API key, no billing. PMTiles supported since 11.7.0. Verify latest version at build time. |
-| Offline tiles | **PMTiles** (single file) or MBTiles | Bundled/downloaded; loaded via `pmtiles://` + `file://`. No MapTiler dependency in-app. |
-| Tile generation | **Planetiler** (or Tilemaker) | One-time build step, off-device |
-| OSM data source | **Geofabrik** Madagascar extract (`.osm.pbf`) | National extract is small |
-| HTTP / API | **Retrofit + OkHttp** | OkHttp disk cache; short timeouts; offline-first |
-| Local cache | **Room** (SQLite) | Resolved codes, admin units, search history |
-| Background downloads | **WorkManager** | Resumable, Wi-Fi-constrained, survives power loss |
-| Offline routing (Ph.2) | **GraphHopper** (Java, Apache-2.0) | Runs on-device; prebuilt graph shipped/downloaded |
-| Navigation UI (Ph.3a) | **Custom Java UI** over GraphHopper instructions + MapLibre | Chosen over Compose-based nav SDKs to satisfy Java + default-UI constraints and keep weight down |
-| Voice (Ph.3b) | Android **TextToSpeech** (en/fr) + **bundled Malagasy audio clips** | See §14.3b — Malagasy is not supported by mainstream TTS |
-| DI | Manual / lightweight (no Dagger/Hilt) | Keeps build and runtime lean |
+| Concern | Choice | Status | Notes |
+|---------|--------|--------|-------|
+| Map rendering | **MapLibre Native Android** (`org.maplibre.gl:android-sdk`, 11.11.0) | Implemented | Free, open-source, GPU vector tiles, no API key, no billing. |
+| Offline tiles | **PMTiles** (single file) | Implemented | Downloaded; loaded via `pmtiles://` + `file://`. No MapTiler dependency in-app. |
+| Tile generation | **Planetiler** (or Tilemaker) | Implemented (off-device) | One-time build step, off-device; not part of the app codebase. |
+| OSM data source | **Geofabrik** Madagascar extract (`.osm.pbf`) | Implemented (off-device) | National extract is small |
+| HTTP / API | **Retrofit + OkHttp** | Implemented | OkHttp disk cache; short timeouts; offline-first |
+| Local cache | **Room** (SQLite) | Implemented | Resolved codes, admin units, search history, bookmarks |
+| Background downloads | **WorkManager** | Implemented | Resumable, Wi-Fi-constrained, survives power loss |
+| QR code generation | **com.google.zxing:core** (Java, Apache-2.0) | Implemented | Pure encoder, no camera/scanning deps; `QrCodeGenerator` renders a black-on-white `Bitmap` from the address link, independent of app theme |
+| DI | Manual / lightweight (no Dagger/Hilt) | Implemented | Keeps build and runtime lean |
 
 Everything above is Java-compatible and free of per-request billing.
 
@@ -150,26 +137,19 @@ Everything above is Java-compatible and free of per-request billing.
 
 ## 8. Data pipeline (off-device build)
 
-Three artifact types are produced from the tile pipeline, each downloadable independently:
+Four artifact types are produced from the tile pipeline, each downloadable independently:
 
-**A. Base map tiles** — vector tiles for roads, landcover, waterways, place names (OSM via Planetiler). OSM's `building` source layer is intentionally excluded — buildings come from a higher-quality overlay (see C).
+**A. Base map tiles** — vector tiles for roads, landcover, waterways, place names (OSM via Planetiler). OSM's `building` source layer is intentionally excluded — buildings come from a higher-quality overlay (see B).
 
-**B. Routing graph (Phase 2)** — GraphHopper's preprocessed graph folder.
+**B. Buildings overlay** — Google Open Buildings v3 + Microsoft GlobalMLBuildingFootprints + OSM, merged by VIDA (ODbL). A separate `.pmtiles` file per tier, rendered as a second MapLibre vector source. Roughly **triples** download size at each tier. This is the app's main feature, not an optional extra — downloaded automatically as part of the same chained download as the base map (map → buildings → POI, one sequential `WorkContinuation`, no separate opt-in step).
 
-```bash
-# Build once with a GraphHopper config tuned for car+foot profiles.
-java -Ddw.graphhopper.datareader.file=madagascar-latest.osm.pbf \
-  -jar graphhopper-web.jar import config-mg.yml
-# Ship the resulting graph-cache/ directory (zipped) as the routing asset.
-```
+**C. Boundaries overlay** — BNGRC/OCHA administrative boundaries (CC BY-IGO) for all four Malagasy admin levels (region / district / commune / fokontany). A single `boundaries.pmtiles` file (~13 MB) covering the whole country; not split by tier. Rendered as a MapLibre vector source with zoom-stop filters per `admLevel`.
 
-**C. Buildings overlay** — Google Open Buildings v3 + Microsoft GlobalMLBuildingFootprints + OSM, merged by VIDA (ODbL). A separate `.pmtiles` file per tier, rendered as a second MapLibre vector source. Roughly **triples** download size at each tier. This is the app's main feature, not an optional extra — downloaded automatically as part of the same chained download as the base map (map → buildings → POI, one sequential `WorkContinuation`, no separate opt-in step).
-
-**D. Boundaries overlay** — BNGRC/OCHA administrative boundaries (CC BY-IGO) for all four Malagasy admin levels (region / district / commune / fokontany). A single `boundaries.pmtiles` file (~13 MB) covering the whole country; not split by tier. Rendered as a third MapLibre vector source with zoom-stop filters per `admLevel`.
+**D. POI overlay** — a dedicated low-zoom points-of-interest layer (healthcare, education, food & drink, finance, lodging, shopping, fuel, and a general "other" category), rendered as map symbols. A separate `.pmtiles` file per tier, downloaded as the third and final stage of the same chained download as the base map and buildings (map → buildings → POI). When this file isn't present, POI symbols fall back to the base map's own `poi` source layer, filtered to major places only (rank ≤ 3) and gated to zoom ≥ 14 by the upstream tileset.
 
 **Base map style.** Two variants: `style-light.json` and `style-dark.json`. Glyphs currently fetched from `https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf` (MapLibre public CDN, cached by MapLibre after first fetch). Long-term target: self-host glyphs in `assets/` for guaranteed offline rendering.
 
-**Manifest schema.** `manifest.json` is nested by quality tier. `files.national` is an object keyed by tier — national only, no per-region split (see `docs/National-Only-Simplification-Implementation-Spec.md`):
+**Manifest schema.** `manifest.json` is nested by quality tier. `files`, `buildings`, and `poi` each hold a `national` object keyed by tier ("z12", "z13") — national only, no per-region split:
 
 ```json
 {
@@ -182,11 +162,14 @@ java -Ddw.graphhopper.datareader.file=madagascar-latest.osm.pbf \
   "buildings": {
     "national": { "z12": {…}, "z13": {…} }
   },
+  "poi": {
+    "national": { "z12": {…}, "z13": {…} }
+  },
   "boundaries": { "filename": "boundaries.pmtiles", "url": "…", "size_bytes": 13278117, "sha256": "…" }
 }
 ```
 
-`buildings` and `boundaries` keys may be absent from a given release — treat as fully optional, not a manifest error.
+`buildings`, `poi`, and `boundaries` keys may be absent from a given release — treat as fully optional, not a manifest error.
 
 **Hosting & updates.** Artifacts are published as GitHub Release assets in `adiresy-tiles`. The app fetches `manifest.json` from the fixed `releases/latest/download/` URL. `Range`-header support on GitHub's CDN makes resumable downloads work out of the box.
 
@@ -195,16 +178,19 @@ java -Ddw.graphhopper.datareader.file=madagascar-latest.osm.pbf \
 - Manifest: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/manifest.json`
 - Base map: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/madagascar-{tier}.pmtiles`
 - Buildings: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/buildings-madagascar-{tier}.pmtiles`
+- POI: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/poi-madagascar-{tier}.pmtiles`
 - Boundaries: `https://github.com/nynosy/adiresy-tiles/releases/latest/download/boundaries.pmtiles`
 
-**Tile quality tiers** (national base map, measured from 2026-07-05 build):
+If the manifest is unreachable, the app falls back to constructing these URLs directly (with no checksum to verify against) rather than blocking the download.
+
+**Tile quality tiers** (national base map):
 
 | Tier key | User-facing label | National size | Detail |
 |---|---|---|---|
 | `z12` | Overview | ~43 MB | Main roads and towns — coarse detail |
 | `z13` | Standard _(recommended)_ | ~102 MB | Block-level detail |
 
-Always show the actual `size_bytes` from the manifest, not a flat estimate. Buildings overlay roughly triples each of these figures. No Z14/Detailed tier and no per-region split — see `docs/National-Only-Simplification-Implementation-Spec.md`.
+Always show the actual `size_bytes` from the manifest, not a flat estimate. Buildings and POI overlays roughly triple these figures combined — the single national download button shows the summed total (map + buildings + POI), not the base-map-only figures above. There is no Z14/finer tier and no per-region split; the whole country downloads as one file per layer per tier.
 
 **Data freshness — three independent cycles:**
 - **Base map** (roads, labels, places): quarterly refresh from live OSM. `manifest.json`'s `osm_extract_date` reflects this.
@@ -213,23 +199,22 @@ Always show the actual `size_bytes` from the manifest, not a flat estimate. Buil
 
 Do not surface a single "data as of" date that implies freshness for all three.
 
-**App-side rendering — three MapLibre sources:**
+**App-side rendering — MapLibre sources:**
 
 | Source id | File | Source layer(s) | Notes |
 |---|---|---|---|
-| `omtiles` | base map `.pmtiles` | `landcover`, `water`, `waterway`, `transportation`, `place`, etc. | Always present when any tile downloaded |
+| `omtiles` | base map `.pmtiles` | `landcover`, `water`, `waterway`, `transportation`, `place`, `poi`, etc. | Always present when any tile downloaded; its own `poi` layer is the POI fallback when the dedicated overlay isn't downloaded |
 | `buildings` | buildings overlay `.pmtiles` | `buildings` | Add only when buildings file is present — downloaded automatically alongside the base map, not opt-in |
+| `poi` | POI overlay `.pmtiles` | `poi` | Add only when present — downloaded automatically as the third chained stage; unfiltered and active from zoom ≥ 12, versus the base map's fallback `poi` layer which only shows top-ranked places from zoom ≥ 14 |
 | `boundaries` | `boundaries.pmtiles` | `boundaries` | Add when present; `admLevel` property: 1=region, 2=district, 3=commune, 4=fokontany, 99=coastline |
 
 Boundaries `admLevel` zoom-stop filter convention: region ≥ Z4, district ≥ Z7, commune ≥ Z10, fokontany ≥ Z12.
-
-**Routing graph (Phase 2)** — unchanged, see above.
 
 ---
 
 ## 9. Adiresy API integration
 
-API spec confirmed against the live OpenAPI schema (`api-1.json`, retrieved July 2026). Base URL: `https://adiresy.mg`. Version prefix: `/api/v1/`.
+Base URL: `https://adiresy.mg`. Version prefix: `/api/v1/`.
 
 ### 9.1 Authentication
 
@@ -241,15 +226,15 @@ Every endpoint requires an API key passed as:
 
 ```
 POST /api/v1/auth/device/register/
-{ "platform": "android", "app_version": "1.0.3" }
+{ "platform": "android", "app_version": "<versionName>" }
 → 201 { "token": "…" }
 ```
 
 Called once, lazily, the first time the app is about to make an authenticated call (never blocking app startup — see NFR-1/NFR-7). The returned `token` is sent as `X-Adiresy-Key` on every subsequent request. **Rate limits:** 10 registrations/hour/IP for this endpoint; 60 requests/hour for anonymous device tokens (vs. 100/hour per key, 200/hour per account for dashboard-issued keys).
 
-> **OQ-7 (API key strategy):** ✓ Resolved — option (c), anonymous per-install tokens via `/auth/device/register/`, replacing the earlier interim bundled developer key (option a). `DeviceAuthManager` owns the flow: `ensureToken()` registers only if no token is stored (called from `AdiresyRepository` before every authenticated network call), and `invalidateToken()` clears the stored token on a `401` so the next call re-registers. No build-time secret, no CI-injected key.
+The API key strategy is anonymous per-install tokens via `/auth/device/register/` — no build-time secret, no CI-injected key. `DeviceAuthManager` owns the flow: `ensureToken()` registers only if no token is stored (called from `AdiresyRepository` before every authenticated network call), and `invalidateToken()` clears the stored token on a `401` so the next call re-registers.
 
-The token is stored in `AppPrefs` (`EncryptedSharedPreferences`, via `androidx.security.crypto`) and injected into every OkHttp request via `ApiKeyInterceptor`, which reads it fresh from prefs on each call.
+The token is stored in `AppPrefs` (`EncryptedSharedPreferences`, via `androidx.security.crypto`, falling back to plain `SharedPreferences` if the encrypted store can't be created) and injected into every OkHttp request via `ApiKeyInterceptor`, which reads it fresh from prefs on each call.
 
 ### 9.2 Endpoints
 
@@ -260,9 +245,7 @@ The token is stored in `AppPrefs` (`EncryptedSharedPreferences`, via `androidx.s
 | `/api/v1/addresses/{canonical_code}/` | GET | path: `canonical_code` | `AddressCode` | Code detail, deep link resolve |
 | `/api/v1/addresses/reverse/` | GET | `?lat=&lng=` | `AddressCode` (best match) | Locate-me (single result) |
 | `/api/v1/addresses/reverse/` | GET | `?lat=&lng=&limit=N&radius=R` | `AddressCode` + `candidates[]` | **Nearby buildings** |
-| `/api/v1/addresses/` | GET | `?fokontany={uuid}` or `?fokontany_pcode={pcode}`, `&page=` | `PaginatedAddressCodeList` | Admin-level listing |
-
-`/api/v1/addresses/` also accepts `building` (uuid), `commune_short`, `district_code`, `is_verified`, `ordering`, and `search` as additional filters.
+| `/api/v1/addresses/` | GET | `?fokontany={uuid}` or `?fokontany_pcode={pcode}` (pass exactly one), `&page=` | `PaginatedAddressCodeList` | Admin-level listing |
 
 **Nearby buildings via `/reverse/` with `limit` + `radius`:**
 
@@ -275,35 +258,33 @@ GET /api/v1/addresses/reverse/?lat=-18.9080&lng=47.5260&limit=20&radius=200
 
 This is the **preferred approach** for nearby buildings — one call, distance-sorted, no fokontany lookup required.
 
-`limit` (default 1, max 20) and `radius` (metres, default 50) are now formally documented in the live OpenAPI schema.
+`limit` defaults to 1 (max 20); `radius` is in metres, default 50.
 
-> **Fixed:** `/api/v1/addresses/` previously accepted only `?fokontany={value}` and silently returned 0 results when given a pcode instead of a uuid (`MG11101001001` worked only by accident, via a different filter path). The API now exposes two distinct params — `fokontany` (uuid) and `fokontany_pcode` (pcode string) — pass exactly one. `AdiresyApi.addressesByFokontany()` takes both parameters accordingly; callers pass whichever identifier they have and leave the other null.
+`/api/v1/addresses/` exposes two distinct params for admin-level listing — `fokontany` (uuid) and `fokontany_pcode` (pcode string); pass exactly one. `AdiresyApi.addressesByFokontany()` takes both parameters accordingly; callers pass whichever identifier they have and leave the other null.
 
 **Geo — admin hierarchy**
 
-All geo list endpoints are paginated (`page` param) and searchable (`search` param). Each level supports three sub-endpoints:
+Geo list endpoints are paginated (`page` param); the regions list and the fokontany list also accept a `search` param. Each level supports a list endpoint and a `/geometry/` sub-endpoint; the app does not call single-item (`{pcode}/` alone) or `/stats/` endpoints for any level:
 
 | Endpoint pattern | Returns |
 |-----------------|---------|
-| `/api/v1/geo/regions/` | Paginated region list (with `bbox`, `centroid`) |
-| `/api/v1/geo/regions/{pcode}/` | Single `Region` |
+| `/api/v1/geo/regions/?search=` | Paginated region list (with `bbox`, `centroid`) |
 | `/api/v1/geo/regions/{pcode}/geometry/` | Simplified GeoJSON boundary |
-| `/api/v1/geo/regions/{pcode}/stats/` | Region statistics |
 | `/api/v1/geo/districts/?region={uuid}` | Districts filtered by region |
 | `/api/v1/geo/districts/{pcode}/geometry/` | District boundary GeoJSON |
 | `/api/v1/geo/communes/?district={uuid}` | Communes filtered by district |
 | `/api/v1/geo/communes/{pcode}/geometry/` | Commune boundary GeoJSON |
 | `/api/v1/geo/fokontany/?commune={uuid}` | Fokontany filtered by commune |
+| `/api/v1/geo/fokontany/?search=` | Fokontany search by name (any commune) |
 | `/api/v1/geo/fokontany/{pcode}/geometry/` | Fokontany boundary GeoJSON |
-| `/api/v1/geo/stats/` | National summary statistics |
 
-> **Implication for IQ-6 (admin bundling):** the `/geometry/` endpoints return boundaries on demand. There is no need to bundle a `regions.geojson` in `assets/` — boundaries are fetched on first explore interaction and cached in Room. The response from list endpoints already includes `bbox` and `centroid`, so the map can zoom to the right area without a geometry call first.
+The `/geometry/` endpoints return boundaries on demand, so there is no need to bundle a `regions.geojson` in `assets/` — boundaries are fetched on first explore interaction and cached in Room. The response from list endpoints already includes `bbox` and `centroid`, so the map can zoom to the right area without a geometry call first.
 
 **Search**
 
 | Endpoint | Params | Returns |
 |----------|--------|---------|
-| `/api/v1/search/autocomplete/` | `?q={min 2 chars}&limit={max 10}` | Categorised results: codes, fokontany, communes, districts, regions, OSM places |
+| `/api/v1/search/autocomplete/` | `?q={min 2 chars}&limit=20` | Categorised results: codes, fokontany, communes, districts, regions, OSM places |
 
 **Health**
 
@@ -318,6 +299,7 @@ Use this for a lightweight online-connectivity probe before any API call.
 **`AddressCode`**
 
 ```
+id               uuid
 canonical_code   string        e.g. "101-6EAR-50418"
 district_code    string        e.g. "101"
 commune_short    string        e.g. "6EAR"
@@ -329,23 +311,26 @@ district_name    string
 region_name      string
 latitude         double?
 longitude        double?
+match            string?       "inside" | "nearest" — present in reverse-geocode candidates
+distance_m       double?       present in reverse-geocode candidates
+candidates       AddressCode[]?  present when `limit` > 1 on /reverse/
 ```
 
-**`Region` / `District` / `Commune` / `Fokontany`** all carry:
+**`Region` / `District` / `Commune` / `Fokontany`** share one client-side shape:
 ```
 id        uuid
 pcode     string    used as the path param in all geo endpoints
 name      string
+parent    uuid?     parent admin unit's id (absent for regions)
 bbox      [lon_min, lat_min, lon_max, lat_max]?
 centroid  [lon, lat]?
 ```
-Plus upward hierarchy fields (e.g. `District` carries `region_name`, `region_pcode`).
 
 ### 9.4 Offline-first behaviour
 
 Every successful API response is written to Room, keyed by `canonical_code` (addresses) or `pcode` (admin units). Cache staleness threshold: 7 days for addresses, 30 days for admin units and boundaries.
 
-Reverse geocode (locate-me → nearest address) is **online-only** — there is no bundled coordinate index. Phase 1 offline degradation: GPS fix centres the map; nearby-buildings list shows an "online-only" empty state with a "Connect to find nearby buildings" prompt. Pin-drop fallback is the right approach and should be implemented in Phase 1 (see IQ-9 in the plan).
+Reverse geocode (locate-me → nearest address) is **online-only** — there is no bundled coordinate index. Phase 1 offline degradation: GPS fix centres the map; nearby-buildings list shows an "online-only" empty state with a "Connect to find nearby buildings" prompt. A pin-drop fallback (letting the user manually mark a location offline) is planned for Phase 1 but not yet implemented.
 
 **Attribution carried in-app** (Attributions screen + map long-press credit): © OpenStreetMap contributors (ODbL), Google Open Buildings, BNGRC / OCHA administrative boundaries, and an "unofficial service — codes have no legal value" disclaimer mirroring the website.
 
@@ -360,13 +345,12 @@ Reverse geocode (locate-me → nearest address) is **online-only** — there is 
 - Language is user-overridable at any time in Settings and applied without reinstall via a per-app locale (AndroidX `AppCompatDelegate` locale APIs).
 - **Malagasy specifics:** Latin script with diacritics (ô, à, é, etc.) — covered by the default Roboto font, so no custom font is needed. Number, distance, and time formatting use locale-aware formatters; distances shown in metric (m / km).
 - Right-to-left: not required (all three languages are LTR), but layouts use `start`/`end` rather than `left`/`right` for cleanliness.
-- Navigation instruction phrases (Phase 3) are templated per language (§14.3) so distances and street names slot into localised sentence frames.
 
 ---
 
 ## 11. Design system
 
-**Principle:** default Android Material components, re-skinned only through the theme's colour tokens to match the Adiresy brand (teal `#0D9488`). No custom-drawn widgets except the map surface and the navigation maneuver banner.
+**Principle:** default Android Material components, re-skinned only through the theme's colour tokens to match the Adiresy brand (teal `#0D9488`). No custom-drawn widgets except the map surface.
 
 ### 11.1 Colour tokens
 
@@ -389,8 +373,6 @@ Brand primary is teal `#0D9488` (the site's `theme-color`; Tailwind *teal-600*).
 | `colorOutline` / divider | `#E2E8F0` | Borders (slate-200) |
 | `colorError` | `#DC2626` | Errors (red-600) |
 | success | `#059669` | Confirmations (emerald-600) |
-| Route line (active) | `#0D9488` | On map |
-| Route line (alternate) | `#94A3B8` | Slate-400 |
 | User location dot | `#2563EB` | Conventional blue for "you" |
 | Adiresy building pin | `#0D9488` | Brand teal |
 
@@ -407,7 +389,6 @@ Brand primary is teal `#0D9488` (the site's `theme-color`; Tailwind *teal-600*).
 | `textSecondary` | `#94A3B8` | Slate-400 |
 | `colorOutline` / divider | `#334155` | Slate-700 |
 | `colorError` | `#F87171` | Red-400 |
-| Route line (active) | `#2DD4BF` | Teal-400 |
 
 Two `style.json` variants (light/dark) keep the *map* legible in each theme and switch with the app theme.
 
@@ -424,14 +405,14 @@ Two `style.json` variants (light/dark) keep the *map* legible in each theme and 
 | Road (trunk/national) | `#f6a623` | `#5a4a2a` |
 | Admin boundary | `#c8a870` | `#4a3a2a` |
 
-**3D buildings**: the buildings overlay (`buildings-fill`) uses `fill-extrusion` at a fixed height of **5 m** (VIDA footprint tiles carry no height data). A directional `light` at azimuth 210° / polar 35° (viewport-anchored) creates shadow faces on the right and bottom sides of each building, matching the website's rendering. Opacity 0.95; visible at zoom ≥ 14 — a *viewport* zoom threshold, not a requirement for Z14 source data: the base map's max tier is Z13 (§13.1), and MapLibre overzooms that Z13 source to satisfy the layer's minzoom once the user zooms the viewport in past 14. Confirmed rendering correctly on-device.
+**3D buildings**: the buildings overlay (`buildings-fill`) uses `fill-extrusion` at a fixed height of **5 m** (VIDA footprint tiles carry no height data). A directional `light` at azimuth 210° / polar 35° (viewport-anchored) creates shadow faces on the right and bottom sides of each building, matching the website's rendering. Opacity 0.95; layer `minzoom` is 14 — a viewport zoom threshold, satisfied by MapLibre overzooming the Z13 base tier (§13.1) once the user zooms in past 14.
 
 ### 11.2 Typography, iconography, spacing
 
 - **Type:** system default (Roboto) via Material text appearances. No bundled fonts.
 - **Icons:** Material Symbols / default vector icons; no licensed third-party icon packs.
 - **Touch targets:** ≥ 48 dp. **Body text:** ≥ 16 sp, respecting the user's font-scale.
-- **Components used:** `BottomNavigationView` (Map · Favourites · Settings — no toolbar), `SearchBar` + `SearchView` (Material3 search overlay), `FloatingActionButton` (locate me; new list in Favourites tab), `BottomSheetBehavior` (nearby results, add-to-favourites picker), `MaterialButton`, `BottomSheetDialogFragment`, `MaterialCardView`, `RecyclerView`, `Snackbar` (with Undo action for bookmark removal), `MaterialAlertDialog` (list create/edit, delete confirmation, emoji picker grid), `CircularProgressIndicator`/`LinearProgressIndicator`, `GridView` (emoji picker).
+- **Components used:** `BottomNavigationView` (Map · Favourites · About · Settings — no toolbar), `SearchBar` + `SearchView` (Material3 search overlay), `FloatingActionButton` (locate me; new list in Favourites tab), `BottomSheetBehavior` (nearby results, add-to-favourites picker), `MaterialButton`, `BottomSheetDialogFragment`, `MaterialCardView`, `RecyclerView`, `Snackbar` (with Undo action for bookmark removal), `MaterialAlertDialog` (list create/edit, delete confirmation, emoji picker grid), `CircularProgressIndicator`/`LinearProgressIndicator`, `GridView` (emoji picker), `ImageView` (QR code, generated via ZXing `QRCodeWriter` → `Bitmap`, shared between the code card popup and Code Detail screen).
 
 ---
 
@@ -439,12 +420,10 @@ Two `style.json` variants (light/dark) keep the *map* legible in each theme and 
 
 | Permission | When | Why |
 |-----------|------|-----|
-| `ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION` | Requested contextually on first "Locate me" / navigation | Centre map, find nearby buildings, navigate |
+| `ACCESS_FINE_LOCATION` / `ACCESS_COARSE_LOCATION` | Requested contextually on first "Locate me" | Centre map, find nearby buildings |
 | `INTERNET` / `ACCESS_NETWORK_STATE` | — | API calls (when online) and data downloads |
-| `FOREGROUND_SERVICE` (+ `FOREGROUND_SERVICE_LOCATION`) | Phase 3 only | Active turn-by-turn navigation |
-| `POST_NOTIFICATIONS` | Phase 3 (API 33+) | Navigation notification |
 
-No background location outside active navigation. No account, no analytics by default. GPS coordinates are used on-device and are sent to the Adiresy API only for explicit, user-initiated online lookups (locate-me, building-tap resolve, nearby buildings, search, routing fallback) — never tracked, batched, or persisted server-side by the app beyond that single request. Not persisted on-device beyond the current session/cache the user controls. The app states this plainly in an in-app privacy note, consistent with Adiresy's privacy-first posture.
+No background location — all location use is foreground and on-demand ("Locate me"). No account, no analytics by default. GPS coordinates are used on-device and are sent to the Adiresy API only for explicit, user-initiated online lookups (locate-me, building-tap resolve, nearby buildings, search) — never tracked, batched, or persisted server-side by the app beyond that single request. Not persisted on-device beyond the current session/cache the user controls. The app states this plainly in an in-app privacy note, consistent with Adiresy's privacy-first posture.
 
 ---
 
@@ -454,9 +433,7 @@ A dedicated **Offline data** screen manages three chained downloadable tile file
 
 ### 13.1 Base map download
 
-The user picks one of two **quality tiers** — national only, no per-region split (see
-`docs/National-Only-Simplification-Implementation-Spec.md` for why a per-region download split and
-a third Z14/Detailed tier were both built and evaluated, then dropped):
+The user picks one of two **quality tiers** — national only, no per-region split:
 
 | Tier key | Label | National size | Detail |
 |---|---|---|---|
@@ -469,22 +446,26 @@ Always show the actual `size_bytes` from the manifest for the selected tier, not
 
 The app's main feature, not an optional extra. Downloaded automatically as the second stage of the same chained download as the base map (`OfflineDataViewModel.startNationalDownload` — map → buildings → POI, one sequential `WorkContinuation`, no separate opt-in step or toggle) — despite roughly tripling the download size at every tier. There is no separate "Buildings" card; the single national download button's shown size (`updateNationalCard()`) already sums map + buildings + POI together.
 
-If the `buildings` key is absent from the current manifest (possible when the upstream VIDA extraction failed), that stage of the chain has no target to resolve against and `ManifestClient.resolve` returns null — `OfflineDataFragment.resolveTarget` falls back to a constructed URL with no checksum rather than skipping the stage, so a manifest gap degrades gracefully instead of silently dropping buildings.
+If the `buildings` key is absent from the current manifest, that stage of the chain has no target to resolve against and `ManifestClient.resolve` returns null — `OfflineDataFragment.resolveTarget` falls back to a constructed URL with no checksum rather than skipping the stage, so a manifest gap degrades gracefully instead of silently dropping buildings.
 
 Attribution required when buildings overlay is loaded: _"© Google Open Buildings, Microsoft Building Footprints, OpenStreetMap contributors — merged by VIDA (ODbL)"_ — implemented as `attribution_buildings`.
 
-### 13.3 Boundaries overlay
+### 13.3 POI overlay
+
+Downloaded automatically as the third and final stage of the same chained download (map → buildings → POI). Renders healthcare, education, food & drink, finance, lodging, shopping, fuel, and other points of interest as map symbols, active from zoom ≥ 12. If the `poi` key is absent from the manifest, that stage has no target and the app falls back to the base map's own `poi` source layer instead (major places only, zoom ≥ 14) rather than showing nothing.
+
+### 13.4 Boundaries overlay
 
 A single `boundaries.pmtiles` (~13 MB, whole country) covering all four Malagasy admin levels. Small enough to offer without size-conscious opt-in UX — can be treated as a one-time download bundled with any base map download, or offered as a simple toggle. Show its `size_bytes` from the manifest.
 
 If the `boundaries` key is absent from the manifest, omit the download silently.
 
-Attribution: ✓ Resolved (TG-15). BNGRC/OCHA source is CC BY-IGO — a legally distinct license from ODbL/CC-BY, requiring source org, work title, and license URI per §4(b). The exact required credit line is sourced from `adiresy-tiles`' README and implemented as `attribution_admin` (shown in the map's attribution bottom sheet and Settings → About & attributions, alongside `attribution_buildings`, which was also missing two of its three credited sources).
+BNGRC/OCHA source is CC BY-IGO — a legally distinct license from ODbL/CC-BY, requiring source org, work title, and license URI per §4(b). The required credit line is sourced from `adiresy-tiles`' README and implemented as `attribution_admin` (shown in the map's attribution bottom sheet and Settings → About & attributions, alongside `attribution_buildings`).
 
-### 13.4 Shared download behaviours
+### 13.5 Shared download behaviours
 
 - Downloads run through **WorkManager**, **Wi-Fi-only by default** (with an explicit "use mobile data" override that warns about cost), and are **resumable** after interruption or power loss.
-- Checksum (SHA-256) is verified per-file after download; retry on mismatch. Each file (base map, buildings, boundaries) has its own checksum entry in the manifest — verify independently.
+- Checksum (SHA-256) is verified per-file after download; retry on mismatch. Each file (base map, buildings, POI, boundaries) has its own checksum entry in the manifest — verify independently.
 - Each download has its own progress bar and delete button; managed independently.
 - Files are stored in app-specific external storage (`getExternalFilesDir("map")`).
 - A subtle prompt offers updates when a newer data version exists; never auto-downloads over mobile data.
@@ -494,9 +475,7 @@ Cold behaviour on a fresh install with no download yet: the app is fully usable 
 
 ---
 
-## 14. Feature specifications
-
-### 14.1 Phase 1 — Core offline addressing
+## 14. Feature specification
 
 **Map (combined Home + Map + Search — full screen, no toolbar)**
 
@@ -505,17 +484,20 @@ The primary screen is a full-screen `CoordinatorLayout` with floating overlays. 
 - **MapLibre `MapView`** fills the entire screen, behind all overlays. Starts at Madagascar overview (Z5); jump-to on locate.
 - **Floating `SearchBar`** (Material3) anchored top, 8 dp inset. Tapping expands a `SearchView` overlay with recent searches and live autocomplete (code / place / admin unit). Results: code → `CodeDetailActivity`; place → map pan. Recent searches cached locally.
 - **Locate Me FAB** (bottom-end corner, teal): requests location permission contextually, acquires a fix, centres map at Z15, loads nearby buildings. FAB translates up as the results sheet rises.
-- **Nearby results bottom sheet** (hidden until locate-me completes; peekHeight 180 dp; hideable): drag handle, "Nearby buildings" header, list of `AddressEntity` cards. Tap a card → code card bottom sheet with the code in large type, fokontany + hierarchy, **Share**, **Copy**, **Open in Maps** (geo intent), and a greyed-out **Navigate** (Phase 2).
-- **Building tap → code card**: tapping a rendered building polygon (`queryRenderedFeatures` on the `buildings-fill` layer) triggers a reverse-geocode call (`/api/v1/addresses/reverse/?lat=…&lng=…&limit=1&radius=100`). While the call is in flight a semi-transparent scrim with an indeterminate `CircularProgressIndicator` is shown and the map is non-interactive. On success the **code card bottom sheet** slides up (code in large type, fokontany + commune/district, **Share**, **Copy**, **Open in Maps**). On failure, two distinct Snackbar messages: "No connection — connect to look up this building" (network error) or "No address found for this building" (API 404 — building exists in tiles but not yet coded). **Offline cache**: successful tap results are written to Room DB by canonical code and spatially indexed; on a subsequent tap of the same building without network the cached result is served (`Result.stale`). No address labels are rendered on the map — building tile geometry carries no code data; identity is resolved on demand. **Open in Maps** fires an `Intent(ACTION_VIEW, "geo:LAT,LNG?q=LAT,LNG(CODE)")` — routes to any installed maps app (Google Maps, OsmAnd, etc.) and drops a pin labelled with the address code.
+- **Nearby results bottom sheet** (hidden until locate-me completes; peekHeight 180 dp; hideable): drag handle, "Nearby buildings" header, list of `AddressEntity` cards. Tap a card → code card bottom sheet with a **"Your address code"** headline above the code (auto-sized, 14–24sp, to fit alongside the QR code), fokontany + hierarchy, an **80dp QR code** (fixed white background regardless of app theme, encoding `https://adiresy.mg/{code}` — the same link used by Share) to the right of the text column, **Share**, **Copy**, **Open in Maps** (geo intent), and **Navigate** (hands off to an external maps app).
+- **Building tap → code card**: tapping a rendered building polygon (`queryRenderedFeatures` on the `buildings-fill` layer) triggers a reverse-geocode call (`/api/v1/addresses/reverse/?lat=…&lng=…&limit=1&radius=100`). While the call is in flight a semi-transparent scrim with an indeterminate `CircularProgressIndicator` is shown and the map is non-interactive. On success the **code card bottom sheet** slides up (headline + auto-sized code + QR code as above, fokontany + commune/district, **Share**, **Copy**, **Open in Maps**). On failure, two distinct Snackbar messages: "No connection — connect to look up this building" (network error) or "No address found for this building" (API 404 — building exists in tiles but not yet coded). **Offline cache**: successful tap results are written to Room DB by canonical code and spatially indexed; on a subsequent tap of the same building without network the cached result is served (`Result.stale`). No address labels are rendered on the map — building tile geometry carries no code data; identity is resolved on demand. **Open in Maps** fires an `Intent(ACTION_VIEW, "geo:LAT,LNG?q=LAT,LNG(CODE)")` — routes to any installed maps app (Google Maps, OsmAnd, etc.) and drops a pin labelled with the address code.
 - **No-tiles banner** (below SearchBar, `errorContainer` colour, hidden by default): shown when no offline PMTiles are loaded.
 - Long-press on map → attribution bottom sheet.
 - Honest banner on first launch: "Unofficial service — codes have no legal value," localised.
 
 **Resolve a shared code**
-- Deep link `https://adiresy.mg/{code}` (and a custom scheme) opens the app to the **Code detail** screen: marker on map, admin info, **"Navigate"** (enabled in Phase 2; before that, hands off to an external maps app via intent, like the website's *Itinéraire*).
+- Deep link `https://adiresy.mg/{code}` (and a custom scheme) opens the app to the **Code detail** screen: the same **"Your address code"** headline + auto-sized code + 80dp QR layout as the code card popup, an **admin hierarchy card** (Fokontany / Commune with its short code / District with its code / Région, mirroring the website's detail view), a **GPS coordinates card** (latitude/longitude to 6 decimal places), **"Navigate"** — hands off to an external maps app via intent, like the website's *Itinéraire*. There is no in-app routing, and no "explore the area" shortcut on this screen (admin exploration is reached from the Map tab instead).
 
 **Settings**
-- Language (en/fr/mg), Theme (Auto/Light/Dark), Offline data, About & attributions, Privacy note.
+- Language (en/fr/mg), Theme (Auto/Light/Dark), Export/Import bookmarks, Offline data, About & attributions (dialog), Privacy note (dialog).
+
+**About**
+- A separate `BottomNavigationView` destination (not nested under Settings): app version, and links to the Adiresy website, the app's GitHub repo, and the `adiresy-tiles` data repo.
 
 **Favourites (Bookmarks)**
 
@@ -543,7 +525,7 @@ Default emoji `📍`. Edit re-opens the same dialog pre-filled.
 
 _Favourites tab:_
 
-The third item in `BottomNavigationView` (bookmark icon), between Map and Settings, labelled **Favourites**. `SavedFragment` is the root.
+The second item in `BottomNavigationView` (bookmark icon), between Map and About, labelled **Favourites**. `SavedFragment` is the root.
 
 - **Empty state** (no lists): centred icon, "No favourites yet", body text "Open any building's code card and tap the bookmark icon to add it to your favourites."
 - **Lists view**: `RecyclerView` of `MaterialCardView` items. Each card: emoji (~28 sp), list name (bold title), description (secondary, one line, ellipsised), bookmark count ("3 places"). Cards are vertically scrollable; no horizontal swipe on the list-level view. FAB (teal, `+` icon) always visible — creates a new list.
@@ -567,59 +549,17 @@ _Export and import:_ accessible from **Settings → Export / Import bookmarks**.
 
 _Constraints and limits:_ all data is stored locally; no server sync. Maximum 500 bookmarks across all lists — enforced with a Snackbar warning at 490 and a hard block at 500. The 500-bookmark ceiling keeps Room queries fast on low-end devices.
 
-**Acceptance (Phase 1):** with airplane mode on and offline maps downloaded, a user can open a shared code, see the building on the map, explore admin units, read the code aloud, and find previously saved buildings in their named lists — with zero network.
-
-### 14.2 Phase 2 — Offline routing
-
-- `RouteEngine` backed by **GraphHopper** loads the prebuilt graph from local storage.
-- From the Code detail "Navigate", compute a route from the current GPS fix to the code's coordinates, **fully offline**.
-- Draw the route polyline as a MapLibre line layer (brand teal); show summary (distance, estimated time) and a scrollable **step list** with maneuver text and per-step distance.
-- Profiles: **car** and **foot** at minimum (selectable). Bicycle optional.
-- Graceful handling when the destination or origin lies outside the road graph's knowledge (common in deep-rural OSM gaps): show a straight-line bearing + distance fallback and a clear message.
-
-**Acceptance (Phase 2):** offline, the app returns a sensible route and step list between two in-network points, and degrades clearly where OSM road data is missing.
-
-### 14.3 Phase 3a — Turn-by-turn navigation UI
-
-Built with **default Android UI**, in Java, over GraphHopper's instruction stream:
-
-- **Maneuver banner** (top): next-turn icon, instruction text, distance-to-maneuver, and street/target name — the one bespoke composite view, assembled from standard `TextView`/`ImageView`.
-- **Map** follows the user (camera tracks location, tilts optionally), route highlighted, traversed portion dimmed.
-- **Bottom bar:** remaining distance, ETA, and a large **Stop** button.
-- **Off-route detection & re-routing:** a guidance state machine watches the location stream; when the user deviates beyond a threshold, it recomputes offline via `RouteEngine`.
-- **Arrival** state with confirmation.
-- Runs as a **foreground service** with a persistent notification so guidance survives screen-off. Landscape supported.
-
-Instruction phrasing is templated per language, e.g.:
-- en: `"In {distance}, turn {direction} onto {street}."`
-- fr: `"Dans {distance}, tournez à {direction} sur {street}."`
-- mg: `"Rehefa {distance}, mivilia {direction} mankany {street}."`
-(Malagasy phrasings to be finalised with a native reviewer — OQ-4.)
-
-**Acceptance (Phase 3a):** offline guided navigation with live maneuver updates, off-route re-routing, and arrival — no network.
-
-### 14.4 Phase 4 — Voice guidance (en / fr / mg)
-
-Voice guidance is a separate phase after Phase 3 visual navigation is stable. The tech stack is **open** and will be decided during Phase 3 based on what is available at that time.
-
-Known constraints that the chosen stack must satisfy:
-- Fully offline on a low-end device (no streaming TTS).
-- Malagasy is not supported by mainstream TTS engines (including Google TTS). A native Malagasy reviewer is identified. Delivery options to be decided at Phase 4 planning: (a) AI-generated Malagasy voice bundled as audio clips, or (b) clips recorded by the reviewer. Both approaches result in a finite bundled clip library stitched at runtime by `VoiceGuide`.
-- English and French offline TTS voices are available via Android `TextToSpeech` with downloadable voice packs.
-- Audio ducking during prompts; a mute toggle; prompts at standard distance thresholds.
-- `VoiceGuide` interface (`speak(Maneuver, Locale)`) is defined in Phase 3 as a stub so Phase 4 can drop in an implementation without touching callers.
-
-**Acceptance (Phase 4):** clear spoken guidance in the selected language, offline, on a low-end device.
+**Acceptance:** with airplane mode on and offline maps downloaded, a user can open a shared code, see the building on the map, explore admin units, read the code aloud, and find previously saved buildings in their named lists — with zero network.
 
 ---
 
 ## 15. Performance & low-end strategy
 
-- **Memory:** rely on MapLibre memory-mapping PMTiles rather than loading tiles into heap; cap in-memory caches; avoid large bitmaps; recycle `RecyclerView` rows; release the routing graph when not navigating.
-- **Startup:** defer heavy init (graph load) until first use; lazy-load map style; keep the first frame cheap.
-- **APK/AAB:** per-ABI splits, resource shrinking, `minifyShrinkResources`, WebP assets; no bundled map/graph data in the base install.
+- **Memory:** rely on MapLibre memory-mapping PMTiles rather than loading tiles into heap; cap in-memory caches; avoid large bitmaps; recycle `RecyclerView` rows.
+- **Startup:** lazy-load map style; keep the first frame cheap.
+- **APK:** per-ABI splits, resource shrinking, `minifyShrinkResources`, WebP assets; no bundled map data in the base install.
 - **Animations:** minimal; honour system "reduce animations"; avoid continuous repaint.
-- **Battery:** no background location outside navigation; batch location updates; stop the foreground service promptly on arrival/stop.
+- **Battery:** no background location; only foreground, on-demand location fixes ("Locate me").
 - **Storage:** national-only downloads (Z12 or Z13, user's choice); show sizes before download; make everything deletable.
 - **Data:** Wi-Fi-only downloads by default; OkHttp caching; never poll.
 
@@ -636,20 +576,20 @@ Known constraints that the chosen stack must satisfy:
 | Mid Samsung | Galaxy A-series | OEM skin (One UI) behaviours |
 | Modern reference | Pixel / recent arm64 | Baseline correctness |
 
-**Scenarios:** airplane-mode end-to-end (Phase 1 & 2), interrupted download + resume, power-loss mid-download, language switch mid-session, deep-link resolve, off-route re-route (Phase 3), voice in each language, rural coordinate with missing road data.
+**Scenarios:** airplane-mode end-to-end, interrupted download + resume, power-loss mid-download, language switch mid-session, deep-link resolve.
 
-**Automation:** JUnit for `AddressResolver`/`RouteEngine`/template logic; Espresso for critical flows; a monkey/stress pass on the low-end tier for ANR/OOM.
+**Automation:** JUnit for `AdiresyRepository`, `DeviceAuthManager`; Espresso for critical flows; a monkey/stress pass on the low-end tier for ANR/OOM.
 
 ---
 
 ## 17. Build & release
 
 - **Gradle**, Java source/target **21** (toolchain), core library desugaring enabled (`desugar_jdk_libs`), AndroidX, Material Components. Java 21 virtual threads are a JVM feature and are not available on ART; do not use them.
-- **App Bundle (AAB)** for Play Store + **per-ABI APKs** (`arm64-v8a`, `armeabi-v7a`, universal) for direct download — all built and signed by the same GitHub Actions workflow from the same keystore.
-- **Distribution:** Google Play (AAB) + direct APK download via **GitHub Releases**. See `docs/Release-Pipeline-Plan.md` for the full CI/CD pipeline.
-- **Versioning:** `versionCode` derived from total Git commit count (monotonically increasing); `versionName` from the Git tag (e.g. `v1.2.0`). Release triggered by pushing a version tag.
+- CI builds signed **per-ABI + universal release APKs** (`arm64-v8a`, `armeabi-v7a`, universal) via `assembleRelease`. An **App Bundle (AAB)** for Google Play distribution is a planned addition — CI does not currently run `bundleRelease`.
+- **Distribution:** direct APK download via **GitHub Releases**. Google Play distribution is planned but not yet set up.
+- **Versioning:** `versionCode` and `versionName` are literal values in `app/build.gradle.kts`, bumped by hand in a "Bump version to X.Y.Z" commit. Pushing a matching `vX.Y.Z` tag triggers the release workflow, which first verifies the tag matches `versionName` before building.
 - Signing keystore stored as an encrypted GitHub Secret; never committed to the repository.
-- A data-version constant surfaced in Settings → About.
+- A data-version string (e.g. `"2026-Q3"`) is stored in `AppPrefs` alongside downloaded map data, for future update-prompt logic; it is not currently displayed in the About screen.
 
 ---
 
@@ -663,37 +603,30 @@ Off by default. If any crash reporting is added later, it must be privacy-preser
 
 | Risk | Impact | Mitigation |
 |------|--------|-----------|
-| OSM road/building gaps in rural areas | Routing/nearby fails where data thin | Straight-line fallback; crowd-fix path to OSM; set expectations in UI |
+| OSM building data gaps in rural areas | Nearby-buildings/resolve fails where data is thin | Crowd-fix path to OSM; set expectations in UI |
 | Adiresy API schema differs from assumptions | Integration rework | All wire format behind `AdiresyApi` adapter (§9) |
-| Malagasy TTS unavailable | No native voice | Pre-recorded clip library (§14.3b) |
-| Data/graph size vs tiny storage | Users can't download | Two national tiers (Z12/Z13) to choose from; size shown up front; deletable |
+| Data size vs tiny storage | Users can't download | Two national tiers (Z12/Z13) to choose from; size shown up front; deletable |
 | Android Go / OEM skin quirks | Crashes, ANRs | Low-end device matrix; conservative memory budget |
-| Offline reverse-geocode not bundleable | Locate-me weaker offline | Pin-drop fallback; online resolve when available |
-| Battery drain in navigation | User distrust | Foreground service discipline; prompt stop on arrival |
+| Offline reverse-geocode not bundleable | Locate-me weaker offline | Planned pin-drop fallback (not yet implemented); online resolve when available |
 
 ---
 
 ## 20. Assumptions
 
-- The Adiresy API is publicly reachable, permits client use, and offers resolve / reverse / search / hierarchy capabilities (exact shapes TBC against the live docs).
+- The Adiresy API is publicly reachable and permits client use; §9 documents the resolve / reverse / search / hierarchy endpoints the app integrates with.
 - National OSM and admin-boundary data may be redistributed within the app under their licences (OSM ODbL; BNGRC/OCHA per source terms), with attribution.
-- Voice guidance is Phase 4 (separate from Phase 3 visual navigation); tech stack TBD at Phase 4 planning.
 - "Default Android UI" means Material Components with the brand theme, not a bespoke design system.
-
-## 21. Open questions
-
-- **OQ-4 (Malagasy phrasing & voice):** ✓ Partially resolved — a native Malagasy reviewer is identified. A phrase review document covering all navigation vocabulary (maneuver types, distance phrases, status cues) in en/fr/mg must be generated and sent to the reviewer before Phase 3 begins. Voice delivery for Phase 4 will be either AI-generated or recorded by the reviewer — decision deferred to Phase 4 planning. Standard (Merina-based) Malagasy assumed. TODO: generate `docs/Malagasy-Phrase-Review.md` before Phase 3.
 
 ---
 
-## 22. References
+## 21. References
 
 - Adiresy — homepage, About, and API docs, `https://adiresy.mg` (brand colour `#0D9488`; coverage 24/114/1707/17465; data credits: OSM, Google Open Buildings, BNGRC/OCHA).
 - DataReportal, *Digital 2025: Madagascar* (internet penetration ≈ 20%; ~80% offline; rural ≈ 58%).
 - Worlddata.info / ITU, *Telecommunication in Madagascar* (monthly basket ≈ US$8, +55% YoY; ~35% 4G).
 - Intelpoint / Statcounter / Start.io, African & Madagascar device market share 2024–2025 (Xiaomi, Transsion (Tecno/Infinix/itel), Samsung budget; Android Go prevalence).
 - MapLibre Native Android (PMTiles support from 11.7.0).
-- Geofabrik (Madagascar OSM extract); Planetiler; GraphHopper (Apache-2.0, on-device routing).
+- Geofabrik (Madagascar OSM extract); Planetiler.
 
 ---
 
@@ -704,7 +637,6 @@ Off by default. If any crash reporting is added later, it must be privacy-preser
 teal-600  #0D9488   (primary)
 teal-700  #0F766E   (primary dark / status bar)
 teal-500  #14B8A6   (secondary / dark primary)
-teal-400  #2DD4BF   (dark route line)
 
 # Neutrals (light)
 white     #FFFFFF
@@ -732,5 +664,4 @@ blue-600    #2563EB  user location dot
 - **Fokontany** — smallest administrative unit in Madagascar (below commune).
 - **Faritra** — region (24 nationally).
 - **PMTiles** — single-file archive of vector map tiles, readable offline via range access.
-- **Graph (routing)** — GraphHopper's preprocessed road-network structure used to compute routes offline.
 - **Android Go** — lightweight Android edition for low-RAM budget devices.

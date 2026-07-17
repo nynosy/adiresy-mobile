@@ -23,6 +23,8 @@ import org.github.nynosy.adiresy_mobile.data.BookmarkRepository;
 import org.github.nynosy.adiresy_mobile.data.cache.AddressEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
 import org.github.nynosy.adiresy_mobile.databinding.BottomSheetCodeCardBinding;
+import org.github.nynosy.adiresy_mobile.map.QrCodeGenerator;
+import org.github.nynosy.adiresy_mobile.ui.code.CodeDetailActivity;
 import org.github.nynosy.adiresy_mobile.ui.saved.SaveToListBottomSheet;
 
 public class CodeCardBottomSheet extends BottomSheetDialogFragment {
@@ -79,6 +81,8 @@ public class CodeCardBottomSheet extends BottomSheetDialogFragment {
         binding.labelCode.setText(code);
         binding.labelFokontany.setText(fokontany);
         binding.labelHierarchy.setText(commune + " › " + district);
+        binding.imageQrCode.setImageBitmap(
+                QrCodeGenerator.generate(getString(R.string.share_text, code)));
 
         bookmarkRepository = BookmarkRepository.getInstance(requireContext());
 
@@ -95,6 +99,14 @@ public class CodeCardBottomSheet extends BottomSheetDialogFragment {
 
         binding.btnBookmark.setOnClickListener(v -> onBookmarkClicked(
                 code, lat, lng, fokontany, commune, district, region));
+
+        binding.btnFullDetails.setOnClickListener(v -> {
+            // Deliberately not dismissed — the sheet reappears as-is when the user
+            // navigates back from Code Detail, instead of losing their place on the map.
+            Intent intent = new Intent(requireContext(), CodeDetailActivity.class);
+            intent.putExtra(CodeDetailActivity.EXTRA_CODE, code);
+            startActivity(intent);
+        });
 
         binding.btnShare.setOnClickListener(v -> {
             String text = getString(R.string.share_text, code, code);

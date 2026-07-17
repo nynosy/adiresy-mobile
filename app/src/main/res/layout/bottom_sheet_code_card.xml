@@ -5,31 +5,87 @@
     android:orientation="vertical"
     android:padding="24dp">
 
-    <!-- Address code — large, primary colour -->
-    <TextView
-        android:id="@+id/label_code"
+    <!-- Code + hierarchy (left) and QR code (right) -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="20dp">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginEnd="16dp">
+
+            <!-- "Your address code" headline -->
+            <TextView
+                android:id="@+id/label_code_headline"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/label_code_headline"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?android:attr/textColorSecondary"
+                android:layout_marginBottom="2dp" />
+
+            <!-- Address code — large, primary colour, auto-sized to fit beside the QR code -->
+            <TextView
+                android:id="@+id/label_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                android:textColor="?attr/colorPrimary"
+                android:maxLines="1"
+                android:autoSizeTextType="uniform"
+                android:autoSizeMinTextSize="14sp"
+                android:autoSizeMaxTextSize="24sp"
+                android:autoSizeStepGranularity="1sp"
+                android:layout_marginBottom="4dp" />
+
+            <!-- Fokontany -->
+            <TextView
+                android:id="@+id/label_fokontany"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:layout_marginBottom="2dp" />
+
+            <!-- Commune › District -->
+            <TextView
+                android:id="@+id/label_hierarchy"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceBodySmall"
+                android:textColor="?android:attr/textColorSecondary" />
+
+        </LinearLayout>
+
+        <!-- QR code — fixed light background regardless of app theme, for scan contrast -->
+        <ImageView
+            android:id="@+id/image_qr_code"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:background="@android:color/white"
+            android:padding="4dp"
+            android:contentDescription="@string/cd_qr_code" />
+
+    </LinearLayout>
+
+    <!-- Link to the full Code Detail screen (admin hierarchy + GPS coordinates) -->
+    <TextView
+        android:id="@+id/btn_full_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        android:padding="4dp"
+        android:text="@string/btn_full_details"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
         android:textColor="?attr/colorPrimary"
-        android:layout_marginBottom="4dp" />
-
-    <!-- Fokontany -->
-    <TextView
-        android:id="@+id/label_fokontany"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceBodyMedium"
-        android:layout_marginBottom="2dp" />
-
-    <!-- Commune › District -->
-    <TextView
-        android:id="@+id/label_hierarchy"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="?android:attr/textColorSecondary"
-        android:layout_marginBottom="20dp" />
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true" />
 
     <!-- Icon-only action row: Bookmark · Share · Copy · Navigate -->
     <LinearLayout

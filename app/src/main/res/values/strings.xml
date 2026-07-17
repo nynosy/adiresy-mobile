@@ -20,11 +20,12 @@
     <string name="nearby_empty_offline">Connect to find nearby buildings</string>
 
     <!-- Code card / code detail -->
+    <string name="label_code_headline">Your address code</string>
+    <string name="btn_full_details">Full address details ›</string>
     <string name="btn_share">Share</string>
     <string name="btn_copy">Copy</string>
     <string name="btn_open_maps">Open in Maps</string>
     <string name="btn_navigate">Navigate</string>
-    <string name="navigate_coming_soon">Available in a future update</string>
     <string name="navigate_external_hint">Opens external maps app</string>
     <string name="copied_to_clipboard">Code copied</string>
     <string name="tap_no_address">No address found for this building</string>
@@ -46,6 +47,11 @@
     <string name="label_district">District</string>
     <string name="label_commune">Commune</string>
     <string name="label_fokontany">Fokontany</string>
+
+    <!-- Code detail — admin hierarchy card and GPS coordinates card -->
+    <string name="label_gps_coordinates">GPS coordinates</string>
+    <string name="label_latitude">Latitude</string>
+    <string name="label_longitude">Longitude</string>
 
     <!-- Map / Explore -->
     <string name="explore_empty">Nothing found here</string>
@@ -213,6 +219,7 @@
     <string name="cd_share_code">Share this address code</string>
     <string name="cd_copy_code">Copy address code to clipboard</string>
     <string name="cd_navigate">Navigate to this address</string>
+    <string name="cd_qr_code">QR code linking to this address</string>
     <string name="cd_bookmark_unsaved">Add to favourites</string>
     <string name="cd_bookmark_saved">Remove from favourites</string>
     <string name="cd_explore">Explore administrative areas</string>

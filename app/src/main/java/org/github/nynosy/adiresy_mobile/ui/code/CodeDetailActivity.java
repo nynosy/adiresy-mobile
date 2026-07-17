@@ -10,6 +10,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import org.github.nynosy.adiresy_mobile.R;
 import org.github.nynosy.adiresy_mobile.databinding.ActivityCodeDetailBinding;
+import org.github.nynosy.adiresy_mobile.map.QrCodeGenerator;
+
+import java.util.Locale;
 
 public class CodeDetailActivity extends AppCompatActivity {
 
@@ -40,6 +43,11 @@ public class CodeDetailActivity extends AppCompatActivity {
 
         observeViewModel();
         wireButtons();
+    }
+
+    /** "Ankatsakantsa Sud (ANKA)" — omits the parens if no code is available. */
+    private static String withCode(String name, String code) {
+        return (code == null || code.isEmpty()) ? name : name + " (" + code + ")";
     }
 
     private String resolveCode(Intent intent) {
@@ -74,11 +82,19 @@ public class CodeDetailActivity extends AppCompatActivity {
 
             if (result.data != null) {
                 binding.labelCode.setText(result.data.canonicalCode);
-                binding.labelFokontany.setText(result.data.fokontanyName);
-                binding.labelHierarchy.setText(
-                        result.data.communeName + " › "
-                        + result.data.districtName + " › "
-                        + result.data.regionName);
+                binding.imageQrCode.setImageBitmap(QrCodeGenerator.generate(
+                        getString(R.string.share_text, result.data.canonicalCode)));
+
+                binding.valueFokontany.setText(result.data.fokontanyName);
+                binding.valueCommune.setText(withCode(result.data.communeName, result.data.communeShort));
+                binding.valueDistrict.setText(withCode(result.data.districtName, result.data.districtCode));
+                binding.valueRegion.setText(result.data.regionName);
+
+                binding.valueLatitude.setText(getString(R.string.label_latitude) + ": "
+                        + String.format(Locale.US, "%.6f", result.data.latitude));
+                binding.valueLongitude.setText(getString(R.string.label_longitude) + ": "
+                        + String.format(Locale.US, "%.6f", result.data.longitude));
+
                 viewModel.setCoordinates(result.data.latitude, result.data.longitude);
             }
         });
