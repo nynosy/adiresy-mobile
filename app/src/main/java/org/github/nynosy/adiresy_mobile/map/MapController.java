@@ -1,7 +1,5 @@
 package org.github.nynosy.adiresy_mobile.map;
 
-import android.content.Context;
-
 import org.maplibre.android.camera.CameraUpdateFactory;
 import org.maplibre.android.geometry.LatLng;
 import org.maplibre.android.maps.MapLibreMap;
@@ -9,11 +7,9 @@ import org.maplibre.android.maps.MapLibreMap;
 public class MapController {
 
     private final MapLibreMap map;
-    private final Context context;
 
-    public MapController(MapLibreMap map, Context context) {
+    public MapController(MapLibreMap map) {
         this.map = map;
-        this.context = context.getApplicationContext();
     }
 
     /** Animates the camera to the given position. */

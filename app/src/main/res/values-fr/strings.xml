@@ -47,8 +47,8 @@
 
     <!-- Code detail — admin hierarchy card and GPS coordinates card -->
     <string name="label_gps_coordinates">Coordonnées GPS</string>
-    <string name="label_latitude">Latitude</string>
-    <string name="label_longitude">Longitude</string>
+    <string name="value_latitude">Latitude : %1$s</string>
+    <string name="value_longitude">Longitude : %1$s</string>
 
     <!-- Map / Explore -->
     <string name="explore_empty">Rien trouvé ici</string>

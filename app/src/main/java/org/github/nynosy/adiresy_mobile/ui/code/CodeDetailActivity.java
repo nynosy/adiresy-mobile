@@ -90,10 +90,10 @@ public class CodeDetailActivity extends AppCompatActivity {
                 binding.valueDistrict.setText(withCode(result.data.districtName, result.data.districtCode));
                 binding.valueRegion.setText(result.data.regionName);
 
-                binding.valueLatitude.setText(getString(R.string.label_latitude) + ": "
-                        + String.format(Locale.US, "%.6f", result.data.latitude));
-                binding.valueLongitude.setText(getString(R.string.label_longitude) + ": "
-                        + String.format(Locale.US, "%.6f", result.data.longitude));
+                binding.valueLatitude.setText(getString(R.string.value_latitude,
+                        String.format(Locale.US, "%.6f", result.data.latitude)));
+                binding.valueLongitude.setText(getString(R.string.value_longitude,
+                        String.format(Locale.US, "%.6f", result.data.longitude)));
 
                 viewModel.setCoordinates(result.data.latitude, result.data.longitude);
             }

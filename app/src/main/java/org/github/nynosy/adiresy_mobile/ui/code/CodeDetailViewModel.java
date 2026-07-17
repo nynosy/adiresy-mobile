@@ -63,6 +63,6 @@ public class CodeDetailViewModel extends AndroidViewModel {
 
     public String buildShareText(Context context) {
         String code = codeInput.getValue() != null ? codeInput.getValue() : "";
-        return context.getString(R.string.share_text, code, code);
+        return context.getString(R.string.share_text, code);
     }
 }

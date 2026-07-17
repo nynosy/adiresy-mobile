@@ -50,8 +50,8 @@
 
     <!-- Code detail — admin hierarchy card and GPS coordinates card -->
     <string name="label_gps_coordinates">Toerana GPS</string><!-- [MG-REVIEW] -->
-    <string name="label_latitude">Latitude</string><!-- [MG-REVIEW] -->
-    <string name="label_longitude">Longitude</string><!-- [MG-REVIEW] -->
+    <string name="value_latitude">Latitude: %1$s</string><!-- [MG-REVIEW] -->
+    <string name="value_longitude">Longitude: %1$s</string><!-- [MG-REVIEW] -->
 
     <!-- Map / Explore -->
     <string name="explore_empty">Tsy misy hita eto</string><!-- [MG-REVIEW] -->

@@ -165,7 +165,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(@NonNull MapLibreMap map) {
         mapRef = map;
-        mapController = new MapController(map, requireContext());
+        mapController = new MapController(map);
         bookmarkPinController.setMap(map);
         configureCompass(map);
 

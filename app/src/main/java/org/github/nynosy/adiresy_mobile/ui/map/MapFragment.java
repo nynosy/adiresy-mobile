@@ -72,7 +72,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     @Override
     public void onMapReady(@NonNull MapLibreMap mapLibreMap) {
-        mapController = new MapController(mapLibreMap, requireContext());
+        mapController = new MapController(mapLibreMap);
 
         String styleUri = styleLoader.getStyleUri(requireContext());
         Style.Builder builder = styleUri.startsWith("{")

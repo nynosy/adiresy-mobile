@@ -109,7 +109,7 @@ public class CodeCardBottomSheet extends BottomSheetDialogFragment {
         });
 
         binding.btnShare.setOnClickListener(v -> {
-            String text = getString(R.string.share_text, code, code);
+            String text = getString(R.string.share_text, code);
             Intent intent = new Intent(Intent.ACTION_SEND);
             intent.setType("text/plain");
             intent.putExtra(Intent.EXTRA_TEXT, text);

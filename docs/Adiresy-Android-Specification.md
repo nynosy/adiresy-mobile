@@ -160,10 +160,16 @@ Four artifact types are produced from the tile pipeline, each downloadable indep
     }
   },
   "buildings": {
-    "national": { "z12": {…}, "z13": {…} }
+    "national": {
+      "z12": { "filename": "buildings-madagascar-z12.pmtiles", "url": "…", "size_bytes": 0, "sha256": "…" },
+      "z13": { "filename": "buildings-madagascar-z13.pmtiles", "url": "…", "size_bytes": 0, "sha256": "…" }
+    }
   },
   "poi": {
-    "national": { "z12": {…}, "z13": {…} }
+    "national": {
+      "z12": { "filename": "poi-madagascar-z12.pmtiles", "url": "…", "size_bytes": 0, "sha256": "…" },
+      "z13": { "filename": "poi-madagascar-z13.pmtiles", "url": "…", "size_bytes": 0, "sha256": "…" }
+    }
   },
   "boundaries": { "filename": "boundaries.pmtiles", "url": "…", "size_bytes": 13278117, "sha256": "…" }
 }

@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <style name="Theme.AdiresyMobile" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Primary -->
         <item name="colorPrimary">@color/teal_500</item>
@@ -19,6 +19,6 @@
         <item name="colorOnError">@color/slate_900</item>
         <!-- Status bar -->
         <item name="android:statusBarColor">@color/dark_background</item>
-        <item name="android:windowLightStatusBar" tools:targetApi="23">false</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>
