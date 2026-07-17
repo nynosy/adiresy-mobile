@@ -1,0 +1,2 @@
+- Excluded x86/x86_64 native libraries from release builds, shrinking the universal APK for lower-end devices.
+- Removed an unused build-time dependency flagged by F-Droid's reproducible-build scanner.
