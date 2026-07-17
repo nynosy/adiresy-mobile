@@ -15,6 +15,20 @@ val releaseKeyAlias: String = localProps.getProperty("release.key.alias", "")
 val releaseKeyPassword: String = localProps.getProperty("release.key.password", "")
 val hasReleaseSigning = releaseKeystorePath.isNotBlank()
 
+// Version derived from git — a tagged commit always builds with a matching
+// versionName, no manual "Bump version" commit required before tagging.
+// Requires full history (not a shallow clone) to count commits / see tags.
+fun gitOutput(vararg args: String): String =
+    providers.exec {
+        commandLine("git", *args)
+        isIgnoreExitValue = true
+    }.standardOutput.asText.get().trim()
+
+val gitVersionCode: Int = gitOutput("rev-list", "--count", "HEAD").toIntOrNull() ?: 1
+val gitVersionName: String = gitOutput("describe", "--tags", "--always", "--dirty")
+    .removePrefix("v")
+    .ifBlank { "0.0.0" }
+
 android {
     namespace = "org.github.nynosy.adiresy_mobile"
     compileSdk {
@@ -27,8 +41,8 @@ android {
         applicationId = "org.github.nynosy.adiresy_mobile"
         minSdk = 24
         targetSdk = 36
-        versionCode = 9
-        versionName = "1.0.8"
+        versionCode = gitVersionCode
+        versionName = gitVersionName
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {

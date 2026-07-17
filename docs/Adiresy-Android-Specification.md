@@ -593,7 +593,7 @@ _Constraints and limits:_ all data is stored locally; no server sync. Maximum 50
 - **Gradle**, Java source/target **21** (toolchain), core library desugaring enabled (`desugar_jdk_libs`), AndroidX, Material Components. Java 21 virtual threads are a JVM feature and are not available on ART; do not use them.
 - CI builds signed **per-ABI + universal release APKs** (`arm64-v8a`, `armeabi-v7a`, universal) via `assembleRelease`. An **App Bundle (AAB)** for Google Play distribution is a planned addition — CI does not currently run `bundleRelease`.
 - **Distribution:** direct APK download via **GitHub Releases**. Google Play distribution is planned but not yet set up.
-- **Versioning:** `versionCode` and `versionName` are literal values in `app/build.gradle.kts`, bumped by hand in a "Bump version to X.Y.Z" commit. Pushing a matching `vX.Y.Z` tag triggers the release workflow, which first verifies the tag matches `versionName` before building.
+- **Versioning:** `versionCode` and `versionName` are derived from git at build time (`app/build.gradle.kts`) — `versionCode` is the total commit count (`git rev-list --count HEAD`), `versionName` is `git describe --tags --always --dirty` with the leading `v` stripped. Pushing a `vX.Y.Z` tag and letting the release workflow build it always produces a matching `versionName`, with no manual version-bump commit required. CI checkouts use `fetch-depth: 0` so the full history and tags are available for this to work.
 - Signing keystore stored as an encrypted GitHub Secret; never committed to the repository.
 - A data-version string (e.g. `"2026-Q3"`) is stored in `AppPrefs` alongside downloaded map data, for future update-prompt logic; it is not currently displayed in the About screen.
 
