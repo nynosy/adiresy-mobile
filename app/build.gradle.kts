@@ -44,6 +44,13 @@ android {
         versionCode = gitVersionCode
         versionName = gitVersionName
 
+        // Real devices are always arm64-v8a or armeabi-v7a; excluding x86/x86_64
+        // (emulator-only) keeps the universal APK close to the budget-hardware
+        // size target instead of bundling every ABI MapLibre ships.
+        ndk {
+            abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         javaCompileOptions {
             annotationProcessorOptions {
