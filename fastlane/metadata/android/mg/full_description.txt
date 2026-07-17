@@ -1,0 +1,22 @@
+Ny Adiresy dia fampiharana finday tompon'ny Adiresy, rafitra fanondroana adiresy tsy ofisialy ho an'i Madagasikara.
+
+Tsy manana rafitra fanondroana adiresy ofisialy i Madagasikara any amin'ny ankamaroan'ny faritra. Ny trano rehetra anefa dia afaka mahazo kaody fohy sy maharitra mifototra amin'ny tanan'ny GPS (ohatra: 101-6EAR-50418). Ity fampiharana ity dia ahafahan'ny olona mahita, mizara, ary mitondra ho any amin'ireo kaody ireo — mandeha amin'ny finday tsotra ary, tsikelikely, tsy mila anelanelana tanteraka.
+
+Tsy manan-kery ara-dalàna ny kaody. Ny Adiresy dia rafitra fanondroana tsy ofisialy naorin'ny vondrom-piarahamonina, fa tsy serivisy ara-panjakana.
+
+Ireo endri-javatra:
+
+* Mahazoa ny kaody Adiresy an'ny trano iray ka zarao amin'ny alalan'ny rohy na kaody QR.
+* Vahao ny kaody nozaraina ary jereo ny trano eo amin'ny sarintany.
+* Karohy amin'ny kaody, anaran-toerana, na faritra fitantanana (faritra, distrika, kaominina, fokontany).
+* Alao ny angon-tsarintany tsy mila anelanelana ho an'i Madagasikara manontolo, amin'ny haavo faritra na tanàna.
+* Tahirizo ny toerana tianao indrindra mba hahazoana azy haingana.
+* Fikajiana lalana tsy mila anelanelana sy fitarihana amin'ny lalana dia kasaina hivoaka amin'ny fanavaozana ho avy.
+
+Tanjon'ny famolavolana:
+
+* Tsy mila anelanelana voalohany — mandeha ny asa fototra na dia tsy misy tambajotra aza, rehefa voaalatra ny angon-tsarintany.
+* Naorina sy nokendrena ho an'ny fitaovana tsotra — fitaovana Android Go misy RAM 1-2 Go.
+* Tsy mandany angona na batery — tsy misy fanaraha-toerana na fifohazana any ambadika ivelan'ny fitarihan-dalana miasa; ny fisintonana dia mandeha amin'ny Wi-Fi ihany raha tsy voafaritra hafa, azo atohy indray, ary tsy voataitry ny fahatapahana.
+* Ny teny Malagasy, Frantsay, ary Anglisy dia samy laharam-pahamehana amin'ny sehatra fampiasa.
+* Manaja ny tsiambaratelo — tsy mitaky kaonty, tsy manangona angona famakafakana raha tsy voafaritra hafa. Ny tanan'ny GPS dia alefa any amin'ny API Adiresy ihany raha misy fangatahana mazava ataon'ny mpampiasa, ka tsy araraotina, tsy angonina, ary tsy tahirizin'ny mpizara.

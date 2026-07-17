@@ -1,0 +1,3 @@
+- Added F-Droid store listing metadata (title, descriptions, screenshots).
+- Added French and Malagasy translations of the store listing.
+- Replaced the store icon with a sharper source image.

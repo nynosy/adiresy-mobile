@@ -1,0 +1,2 @@
+- Ajout de la fiche Adiresy pour F-Droid (titre, descriptions, captures d'écran).
+- Icône du magasin remplacée par une version plus nette.

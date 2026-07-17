@@ -1,0 +1,22 @@
+Adiresy est une application cliente native pour Adiresy, un système d'adressage non officiel pour Madagascar.
+
+Madagascar n'a pas de système d'adressage formel dans la plupart des zones. Chaque bâtiment peut néanmoins recevoir un code court et permanent ancré à des coordonnées GPS (par exemple 101-6EAR-50418). Cette application permet de trouver, partager et naviguer vers ces codes — elle fonctionne sur des téléphones bas de gamme et, progressivement, entièrement hors ligne.
+
+Les codes n'ont aucune valeur légale. Adiresy est une couche d'adressage non officielle et communautaire, pas un service gouvernemental.
+
+Fonctionnalités :
+
+* Trouvez le code Adiresy d'un bâtiment et partagez-le sous forme de lien ou de QR code.
+* Résolvez un code partagé et visualisez le bâtiment sur une carte.
+* Recherchez par code, nom de lieu ou zone administrative (région, district, commune, fokontany).
+* Téléchargez les données cartographiques hors ligne pour l'ensemble de Madagascar, au niveau régional ou au niveau de la ville.
+* Enregistrez vos lieux favoris pour un accès rapide.
+* Le calcul d'itinéraire hors ligne et la navigation guidée sont prévus pour de prochaines versions.
+
+Objectifs de conception :
+
+* Hors ligne d'abord — les tâches essentielles fonctionnent radio coupée, une fois les données cartographiques téléchargées.
+* Conçue et optimisée pour du matériel modeste — appareils Android Go de 1 à 2 Go de RAM.
+* Économe en données et en batterie — aucune localisation ni réveil en arrière-plan en dehors de la navigation active ; les téléchargements se font par défaut en Wi-Fi uniquement, sont reprenables et résistants aux interruptions.
+* Le malgache, le français et l'anglais sont tous des langues de premier plan dans l'interface.
+* Respectueuse de la vie privée — aucun compte, aucune donnée analytique par défaut. Les coordonnées GPS ne sont envoyées à l'API Adiresy que pour des recherches explicites lancées par l'utilisateur, jamais suivies, regroupées ni conservées côté serveur par l'application.
