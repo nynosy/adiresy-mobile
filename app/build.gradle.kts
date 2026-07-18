@@ -15,13 +15,6 @@ val releaseKeyAlias: String = localProps.getProperty("release.key.alias", "")
 val releaseKeyPassword: String = localProps.getProperty("release.key.password", "")
 val hasReleaseSigning = releaseKeystorePath.isNotBlank()
 
-// Version is a literal, not git-derived — F-Droid's Tags-based auto-updater
-// reads versionCode via regex from this file, which it can't do against a
-// computed value. Bump both before tagging a release (versionName must match
-// the vX.Y.Z tag, versionCode must increase by at least 1).
-val appVersionCode = 34
-val appVersionName = "1.0.14"
-
 android {
     namespace = "org.github.nynosy.adiresy_mobile"
     compileSdk {
@@ -34,8 +27,13 @@ android {
         applicationId = "org.github.nynosy.adiresy_mobile"
         minSdk = 24
         targetSdk = 36
-        versionCode = appVersionCode
-        versionName = appVersionName
+        // Literal, not git-derived — F-Droid's Tags-based auto-updater greps
+        // this file for the versionCode and versionName assignments below;
+        // it can't resolve a computed or variable value. Bump both before
+        // tagging a release: versionName must match the vX.Y.Z tag, and
+        // versionCode must increase by at least 1.
+        versionCode = 34
+        versionName = "1.0.14"
 
         // Real devices are always arm64-v8a or armeabi-v7a; excluding x86/x86_64
         // (emulator-only) keeps the universal APK close to the budget-hardware
