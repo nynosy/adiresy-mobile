@@ -15,19 +15,12 @@ val releaseKeyAlias: String = localProps.getProperty("release.key.alias", "")
 val releaseKeyPassword: String = localProps.getProperty("release.key.password", "")
 val hasReleaseSigning = releaseKeystorePath.isNotBlank()
 
-// Version derived from git — a tagged commit always builds with a matching
-// versionName, no manual "Bump version" commit required before tagging.
-// Requires full history (not a shallow clone) to count commits / see tags.
-fun gitOutput(vararg args: String): String =
-    providers.exec {
-        commandLine("git", *args)
-        isIgnoreExitValue = true
-    }.standardOutput.asText.get().trim()
-
-val gitVersionCode: Int = gitOutput("rev-list", "--count", "HEAD").toIntOrNull() ?: 1
-val gitVersionName: String = gitOutput("describe", "--tags", "--always", "--dirty")
-    .removePrefix("v")
-    .ifBlank { "0.0.0" }
+// Version is a literal, not git-derived — F-Droid's Tags-based auto-updater
+// reads versionCode via regex from this file, which it can't do against a
+// computed value. Bump both before tagging a release (versionName must match
+// the vX.Y.Z tag, versionCode must increase by at least 1).
+val appVersionCode = 34
+val appVersionName = "1.0.14"
 
 android {
     namespace = "org.github.nynosy.adiresy_mobile"
@@ -41,8 +34,8 @@ android {
         applicationId = "org.github.nynosy.adiresy_mobile"
         minSdk = 24
         targetSdk = 36
-        versionCode = gitVersionCode
-        versionName = gitVersionName
+        versionCode = appVersionCode
+        versionName = appVersionName
 
         // Real devices are always arm64-v8a or armeabi-v7a; excluding x86/x86_64
         // (emulator-only) keeps the universal APK close to the budget-hardware
