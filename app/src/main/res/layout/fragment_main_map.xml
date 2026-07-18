@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/cd_map_view" />
 
-    <!-- No offline tiles banner (shown below the search bar) -->
+    <!-- No offline tiles banner (shown below the search bar). Tappable — jumps to
+         Settings > Offline map data. -->
     <TextView
         android:id="@+id/offline_banner"
         android:layout_width="match_parent"
@@ -21,12 +22,18 @@
         android:layout_marginTop="64dp"
         android:layout_marginHorizontal="8dp"
         android:background="?attr/colorErrorContainer"
+        android:foreground="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
         android:paddingHorizontal="16dp"
         android:paddingVertical="8dp"
         android:text="@string/map_offline_banner"
         android:textAppearance="?attr/textAppearanceBodySmall"
         android:textColor="?attr/colorOnErrorContainer"
         android:gravity="center"
+        android:drawableEnd="@drawable/ic_chevron_end"
+        android:drawableTint="?attr/colorOnErrorContainer"
+        android:drawablePadding="4dp"
         android:visibility="gone" />
 
     <!-- Floating search bar -->

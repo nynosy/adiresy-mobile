@@ -54,6 +54,9 @@
     <string name="explore_empty">Rien trouvé ici</string>
     <string name="btn_explore">Explorer</string>
     <string name="map_offline_banner">Données cartographiques non disponibles — téléchargez dans Paramètres</string>
+    <string name="offline_prompt_title">Télécharger les données cartographiques hors ligne ?</string>
+    <string name="offline_prompt_message">Adiresy fonctionne entièrement hors ligne une fois les données cartographiques de Madagascar téléchargées — environ 190 Mo, une seule fois. Sans cela, la carte reste vide jusqu\'au téléchargement dans Paramètres.</string>
+    <string name="btn_later">Plus tard</string>
     <string name="title_attribution">Données cartographiques et attributions</string>
     <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
     <string name="attribution_osm">© Contributeurs OpenStreetMap (ODbL)</string>

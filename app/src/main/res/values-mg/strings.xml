@@ -57,6 +57,9 @@
     <string name="explore_empty">Tsy misy hita eto</string><!-- [MG-REVIEW] -->
     <string name="btn_explore">Hahalala</string><!-- [MG-REVIEW] explore/discover -->
     <string name="map_offline_banner">Tsy misy angon-tsarintany — alaina ao amin\'ny Fandrindrana</string><!-- [MG-REVIEW] -->
+    <string name="offline_prompt_title">Alaina ny angon-tsarintany tsy an-tserasera?</string><!-- [MG-REVIEW] -->
+    <string name="offline_prompt_message">Afaka miasa tsy an-tserasera tanteraka i Adiresy rehefa voaraisina ny angon-tsarintany an\'i Madagasikara — 190 MB eo ho eo, indray mandeha ihany. Raha tsy izany dia hijanona ho banga ny sarintany mandra-pakan\'azy ao amin\'ny Fandrindrana.</string><!-- [MG-REVIEW] -->
+    <string name="btn_later">Aoriana</string><!-- [MG-REVIEW] -->
     <string name="title_attribution">Loharanon\'ny angona sy fankasitrahana</string><!-- [MG-REVIEW] -->
     <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
     <string name="attribution_osm">© Mpandray anjara amin\'ny OpenStreetMap (ODbL)</string><!-- [MG-REVIEW] -->

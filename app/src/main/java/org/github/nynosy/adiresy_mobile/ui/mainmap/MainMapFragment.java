@@ -22,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.search.SearchView;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -43,6 +44,7 @@ import org.github.nynosy.adiresy_mobile.data.Result;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
 import org.github.nynosy.adiresy_mobile.data.cache.AddressEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
+import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import org.github.nynosy.adiresy_mobile.databinding.FragmentMainMapBinding;
 import org.github.nynosy.adiresy_mobile.map.AttributionBottomSheet;
 import org.github.nynosy.adiresy_mobile.map.BookmarkPinController;
@@ -56,6 +58,7 @@ import org.github.nynosy.adiresy_mobile.ui.home.LocationRationaleBottomSheet;
 import org.github.nynosy.adiresy_mobile.ui.home.NearbyAdapter;
 import org.github.nynosy.adiresy_mobile.ui.map.ExploreBottomSheet;
 import org.github.nynosy.adiresy_mobile.ui.map.MapViewModel;
+import org.github.nynosy.adiresy_mobile.ui.offline.OfflineDataFragment;
 import org.github.nynosy.adiresy_mobile.ui.saved.SharedMapViewModel;
 import org.github.nynosy.adiresy_mobile.ui.search.SearchController;
 import org.github.nynosy.adiresy_mobile.ui.search.SearchViewModel;
@@ -225,9 +228,34 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     // ── Offline banner ────────────────────────────────────────────────────────
 
     private void setupOfflineBanner() {
-        if (!styleLoader.hasOfflineTiles()) {
-            binding.offlineBanner.setVisibility(View.VISIBLE);
+        binding.offlineBanner.setOnClickListener(v -> openOfflineDataScreen());
+
+        if (styleLoader.hasOfflineTiles()) return;
+
+        binding.offlineBanner.setVisibility(View.VISIBLE);
+
+        AppPrefs prefs = AppPrefs.get(requireContext());
+        if (!prefs.hasShownOfflinePrompt()) {
+            prefs.setOfflinePromptShown();
+            showOfflineDataPrompt();
         }
+    }
+
+    private void showOfflineDataPrompt() {
+        new MaterialAlertDialogBuilder(requireContext())
+                .setTitle(R.string.offline_prompt_title)
+                .setMessage(R.string.offline_prompt_message)
+                .setPositiveButton(R.string.btn_download, (d, w) -> openOfflineDataScreen())
+                .setNegativeButton(R.string.btn_later, null)
+                .show();
+    }
+
+    private void openOfflineDataScreen() {
+        requireActivity().getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, new OfflineDataFragment())
+                .addToBackStack(null)
+                .commit();
     }
 
     // ── Bottom sheet (nearby buildings) ───────────────────────────────────────

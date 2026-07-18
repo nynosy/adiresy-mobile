@@ -57,6 +57,9 @@
     <string name="explore_empty">Nothing found here</string>
     <string name="btn_explore">Explore</string>
     <string name="map_offline_banner">Map data not available — download in Settings</string>
+    <string name="offline_prompt_title">Download offline map data?</string>
+    <string name="offline_prompt_message">Adiresy works fully offline once you download map data for Madagascar — about 190 MB, one time. Without it the map stays empty until you download it in Settings.</string>
+    <string name="btn_later">Later</string>
     <string name="title_attribution">Map data &amp; attributions</string>
     <string name="attribution_openmaptiles">© OpenMapTiles (CC BY 4.0, openmaptiles.org)</string>
     <string name="attribution_osm">© OpenStreetMap contributors (ODbL)</string>

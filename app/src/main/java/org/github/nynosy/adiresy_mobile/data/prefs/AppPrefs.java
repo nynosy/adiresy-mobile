@@ -86,6 +86,18 @@ public class AppPrefs {
         prefs.edit().putBoolean(KEY_FIRST_RUN, false).apply();
     }
 
+    // ── Offline data prompt (shown once) ─────────────────────────────────────
+
+    private static final String KEY_OFFLINE_PROMPT_SHOWN = "offline_prompt_shown";
+
+    public boolean hasShownOfflinePrompt() {
+        return prefs.getBoolean(KEY_OFFLINE_PROMPT_SHOWN, false);
+    }
+
+    public void setOfflinePromptShown() {
+        prefs.edit().putBoolean(KEY_OFFLINE_PROMPT_SHOWN, true).apply();
+    }
+
     // ── Language ──────────────────────────────────────────────────────────────
 
     /** Returns the stored language code ("en", "fr", "mg") or "" if not set. */
