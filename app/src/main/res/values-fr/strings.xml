@@ -191,7 +191,7 @@
     <!-- Location permission rationale -->
     <string name="location_rationale_body">Adiresy a besoin de votre position pour trouver les bâtiments à proximité. Vos coordonnées GPS sont envoyées à l\'API adiresy.mg pour rechercher les bâtiments proches de vous. Elles ne sont pas conservées au-delà de la requête et ne sont pas partagées avec des tiers.</string>
     <string name="btn_grant_permission">Autoriser</string>
-    <string name="location_failed_outdoors">Signal faible — réessayez à l\'extérieur</string>
+    <string name="location_failed">Impossible d\'obtenir votre position — réessayez</string>
     <string name="location_permission_denied">Autorisation de localisation refusée — activez-la dans les Paramètres</string>
     <string name="btn_open_settings">Ouvrir les Paramètres</string>
 

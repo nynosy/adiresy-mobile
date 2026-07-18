@@ -193,7 +193,7 @@
     <!-- Location permission rationale -->
     <string name="location_rationale_body">Mila ny toerana misy anao ny Adiresy mba hitadiavana trano akaiky. Ny tanan\'ny GPS-nao dia alefa any amin\'ny API adiresy.mg mba hikarohana trano akaiky anao. Tsy voatahiry mihoatra ny fangatahana izy ireo ary tsy zaraina amin\'ny antoko fahatelo.</string><!-- [MG-REVIEW] -->
     <string name="btn_grant_permission">Omeo alalana</string><!-- [MG-REVIEW] -->
-    <string name="location_failed_outdoors">Malemy ny fandrenesana — andramo any ivelany</string><!-- [MG-REVIEW] -->
+    <string name="location_failed">Tsy azo ny toerana misy anao — andramo indray</string><!-- [MG-REVIEW] -->
     <string name="location_permission_denied">Nolavina ny fahazoan-dàlana amin\'ny toerana — alefaso ao amin\'ny Fandrindrana</string><!-- [MG-REVIEW] -->
     <string name="btn_open_settings">Sokafy ny Fandrindrana</string><!-- [MG-REVIEW] -->
 

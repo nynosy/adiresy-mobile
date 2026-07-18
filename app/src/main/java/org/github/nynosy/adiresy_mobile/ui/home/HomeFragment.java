@@ -82,7 +82,7 @@ public class HomeFragment extends Fragment {
                     binding.btnLocateMe.setEnabled(true);
                     binding.progressLocating.setVisibility(View.GONE);
                     Snackbar.make(binding.getRoot(),
-                            R.string.location_failed_outdoors, Snackbar.LENGTH_LONG).show();
+                            R.string.location_failed, Snackbar.LENGTH_LONG).show();
                     break;
             }
         });

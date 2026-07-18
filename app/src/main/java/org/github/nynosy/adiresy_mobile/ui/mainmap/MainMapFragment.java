@@ -1,6 +1,8 @@
 package org.github.nynosy.adiresy_mobile.ui.mainmap;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +13,7 @@ import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.LinearInterpolator;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -88,6 +91,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
 
     private MapLibreMap    mapRef;
     private BookmarkEntity pendingFocusBookmark;
+    private ObjectAnimator locateSpinAnimator;
 
     private final ActivityResultLauncher<String> locationPermissionLauncher =
             registerForActivityResult(
@@ -362,6 +366,23 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
                 }).show();
     }
 
+    private void startLocateSpin() {
+        if (locateSpinAnimator != null && locateSpinAnimator.isRunning()) return;
+        locateSpinAnimator = ObjectAnimator.ofFloat(binding.fabLocate, View.ROTATION, 0f, 360f);
+        locateSpinAnimator.setDuration(900);
+        locateSpinAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        locateSpinAnimator.setInterpolator(new LinearInterpolator());
+        locateSpinAnimator.start();
+    }
+
+    private void stopLocateSpin() {
+        if (locateSpinAnimator != null) {
+            locateSpinAnimator.cancel();
+            locateSpinAnimator = null;
+        }
+        if (binding != null) binding.fabLocate.setRotation(0f);
+    }
+
     // ── Location / nearby observations ────────────────────────────────────────
 
     private void observeLocation() {
@@ -369,17 +390,21 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
             switch (state) {
                 case REQUESTING:
                     binding.fabLocate.setEnabled(false);
+                    startLocateSpin();
                     break;
                 case ACQUIRED:
                     binding.fabLocate.setEnabled(true);
+                    stopLocateSpin();
                     break;
                 case FAILED:
                     binding.fabLocate.setEnabled(true);
+                    stopLocateSpin();
                     Snackbar.make(binding.getRoot(),
-                            R.string.location_failed_outdoors, Snackbar.LENGTH_LONG).show();
+                            R.string.location_failed, Snackbar.LENGTH_LONG).show();
                     break;
                 default:
                     binding.fabLocate.setEnabled(true);
+                    stopLocateSpin();
                     break;
             }
         });
@@ -525,6 +550,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     public void onDestroyView() {
         super.onDestroyView();
         homeViewModel.cancelLocating();
+        stopLocateSpin();
         bookmarkPinController.shutdown();
         binding.mapView.onDestroy();
         binding = null;

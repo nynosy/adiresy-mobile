@@ -17,7 +17,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.Transformations;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.github.nynosy.adiresy_mobile.BuildConfig;
 import org.github.nynosy.adiresy_mobile.data.AdiresyRepository;
@@ -29,6 +31,11 @@ public class HomeViewModel extends AndroidViewModel {
     public enum LocationState { IDLE, REQUESTING, ACQUIRED, FAILED }
 
     private static final long GPS_TIMEOUT_MS = 30_000;
+    /** GPS struggles indoors — exactly when a user wants their current building's
+     *  address. If it hasn't produced a fix shortly, also listen on the network
+     *  provider (WiFi/cell — coarser, but works indoors) and take whichever
+     *  source responds first. */
+    private static final long NETWORK_FALLBACK_DELAY_MS = 8_000;
 
     // Debug-only: MockLocationReceiver posts here; observed in constructor.
     private static final MutableLiveData<double[]> sDebugInject = new MutableLiveData<>();
@@ -47,11 +54,13 @@ public class HomeViewModel extends AndroidViewModel {
 
     private LocationManager locationManager;
     private LocationListener locationListener;
+    private final Set<String> activeProviders = new HashSet<>();
     private final Handler  timeoutHandler  = new Handler(Looper.getMainLooper());
     private final Runnable timeoutRunnable = () -> {
         stopLocationUpdates();
         locationState.setValue(LocationState.FAILED);
     };
+    private Runnable networkFallbackRunnable;
 
     public HomeViewModel(@NonNull Application application) {
         super(application);
@@ -87,6 +96,14 @@ public class HomeViewModel extends AndroidViewModel {
         locationManager = (LocationManager) getApplication()
                 .getSystemService(android.content.Context.LOCATION_SERVICE);
 
+        boolean gpsEnabled     = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean networkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+        if (!gpsEnabled && !networkEnabled) {
+            locationState.setValue(LocationState.FAILED);
+            return;
+        }
+
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location loc) {
@@ -98,8 +115,11 @@ public class HomeViewModel extends AndroidViewModel {
 
             @Override
             public void onProviderDisabled(@NonNull String provider) {
-                stopLocationUpdates();
-                locationState.setValue(LocationState.FAILED);
+                activeProviders.remove(provider);
+                if (activeProviders.isEmpty()) {
+                    stopLocationUpdates();
+                    locationState.setValue(LocationState.FAILED);
+                }
             }
 
             @SuppressWarnings("deprecation")
@@ -107,20 +127,11 @@ public class HomeViewModel extends AndroidViewModel {
             public void onStatusChanged(String provider, int status, Bundle extras) {}
         };
 
-        // Pick the best available provider; fail fast if neither is enabled
-        String provider;
-        if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            provider = LocationManager.GPS_PROVIDER;
-        } else if (locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            provider = LocationManager.NETWORK_PROVIDER;
-        } else {
-            stopLocationUpdates();
-            locationState.setValue(LocationState.FAILED);
-            return;
-        }
+        String primaryProvider = gpsEnabled
+                ? LocationManager.GPS_PROVIDER : LocationManager.NETWORK_PROVIDER;
 
         // Serve a cached fix immediately if one is available
-        Location lastKnown = locationManager.getLastKnownLocation(provider);
+        Location lastKnown = locationManager.getLastKnownLocation(primaryProvider);
         if (lastKnown != null) {
             location.setValue(lastKnown);
             locationState.setValue(LocationState.ACQUIRED);
@@ -129,9 +140,24 @@ public class HomeViewModel extends AndroidViewModel {
         }
 
         // No cached fix — register for updates and start the timeout guard
+        registerProvider(primaryProvider);
+        timeoutHandler.postDelayed(timeoutRunnable, GPS_TIMEOUT_MS);
+
+        // GPS-only would leave indoor users waiting the full timeout with no
+        // fix at all; bring in the network provider partway through instead.
+        if (gpsEnabled && networkEnabled) {
+            networkFallbackRunnable = () -> {
+                networkFallbackRunnable = null;
+                registerProvider(LocationManager.NETWORK_PROVIDER);
+            };
+            timeoutHandler.postDelayed(networkFallbackRunnable, NETWORK_FALLBACK_DELAY_MS);
+        }
+    }
+
+    private void registerProvider(String provider) {
+        activeProviders.add(provider);
         locationManager.requestLocationUpdates(provider, 0, 0, locationListener,
                 Looper.getMainLooper());
-        timeoutHandler.postDelayed(timeoutRunnable, GPS_TIMEOUT_MS);
     }
 
     public void cancelLocating() {
@@ -143,6 +169,11 @@ public class HomeViewModel extends AndroidViewModel {
 
     private void stopLocationUpdates() {
         timeoutHandler.removeCallbacks(timeoutRunnable);
+        if (networkFallbackRunnable != null) {
+            timeoutHandler.removeCallbacks(networkFallbackRunnable);
+            networkFallbackRunnable = null;
+        }
+        activeProviders.clear();
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }

@@ -157,7 +157,7 @@
     <!-- Location permission rationale -->
     <string name="location_rationale_body">Adiresy needs your location to find nearby buildings. Your GPS coordinates are sent to the adiresy.mg API to look up buildings close to you. They are not stored beyond the request and are not shared with third parties.</string>
     <string name="btn_grant_permission">Grant permission</string>
-    <string name="location_failed_outdoors">Signal weak — try again outdoors</string>
+    <string name="location_failed">Couldn\'t get your location — try again</string>
     <string name="location_permission_denied">Location permission denied — enable it in Settings</string>
     <string name="btn_open_settings">Open Settings</string>
 
