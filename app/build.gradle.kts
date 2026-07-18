@@ -32,8 +32,8 @@ android {
         // it can't resolve a computed or variable value. Bump both before
         // tagging a release: versionName must match the vX.Y.Z tag, and
         // versionCode must increase by at least 1.
-        versionCode = 34
-        versionName = "1.0.14"
+        versionCode = 35
+        versionName = "1.0.15"
 
         // Real devices are always arm64-v8a or armeabi-v7a; excluding x86/x86_64
         // (emulator-only) keeps the universal APK close to the budget-hardware
