@@ -23,6 +23,14 @@ android {
         }
     }
 
+    // AGP embeds a "Dependency metadata" block in the APK signing block by
+    // default (Play Console SDK transparency). F-Droid's reproducible-build
+    // checker rejects any unrecognized extra signing block, so it must be off.
+    dependenciesInfo {
+        includeInApk = false
+        includeInBundle = false
+    }
+
     defaultConfig {
         applicationId = "org.github.nynosy.adiresy_mobile"
         minSdk = 24
@@ -32,8 +40,8 @@ android {
         // it can't resolve a computed or variable value. Bump both before
         // tagging a release: versionName must match the vX.Y.Z tag, and
         // versionCode must increase by at least 1.
-        versionCode = 35
-        versionName = "1.0.15"
+        versionCode = 36
+        versionName = "1.0.16"
 
         // Real devices are always arm64-v8a or armeabi-v7a; excluding x86/x86_64
         // (emulator-only) keeps the universal APK close to the budget-hardware
