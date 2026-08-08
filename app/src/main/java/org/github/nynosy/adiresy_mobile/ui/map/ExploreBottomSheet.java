@@ -143,9 +143,9 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
         binding.labelLevelTitle.setText(childLevelLabel(unit.type));
 
         switch (unit.type) {
-            case "region":   viewModel.loadDistricts(unit.uuid);  break;
-            case "district": viewModel.loadCommunes(unit.uuid);   break;
-            case "commune":  viewModel.loadFokontany(unit.uuid);  break;
+            case "region":   viewModel.loadDistricts(unit.pcode);  break;
+            case "district": viewModel.loadCommunes(unit.pcode);   break;
+            case "commune":  viewModel.loadFokontany(unit.pcode);  break;
             default:
                 viewModel.showBoundary(unit);
                 dismiss();
@@ -178,9 +178,9 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
             if (parent == null) { loadRegions(); return; }
             binding.labelLevelTitle.setText(childLevelLabel(parent.type));
             switch (parent.type) {
-                case "region":   viewModel.loadDistricts(parent.uuid);  break;
-                case "district": viewModel.loadCommunes(parent.uuid);   break;
-                case "commune":  viewModel.loadFokontany(parent.uuid);  break;
+                case "region":   viewModel.loadDistricts(parent.pcode);  break;
+                case "district": viewModel.loadCommunes(parent.pcode);   break;
+                case "commune":  viewModel.loadFokontany(parent.pcode);  break;
             }
         }
     }

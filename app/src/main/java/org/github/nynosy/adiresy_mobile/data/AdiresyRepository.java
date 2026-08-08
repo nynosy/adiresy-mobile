@@ -393,13 +393,24 @@ public class AdiresyRepository {
         return e;
     }
 
+    /** Regions have no parent; every other level's parent pcode is returned
+     *  under a level-specific key on the DTO (see AdminUnitDto). */
+    private static String parentPcodeFor(String type, AdminUnitDto dto) {
+        switch (type) {
+            case "district":  return dto.regionPcode;
+            case "commune":   return dto.districtPcode;
+            case "fokontany": return dto.communePcode;
+            default:          return null;
+        }
+    }
+
     private AdminUnitEntity toAdminEntity(AdminUnitDto dto, String type) {
         AdminUnitEntity e = new AdminUnitEntity();
         e.pcode         = dto.pcode != null ? dto.pcode : dto.id;
         e.type          = type;
         e.uuid          = dto.id;
         e.name          = dto.name;
-        e.parentUuid    = dto.parentUuid;
+        e.parentUuid    = parentPcodeFor(type, dto);
         e.bboxJson      = dto.bbox      != null ? gson.toJson(dto.bbox)     : null;
         e.centroidJson  = dto.centroid  != null ? gson.toJson(dto.centroid) : null;
         e.cachedAt      = System.currentTimeMillis();
