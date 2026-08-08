@@ -3,14 +3,24 @@ package org.github.nynosy.adiresy_mobile.ui.code;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import org.github.nynosy.adiresy_mobile.R;
+import org.github.nynosy.adiresy_mobile.data.BookmarkRepository;
+import org.github.nynosy.adiresy_mobile.data.cache.AddressEntity;
+import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
 import org.github.nynosy.adiresy_mobile.databinding.ActivityCodeDetailBinding;
 import org.github.nynosy.adiresy_mobile.map.QrCodeGenerator;
+import org.github.nynosy.adiresy_mobile.ui.saved.SaveToListBottomSheet;
 
 import java.util.Locale;
 
@@ -20,6 +30,12 @@ public class CodeDetailActivity extends AppCompatActivity {
 
     private ActivityCodeDetailBinding binding;
     private CodeDetailViewModel viewModel;
+    private BookmarkRepository bookmarkRepository;
+
+    private String currentCode;
+    private AddressEntity currentAddress;
+    private BookmarkEntity currentBookmark;
+    private MenuItem bookmarkItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +50,41 @@ public class CodeDetailActivity extends AppCompatActivity {
         }
 
         viewModel = new ViewModelProvider(this).get(CodeDetailViewModel.class);
+        bookmarkRepository = BookmarkRepository.getInstance(this);
 
         // Code comes either from EXTRA or from a deep link URI
-        String code = resolveCode(getIntent());
-        if (code != null && !code.isEmpty()) {
-            viewModel.loadCode(code);
+        currentCode = resolveCode(getIntent());
+        if (currentCode != null && !currentCode.isEmpty()) {
+            viewModel.loadCode(currentCode);
         }
 
         observeViewModel();
         wireButtons();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // The Save-to-list sheet can add a bookmark while this screen is behind it;
+        // re-check on return so the toolbar icon reflects the current state.
+        refreshBookmarkState();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_code_detail, menu);
+        bookmarkItem = menu.findItem(R.id.action_bookmark);
+        updateBookmarkIcon(currentBookmark != null);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@androidx.annotation.NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_bookmark) {
+            onBookmarkToggle();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     /** "Ankatsakantsa Sud (ANKA)" — omits the parens if no code is available. */
@@ -81,6 +123,9 @@ public class CodeDetailActivity extends AppCompatActivity {
             binding.errorGroup.setVisibility(View.GONE);
 
             if (result.data != null) {
+                currentAddress = result.data;
+                refreshBookmarkState();
+
                 binding.labelCode.setText(result.data.canonicalCode);
                 binding.imageQrCode.setImageBitmap(QrCodeGenerator.generate(
                         getString(R.string.share_text, result.data.canonicalCode)));
@@ -121,6 +166,52 @@ public class CodeDetailActivity extends AppCompatActivity {
                 startActivity(new Intent(Intent.ACTION_VIEW, uri));
             }
         });
+    }
+
+    // ── Bookmarks ──────────────────────────────────────────────────────────────
+
+    private void refreshBookmarkState() {
+        if (currentCode == null || currentCode.isEmpty()) return;
+        new Thread(() -> {
+            BookmarkEntity existing = bookmarkRepository.findByCodeSync(currentCode);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                currentBookmark = existing;
+                updateBookmarkIcon(existing != null);
+            });
+        }).start();
+    }
+
+    private void onBookmarkToggle() {
+        if (currentAddress == null) return;
+
+        if (currentBookmark != null) {
+            BookmarkEntity snapshot = currentBookmark;
+            currentBookmark = null;
+            updateBookmarkIcon(false);
+            bookmarkRepository.deleteBookmarkByCode(currentCode, () ->
+                    Snackbar.make(binding.getRoot(),
+                            getString(R.string.bookmark_removed_from, ""),
+                            Snackbar.LENGTH_LONG)
+                            .setAction(R.string.bookmark_undo, v ->
+                                    bookmarkRepository.insertBookmark(snapshot, () -> {
+                                        currentBookmark = snapshot;
+                                        updateBookmarkIcon(true);
+                                    }))
+                            .show());
+        } else {
+            SaveToListBottomSheet.forAddress(
+                    currentAddress.canonicalCode,
+                    currentAddress.latitude, currentAddress.longitude,
+                    currentAddress.fokontanyName, currentAddress.communeName,
+                    currentAddress.districtName, currentAddress.regionName)
+                    .show(getSupportFragmentManager(), SaveToListBottomSheet.TAG);
+        }
+    }
+
+    private void updateBookmarkIcon(boolean saved) {
+        if (bookmarkItem == null) return;
+        bookmarkItem.setIcon(saved ? R.drawable.ic_bookmark : R.drawable.ic_bookmark_border);
+        bookmarkItem.setTitle(saved ? R.string.cd_bookmark_saved : R.string.cd_bookmark_unsaved);
     }
 
     @Override
