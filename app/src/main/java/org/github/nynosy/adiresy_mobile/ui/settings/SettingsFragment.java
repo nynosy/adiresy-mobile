@@ -198,7 +198,8 @@ public class SettingsFragment extends Fragment {
         String message = getString(R.string.attribution_openmaptiles) + "\n"
                 + getString(R.string.attribution_osm) + "\n"
                 + getString(R.string.attribution_buildings) + "\n"
-                + getString(R.string.attribution_admin) + "\n\n"
+                + getString(R.string.attribution_admin) + "\n"
+                + getString(R.string.attribution_fonts) + "\n\n"
                 + getString(R.string.attribution_unofficial);
 
         new MaterialAlertDialogBuilder(requireContext())

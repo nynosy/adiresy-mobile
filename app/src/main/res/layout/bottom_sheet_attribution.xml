@@ -38,6 +38,13 @@
         android:layout_height="wrap_content"
         android:text="@string/attribution_admin"
         android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/attribution_fonts"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
         android:layout_marginBottom="16dp" />
 
     <TextView

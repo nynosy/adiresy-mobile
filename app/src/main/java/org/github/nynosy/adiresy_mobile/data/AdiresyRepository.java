@@ -161,6 +161,8 @@ public class AdiresyRepository {
                         entities.add(e);
                     }
                     out.postValue(Result.success(entities));
+                } else if (resp.code() == 404) {
+                    out.postValue(Result.success(new ArrayList<>()));
                 } else {
                     if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(
