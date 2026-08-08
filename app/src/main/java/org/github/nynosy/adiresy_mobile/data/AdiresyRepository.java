@@ -412,19 +412,20 @@ public class AdiresyRepository {
         int page = 1;
         boolean gotFirstPage = false;
         while (true) {
-            Response<PaginatedDto<AdminUnitDto>> resp;
+            Response<ApiResponse<PaginatedDto<AdminUnitDto>>> resp;
             switch (type) {
                 case "region":   resp = api.listRegions(page, null).execute();        break;
                 case "district": resp = api.listDistricts(parentUuid, page).execute(); break;
                 case "commune":  resp = api.listCommunes(parentUuid, page).execute();  break;
                 default:         resp = api.listFokontany(parentUuid, page).execute(); break;
             }
-            if (!resp.isSuccessful() || resp.body() == null) {
+            ApiResponse<PaginatedDto<AdminUnitDto>> env = resp.body();
+            if (!resp.isSuccessful() || env == null || env.data == null) {
                 if (resp.code() == 401) deviceAuth.invalidateToken();
                 return gotFirstPage ? syntheticPage(all) : null;
             }
             gotFirstPage = true;
-            PaginatedDto<AdminUnitDto> body = resp.body();
+            PaginatedDto<AdminUnitDto> body = env.data;
             if (body.results != null) all.addAll(body.results);
             if (body.next == null) break;
             page++;

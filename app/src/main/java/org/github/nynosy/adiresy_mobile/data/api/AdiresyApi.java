@@ -50,7 +50,7 @@ public interface AdiresyApi {
     // ── Geo — regions ─────────────────────────────────────────────────────────
 
     @GET("api/v1/geo/regions/")
-    Call<PaginatedDto<AdminUnitDto>> listRegions(@Query("page") int page,
+    Call<ApiResponse<PaginatedDto<AdminUnitDto>>> listRegions(@Query("page") int page,
                                                  @Query("search") String search);
 
     @GET("api/v1/geo/regions/{pcode}/geometry/")
@@ -59,7 +59,7 @@ public interface AdiresyApi {
     // ── Geo — districts ───────────────────────────────────────────────────────
 
     @GET("api/v1/geo/districts/")
-    Call<PaginatedDto<AdminUnitDto>> listDistricts(@Query("region") String regionUuid,
+    Call<ApiResponse<PaginatedDto<AdminUnitDto>>> listDistricts(@Query("region") String regionUuid,
                                                    @Query("page") int page);
 
     @GET("api/v1/geo/districts/{pcode}/geometry/")
@@ -68,7 +68,7 @@ public interface AdiresyApi {
     // ── Geo — communes ────────────────────────────────────────────────────────
 
     @GET("api/v1/geo/communes/")
-    Call<PaginatedDto<AdminUnitDto>> listCommunes(@Query("district") String districtUuid,
+    Call<ApiResponse<PaginatedDto<AdminUnitDto>>> listCommunes(@Query("district") String districtUuid,
                                                   @Query("page") int page);
 
     @GET("api/v1/geo/communes/{pcode}/geometry/")
@@ -77,11 +77,11 @@ public interface AdiresyApi {
     // ── Geo — fokontany ───────────────────────────────────────────────────────
 
     @GET("api/v1/geo/fokontany/")
-    Call<PaginatedDto<AdminUnitDto>> listFokontany(@Query("commune") String communeUuid,
+    Call<ApiResponse<PaginatedDto<AdminUnitDto>>> listFokontany(@Query("commune") String communeUuid,
                                                    @Query("page") int page);
 
     @GET("api/v1/geo/fokontany/")
-    Call<PaginatedDto<AdminUnitDto>> searchFokontany(@Query("search") String name);
+    Call<ApiResponse<PaginatedDto<AdminUnitDto>>> searchFokontany(@Query("search") String name);
 
     @GET("api/v1/geo/fokontany/{pcode}/geometry/")
     Call<GeoJsonGeometryDto> fokontanyGeometry(@Path("pcode") String pcode);
