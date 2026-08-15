@@ -14,18 +14,11 @@ Every design decision — offline-first data, a ≤25 MB base install, Java + de
 
 ## Features
 
-1. **Find** the Adiresy code for a building and share it as a link.
+1. **Find** the Adiresy code for a building and share it as a link or QR code.
 2. **Resolve** a shared code and see the building on a map.
-3. **Navigate** to that building — offline routing, turn-by-turn UI, and spoken guidance, rolling out in phases.
+3. **Navigate** to that building using your preferred maps app.
 
-| Phase | Theme | Status |
-|-------|-------|--------|
-| 1 | Core offline addressing — map, locate-me, nearby buildings, code resolve/share, search, favourites, trilingual UI, offline map manager | In progress |
-| 2 | Offline routing (on-device A→B route calculation) | Planned |
-| 3 | Turn-by-turn navigation UI | Planned |
-| 4 | Offline voice guidance (English, French, Malagasy) | Planned |
-
-Each phase ships independently and leaves the app in a coherent, releasable state.
+Core offline addressing — map, locate-me, nearby buildings, code resolve/share, search, favourites, trilingual UI, offline map manager.
 
 ## Design constraints
 
@@ -35,9 +28,9 @@ These come from the realities of the Malagasy market, not preference:
 - **Budget hardware.** Built and tuned for 1–2 GB Android Go devices (Xiaomi, Tecno/Infinix/itel, Samsung A/M-series).
 - **Cheap on data and battery.** No background location or wake-locks outside active navigation; downloads are Wi-Fi-only by default, resumable, and interruption-safe.
 - **Malagasy first.** Malagasy, French, and English are all first-class UI languages with full string parity.
-- **Privacy-respecting.** No account, no analytics by default. GPS coordinates are sent to the Adiresy API only for explicit, user-initiated lookups (locate-me, building tap, search, routing fallback) — never tracked, batched, or persisted server-side by the app. Full details: [Privacy Policy](https://nynosy.github.io/adiresy-mobile/).
+- **Privacy-respecting.** No account, no analytics by default. GPS coordinates are sent to the Adiresy API only for explicit, user-initiated lookups (locate-me, building tap, search) — never tracked, batched, or persisted server-side by the app. Full details: [Privacy Policy](https://nynosy.github.io/adiresy-mobile/).
 
-See [`docs/Adiresy-Android-Specification.md`](docs/Adiresy-Android-Specification.md) for the full technical specification, including architecture, data pipeline, API integration, and phased feature detail.
+See [`docs/Adiresy-Android-Specification.md`](docs/Adiresy-Android-Specification.md) for the full technical specification, including architecture, data pipeline, and API integration.
 
 ## Tech stack
 
@@ -50,7 +43,6 @@ See [`docs/Adiresy-Android-Specification.md`](docs/Adiresy-Android-Specification
 | Networking | Retrofit + OkHttp against the Adiresy REST API |
 | Local storage | Room (resolved codes, admin units, search history, favourites) |
 | Background downloads | WorkManager (resumable, Wi-Fi-constrained) |
-| Offline routing (Phase 2) | GraphHopper |
 
 ## Getting started
 
@@ -86,15 +78,13 @@ app/src/main/java/org/github/nynosy/adiresy_mobile/
 ├─ ui/          Activities, Fragments, adapters
 ├─ map/         MapLibre setup, style loading, offline tile source
 ├─ data/        Retrofit API + repository, Room cache, app prefs
-├─ routing/     Phase 2 — GraphHopper wrapper
-├─ nav/         Phase 3 — turn-by-turn guidance
-├─ voice/       Phase 4 — voice guidance
+├─ download/    Offline map tile + manifest downloading (WorkManager)
 └─ i18n/        Locale management
 ```
 
 ## Documentation
 
-- [Technical specification](docs/Adiresy-Android-Specification.md) — full architecture, data pipeline, API integration, design system, and phased roadmap.
+- [Technical specification](docs/Adiresy-Android-Specification.md) — full architecture, data pipeline, API integration, and design system.
 
 ## License
 
