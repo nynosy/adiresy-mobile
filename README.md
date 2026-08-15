@@ -35,7 +35,7 @@ These come from the realities of the Malagasy market, not preference:
 - **Budget hardware.** Built and tuned for 1–2 GB Android Go devices (Xiaomi, Tecno/Infinix/itel, Samsung A/M-series).
 - **Cheap on data and battery.** No background location or wake-locks outside active navigation; downloads are Wi-Fi-only by default, resumable, and interruption-safe.
 - **Malagasy first.** Malagasy, French, and English are all first-class UI languages with full string parity.
-- **Privacy-respecting.** No account, no analytics by default. GPS coordinates are sent to the Adiresy API only for explicit, user-initiated lookups (locate-me, building tap, search, routing fallback) — never tracked, batched, or persisted server-side by the app.
+- **Privacy-respecting.** No account, no analytics by default. GPS coordinates are sent to the Adiresy API only for explicit, user-initiated lookups (locate-me, building tap, search, routing fallback) — never tracked, batched, or persisted server-side by the app. Full details: [Privacy Policy](https://nynosy.github.io/adiresy-mobile/).
 
 See [`docs/Adiresy-Android-Specification.md`](docs/Adiresy-Android-Specification.md) for the full technical specification, including architecture, data pipeline, API integration, and phased feature detail.
 
