@@ -16,3 +16,7 @@ local.properties
 *.jks
 *.keystore
 /.claude/
+.env
+.env.*
+/playstore/
+/certs/

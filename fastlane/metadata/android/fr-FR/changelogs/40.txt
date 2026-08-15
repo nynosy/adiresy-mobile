@@ -1,0 +1,1 @@
+- L'intégration continue génère désormais aussi un Android App Bundle (.aab), nécessaire pour la publication sur Google Play (aucun changement visible).

@@ -42,6 +42,9 @@ jobs:
       - name: Build signed release APKs
         run: ./gradlew assembleRelease
 
+      - name: Build signed release bundle (for Play Store upload)
+        run: ./gradlew bundleRelease
+
       - name: Remove keystore
         if: always()
         run: rm -f release.keystore
@@ -52,5 +55,6 @@ jobs:
         run: |
           gh release create "$GITHUB_REF_NAME" \
             app/build/outputs/apk/release/*.apk \
+            app/build/outputs/bundle/release/app-release.aab \
             --title "$GITHUB_REF_NAME" \
             --generate-notes

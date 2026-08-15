@@ -1,0 +1,1 @@
+- CI now also builds an Android App Bundle (.aab), needed for Google Play publishing (no user-facing change).

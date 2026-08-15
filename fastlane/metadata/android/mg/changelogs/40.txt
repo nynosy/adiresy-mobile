@@ -1,0 +1,1 @@
+- Mamokatra Android App Bundle (.aab) koa ny CI ankehitriny, ilaina hamoahana amin'ny Google Play (tsy misy fiovana hita).
