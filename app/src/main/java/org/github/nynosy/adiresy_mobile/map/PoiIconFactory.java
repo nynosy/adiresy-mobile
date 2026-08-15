@@ -7,11 +7,15 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
+
+import androidx.appcompat.content.res.AppCompatResources;
 
 import org.maplibre.android.maps.Style;
 
 import org.github.nynosy.adiresy_mobile.R;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -48,16 +52,65 @@ public final class PoiIconFactory {
     public static List<Entry> allEntries(Context ctx) {
         float dp = ctx.getResources().getDisplayMetrics().density;
         int sz = Math.round(SIZE_DP * dp);
-        return Arrays.asList(
+        List<Entry> entries = new ArrayList<>(Arrays.asList(
             new Entry("poi_healthcare", healthcare(sz), R.string.poi_label_healthcare),
             new Entry("poi_education",  education(sz),  R.string.poi_label_education),
             new Entry("poi_food",       food(sz),       R.string.poi_label_food),
             new Entry("poi_finance",    finance(sz),    R.string.poi_label_finance),
             new Entry("poi_lodging",    lodging(sz),    R.string.poi_label_lodging),
             new Entry("poi_shopping",   shopping(sz),   R.string.poi_label_shopping),
-            new Entry("poi_fuel",       fuel(sz),       R.string.poi_label_fuel),
-            new Entry("poi_default",    defaultIcon(sz),R.string.poi_label_default)
-        );
+            new Entry("poi_fuel",       fuel(sz),       R.string.poi_label_fuel)
+        ));
+        // Categories below reuse real Maki pictograms (CC0) instead of hand-drawn
+        // glyphs -- see docs/THIRD_PARTY_LICENSES.md. Grouped by the poi-overlay.yml
+        // OSM tag values they cover; StyleLoader's icon-image match must stay in sync.
+        entries.addAll(Arrays.asList(
+            new Entry("poi_veterinary", vectorIcon(ctx, sz, 0xFF6D4C41, R.drawable.ic_maki_veterinary), R.string.poi_label_veterinary),
+            new Entry("poi_library", vectorIcon(ctx, sz, 0xFF3949AB, R.drawable.ic_maki_library), R.string.poi_label_library),
+            new Entry("poi_police", vectorIcon(ctx, sz, 0xFF1A237E, R.drawable.ic_maki_police), R.string.poi_label_police),
+            new Entry("poi_fire", vectorIcon(ctx, sz, 0xFFBF360C, R.drawable.ic_maki_fire_station), R.string.poi_label_fire),
+            new Entry("poi_government", vectorIcon(ctx, sz, 0xFF5D4037, R.drawable.ic_maki_town_hall), R.string.poi_label_government),
+            new Entry("poi_post", vectorIcon(ctx, sz, 0xFFF9A825, R.drawable.ic_maki_post), R.string.poi_label_post),
+            new Entry("poi_embassy", vectorIcon(ctx, sz, 0xFF455A64, R.drawable.ic_maki_embassy), R.string.poi_label_embassy),
+            new Entry("poi_worship", vectorIcon(ctx, sz, 0xFF6A1B9A, R.drawable.ic_maki_place_of_worship), R.string.poi_label_worship),
+            new Entry("poi_cinema", vectorIcon(ctx, sz, 0xFF303F9F, R.drawable.ic_maki_cinema), R.string.poi_label_cinema),
+            new Entry("poi_theatre", vectorIcon(ctx, sz, 0xFF4527A0, R.drawable.ic_maki_theatre), R.string.poi_label_theatre),
+            new Entry("poi_parking", vectorIcon(ctx, sz, 0xFF0288D1, R.drawable.ic_maki_parking), R.string.poi_label_parking),
+            new Entry("poi_bus", vectorIcon(ctx, sz, 0xFFF57C00, R.drawable.ic_maki_bus), R.string.poi_label_bus),
+            new Entry("poi_ferry", vectorIcon(ctx, sz, 0xFF00838F, R.drawable.ic_maki_ferry), R.string.poi_label_ferry),
+            new Entry("poi_rail", vectorIcon(ctx, sz, 0xFF37474F, R.drawable.ic_maki_rail), R.string.poi_label_rail),
+            new Entry("poi_care", vectorIcon(ctx, sz, 0xFFC2185B, R.drawable.ic_maki_heart), R.string.poi_label_care),
+            new Entry("poi_prison", vectorIcon(ctx, sz, 0xFF424242, R.drawable.ic_maki_prison), R.string.poi_label_prison),
+            new Entry("poi_taxi", vectorIcon(ctx, sz, 0xFFFBC02D, R.drawable.ic_maki_taxi), R.string.poi_label_taxi),
+            new Entry("poi_car", vectorIcon(ctx, sz, 0xFF0277BD, R.drawable.ic_maki_car), R.string.poi_label_car),
+            new Entry("poi_bicycle_rental", vectorIcon(ctx, sz, 0xFF43A047, R.drawable.ic_maki_bicycle_share), R.string.poi_label_bicycle_rental),
+            new Entry("poi_bicycle", vectorIcon(ctx, sz, 0xFF2E7D32, R.drawable.ic_maki_bicycle), R.string.poi_label_bicycle),
+            new Entry("poi_toilets", vectorIcon(ctx, sz, 0xFF616161, R.drawable.ic_maki_toilet), R.string.poi_label_toilets),
+            new Entry("poi_water", vectorIcon(ctx, sz, 0xFF039BE5, R.drawable.ic_maki_drinking_water), R.string.poi_label_water),
+            new Entry("poi_shelter", vectorIcon(ctx, sz, 0xFF8D6E63, R.drawable.ic_maki_shelter), R.string.poi_label_shelter),
+            new Entry("poi_charging", vectorIcon(ctx, sz, 0xFF558B2F, R.drawable.ic_maki_charging_station), R.string.poi_label_charging),
+            new Entry("poi_pharmacy_chemist", vectorIcon(ctx, sz, 0xFF00897B, R.drawable.ic_maki_pharmacy), R.string.poi_label_pharmacy_chemist),
+            new Entry("poi_bakery", vectorIcon(ctx, sz, 0xFFA1887F, R.drawable.ic_maki_bakery), R.string.poi_label_bakery),
+            new Entry("poi_alcohol", vectorIcon(ctx, sz, 0xFF8D6E63, R.drawable.ic_maki_alcohol_shop), R.string.poi_label_alcohol),
+            new Entry("poi_grocery_misc", vectorIcon(ctx, sz, 0xFF689F38, R.drawable.ic_maki_grocery), R.string.poi_label_grocery_misc),
+            new Entry("poi_shoes", vectorIcon(ctx, sz, 0xFF6D4C41, R.drawable.ic_maki_shoe), R.string.poi_label_shoes),
+            new Entry("poi_jewelry", vectorIcon(ctx, sz, 0xFFAD1457, R.drawable.ic_maki_jewelry_store), R.string.poi_label_jewelry),
+            new Entry("poi_optician", vectorIcon(ctx, sz, 0xFF00ACC1, R.drawable.ic_maki_optician), R.string.poi_label_optician),
+            new Entry("poi_mobile", vectorIcon(ctx, sz, 0xFF1E88E5, R.drawable.ic_maki_mobile_phone), R.string.poi_label_mobile),
+            new Entry("poi_hardware", vectorIcon(ctx, sz, 0xFF757575, R.drawable.ic_maki_hardware), R.string.poi_label_hardware),
+            new Entry("poi_garden_centre", vectorIcon(ctx, sz, 0xFF7CB342, R.drawable.ic_maki_garden_centre), R.string.poi_label_garden_centre),
+            new Entry("poi_travel", vectorIcon(ctx, sz, 0xFF5E35B1, R.drawable.ic_maki_suitcase), R.string.poi_label_travel),
+            new Entry("poi_office", vectorIcon(ctx, sz, 0xFF78909C, R.drawable.ic_maki_building), R.string.poi_label_office),
+            new Entry("poi_museum", vectorIcon(ctx, sz, 0xFF7B1FA2, R.drawable.ic_maki_museum), R.string.poi_label_museum),
+            new Entry("poi_information", vectorIcon(ctx, sz, 0xFF29B6F6, R.drawable.ic_maki_information), R.string.poi_label_information),
+            new Entry("poi_attraction", vectorIcon(ctx, sz, 0xFFFB8C00, R.drawable.ic_maki_attraction), R.string.poi_label_attraction),
+            new Entry("poi_park", vectorIcon(ctx, sz, 0xFF388E3C, R.drawable.ic_maki_park), R.string.poi_label_park),
+            new Entry("poi_sports", vectorIcon(ctx, sz, 0xFF9CCC65, R.drawable.ic_maki_pitch), R.string.poi_label_sports),
+            new Entry("poi_swimming", vectorIcon(ctx, sz, 0xFF26C6DA, R.drawable.ic_maki_swimming), R.string.poi_label_swimming),
+            new Entry("poi_shop_generic", vectorIcon(ctx, sz, 0xFF9E9E9E, R.drawable.ic_maki_shop), R.string.poi_label_shop_generic)
+        ));
+        entries.add(new Entry("poi_default", defaultIcon(sz), R.string.poi_label_default));
+        return entries;
     }
 
     /** Adds all POI icons to the given style. Call inside the setStyle() callback. */
@@ -178,6 +231,17 @@ public final class PoiIconFactory {
         c.drawCircle(cx, cy - r * 0.32f, r * 0.13f, p);
         Paint sp = stroke(sz, 0.13f);
         c.drawLine(cx, cy - r*0.08f, cx, cy + r*0.52f, sp);
+        return bmp(c);
+    }
+
+    /** Colored circle badge with a real Maki pictogram (already white-filled) centered inside. */
+    private static Bitmap vectorIcon(Context ctx, int sz, int bgColor, int drawableRes) {
+        Canvas c = canvas(sz, bgColor);
+        Drawable d = AppCompatResources.getDrawable(ctx, drawableRes);
+        int glyph = Math.round(sz * 0.62f);
+        int off = (sz - glyph) / 2;
+        d.setBounds(off, off, off + glyph, off + glyph);
+        d.draw(c);
         return bmp(c);
     }
 
