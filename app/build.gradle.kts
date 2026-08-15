@@ -65,7 +65,11 @@ android {
 
     splits {
         abi {
-            isEnable = true
+            // AGP refuses to run bundleRelease (the Play Store .aab task) while
+            // ABI-split APK output is enabled (https://issuetracker.google.com/402800800).
+            // Only the GitHub/F-Droid release flow (assembleRelease) needs these
+            // per-ABI + universal APKs; Play's bundle handles ABI splitting itself.
+            isEnable = gradle.startParameter.taskNames.none { it.contains("bundle", ignoreCase = true) }
             reset()
             include("arm64-v8a", "armeabi-v7a")
             isUniversalApk = true
