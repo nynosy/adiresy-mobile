@@ -1,0 +1,1 @@
+- L'intégration continue joint désormais les symboles de débogage natifs de la bibliothèque cartographique à chaque version, pour une meilleure analyse des rapports de plantage (aucun changement visible).

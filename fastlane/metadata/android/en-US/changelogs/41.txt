@@ -1,0 +1,1 @@
+- CI now attaches native debug symbols for the map library to each release, so crash reports can be analyzed properly (no user-facing change).

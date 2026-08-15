@@ -49,12 +49,45 @@ jobs:
         if: always()
         run: rm -f release.keystore
 
+      # MapLibre ships libmaplibre.so as a prebuilt, pre-stripped binary in its AAR —
+      # AGP's own ndk.debugSymbolLevel can't extract symbols from it (there's nothing
+      # local to compile). MapLibre separately publishes matching unstripped .so files
+      # per release, keyed by the same Build ID, so fetch those instead. Best-effort:
+      # a missing/renamed upstream asset must never fail the app release itself.
+      - name: Fetch MapLibre native debug symbols (for Play Console crash symbolication)
+        id: native_symbols
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -e
+          MAPLIBRE_VERSION=$(grep -E '^maplibre[[:space:]]*=[[:space:]]*"' gradle/libs.versions.toml | sed -E 's/.*"([^"]+)".*/\1/')
+          echo "MapLibre version: $MAPLIBRE_VERSION"
+          ASSET="debug-symbols-maplibre-android-opengl-release-android-v${MAPLIBRE_VERSION}.tar.gz"
+          TAG="android-v${MAPLIBRE_VERSION}"
+
+          mkdir -p /tmp/maplibre-symbols
+          gh release download "$TAG" -R maplibre/maplibre-native --pattern "$ASSET" -O /tmp/maplibre-symbols/symbols.tar.gz
+
+          # Keep only the ABIs this app actually ships — see abiFilters in app/build.gradle.kts
+          rm -rf /tmp/native-debug-symbols
+          for ABI in arm64-v8a armeabi-v7a; do
+            mkdir -p "/tmp/native-debug-symbols/$ABI"
+            tar --strip-components=2 -xzf /tmp/maplibre-symbols/symbols.tar.gz \
+              -C "/tmp/native-debug-symbols/$ABI" "./$ABI/libmaplibre.so"
+          done
+
+          (cd /tmp/native-debug-symbols && zip -r "$GITHUB_WORKSPACE/native-debug-symbols.zip" arm64-v8a armeabi-v7a)
+
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          assets=(app/build/outputs/apk/release/*.apk app/build/outputs/bundle/release/app-release.aab)
+          if [ -f native-debug-symbols.zip ]; then
+            assets+=(native-debug-symbols.zip)
+          fi
           gh release create "$GITHUB_REF_NAME" \
-            app/build/outputs/apk/release/*.apk \
-            app/build/outputs/bundle/release/app-release.aab \
+            "${assets[@]}" \
             --title "$GITHUB_REF_NAME" \
             --generate-notes

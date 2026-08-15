@@ -1,0 +1,1 @@
+- Manisy ny symboles de débogage natifs an'ny tetezina sarintany amin'ny famoahana tsirairay ny CI ankehitriny, mba hanadihadiana tsara ny fitatarana (tsy misy fiovana hita).
