@@ -21,6 +21,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -32,6 +33,10 @@ import com.google.android.material.snackbar.Snackbar;
 import org.maplibre.android.camera.CameraUpdateFactory;
 import org.maplibre.android.geometry.LatLng;
 import org.maplibre.android.geometry.LatLngBounds;
+import org.maplibre.android.location.LocationComponent;
+import org.maplibre.android.location.LocationComponentActivationOptions;
+import org.maplibre.android.location.modes.CameraMode;
+import org.maplibre.android.location.modes.RenderMode;
 import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.OnMapReadyCallback;
 import org.maplibre.android.maps.Style;
@@ -53,6 +58,7 @@ import org.github.nynosy.adiresy_mobile.map.AttributionBottomSheet;
 import org.github.nynosy.adiresy_mobile.map.BookmarkPinController;
 import org.github.nynosy.adiresy_mobile.map.MapController;
 import org.github.nynosy.adiresy_mobile.map.PoiIconFactory;
+import org.github.nynosy.adiresy_mobile.map.SelectionPinController;
 import org.github.nynosy.adiresy_mobile.map.StyleLoader;
 import org.github.nynosy.adiresy_mobile.ui.code.CodeDetailActivity;
 import org.github.nynosy.adiresy_mobile.ui.home.CodeCardBottomSheet;
@@ -86,8 +92,9 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     private NearbyAdapter             nearbyAdapter;
     private BottomSheetBehavior<View> sheetBehavior;
 
-    private BookmarkPinController bookmarkPinController;
-    private SearchController      searchController;
+    private BookmarkPinController  bookmarkPinController;
+    private SelectionPinController selectionPinController;
+    private SearchController       searchController;
 
     private MapLibreMap    mapRef;
     private BookmarkEntity pendingFocusBookmark;
@@ -97,8 +104,14 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
             registerForActivityResult(
                     new ActivityResultContracts.RequestPermission(),
                     granted -> {
-                        if (granted) homeViewModel.startLocating();
-                        else showPermissionDenied();
+                        if (granted) {
+                            homeViewModel.startLocating();
+                            if (mapRef != null && mapRef.getStyle() != null) {
+                                configureLocationComponent(mapRef.getStyle());
+                            }
+                        } else {
+                            showPermissionDenied();
+                        }
                     });
 
     // ── Lifecycle ─────────────────────────────────────────────────────────────
@@ -149,11 +162,22 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
 
         bookmarkPinController = new BookmarkPinController(
                 BookmarkRepository.getInstance(requireContext()), requireContext());
+        selectionPinController = new SelectionPinController();
 
         observeLocation();
         observeNearby();
         observeTapResult();
         observeBookmarkFocus();
+
+        // Clears the selection pin once the code card the user opened it for is gone,
+        // whether from Save/dismiss/back — covers every dismissal path in one place.
+        getChildFragmentManager().registerFragmentLifecycleCallbacks(
+                new FragmentManager.FragmentLifecycleCallbacks() {
+                    @Override
+                    public void onFragmentDestroyed(@NonNull FragmentManager fm, @NonNull Fragment f) {
+                        if (f instanceof CodeCardBottomSheet) selectionPinController.clear();
+                    }
+                }, false);
 
         binding.searchView.addTransitionListener((sv, prev, next) -> {
             if (next == SearchView.TransitionState.SHOWING) {
@@ -174,6 +198,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         mapRef = map;
         mapController = new MapController(map);
         bookmarkPinController.setMap(map);
+        selectionPinController.setMap(map);
         configureCompass(map);
 
         String styleUri = styleLoader.getStyleUri(requireContext());
@@ -185,6 +210,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
             PoiIconFactory.addAllToStyle(style, requireContext());
             mapController.jumpTo(MADAGASCAR_CENTRE, ZOOM_OVERVIEW);
             bookmarkPinController.onStyleReady(style);
+            selectionPinController.onStyleReady(style, requireContext());
+            configureLocationComponent(style);
             if (pendingFocusBookmark != null) {
                 mapController.centreOn(
                         new LatLng(pendingFocusBookmark.latitude, pendingFocusBookmark.longitude),
@@ -215,6 +242,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
 
             List<Feature> hits = map.queryRenderedFeatures(screen, "buildings-fill");
             if (!hits.isEmpty()) {
+                selectionPinController.showAt(point.getLatitude(), point.getLongitude());
                 binding.loadingOverlay.setVisibility(View.VISIBLE);
                 homeViewModel.identifyAt(point.getLatitude(), point.getLongitude());
                 return true;
@@ -514,6 +542,44 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
+    /** Enables MapLibre's built-in "my location" dot, foreground-only (see onStart/onStop) —
+     *  purely visual, no camera tracking, so it never fights the app's own camera moves
+     *  (search, "Locate me", bookmark focus, building taps). No-ops without permission;
+     *  called again once permission is granted in case the style already finished loading. */
+    private void configureLocationComponent(Style style) {
+        if (mapRef == null || ContextCompat.checkSelfPermission(requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        LocationComponent locationComponent = mapRef.getLocationComponent();
+        if (!locationComponent.isLocationComponentActivated()) {
+            locationComponent.activateLocationComponent(
+                    LocationComponentActivationOptions.builder(requireContext(), style).build());
+            locationComponent.setRenderMode(RenderMode.NORMAL);
+            locationComponent.setCameraMode(CameraMode.NONE);
+            // Fragment onStart() already fired before the style finished loading
+            // asynchronously, so this activation needs its own onStart() to match.
+            locationComponent.onStart();
+        }
+        locationComponent.setLocationComponentEnabled(true);
+    }
+
+    /** Fragment onStart()/onStop() fire on every foreground/background transition (screen
+     *  lock, app switch) after activation, unlike the one-time onStart() in
+     *  configureLocationComponent() — keeps GPS polling foreground-only, matching the
+     *  "no background location" design goal. No-op before the map/component exist yet. */
+    private void onLocationComponentStart() {
+        if (mapRef == null) return;
+        LocationComponent lc = mapRef.getLocationComponent();
+        if (lc.isLocationComponentActivated()) lc.onStart();
+    }
+
+    private void onLocationComponentStop() {
+        if (mapRef == null) return;
+        LocationComponent lc = mapRef.getLocationComponent();
+        if (lc.isLocationComponentActivated()) lc.onStop();
+    }
+
     private void configureCompass(MapLibreMap map) {
         float dp = requireContext().getResources().getDisplayMetrics().density;
         map.getUiSettings().setCompassGravity(android.view.Gravity.TOP | android.view.Gravity.END);
@@ -534,10 +600,10 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
 
     // ── MapView lifecycle ─────────────────────────────────────────────────────
 
-    @Override public void onStart()     { super.onStart();     if (binding != null) binding.mapView.onStart(); }
+    @Override public void onStart()     { super.onStart();     if (binding != null) binding.mapView.onStart(); onLocationComponentStart(); }
     @Override public void onResume()    { super.onResume();    if (binding != null) binding.mapView.onResume(); }
     @Override public void onPause()     { super.onPause();     if (binding != null) binding.mapView.onPause(); }
-    @Override public void onStop()      { super.onStop();      if (binding != null) binding.mapView.onStop(); }
+    @Override public void onStop()      { super.onStop();      if (binding != null) binding.mapView.onStop(); onLocationComponentStop(); }
     @Override public void onLowMemory() { super.onLowMemory(); if (binding != null) binding.mapView.onLowMemory(); }
 
     @Override
