@@ -12,7 +12,9 @@ fully offline, without contacting any third-party font server.
 - **Copyright:** Noto fonts © Google Inc.
 - **License:** SIL Open Font License (OFL), Version 1.1.
 - **Source of the pre-built glyphs:** https://github.com/openmaptiles/fonts
-  (gh-pages), ranges `0-255` and `256-511`.
+  (gh-pages), ranges `0-255`, `256-511`, and `8192-8447` (Latin scripts plus
+  general punctuation — smart quotes, dashes, ellipsis — commonly present in
+  OSM name tags).
 - **License text:** the full OFL 1.1 is bundled alongside the glyphs at
   `app/src/main/assets/map/glyphs/LICENSE.txt` and ships inside the APK.
 
