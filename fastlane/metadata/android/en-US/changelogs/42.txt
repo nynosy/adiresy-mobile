@@ -1,0 +1,4 @@
+- Added a "my location" dot on the map.
+- Tapping a building now drops a distinct pin marking your selection.
+- Fixed the "removed from list" message showing no list name.
+- Fixed some map labels failing to render offline.

@@ -1,0 +1,4 @@
+- Ajout d'un point « ma position » sur la carte.
+- Toucher un bâtiment affiche désormais une épingle distincte pour marquer votre sélection.
+- Correction du message « retiré de la liste » qui n'affichait pas le nom de la liste.
+- Correction de l'affichage de certaines étiquettes de carte hors ligne.
