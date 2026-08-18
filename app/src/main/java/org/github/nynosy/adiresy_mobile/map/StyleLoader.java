@@ -35,7 +35,7 @@ public class StyleLoader {
             if (styleFile.exists()) return styleFile.toURI().toString();
             if (nationalFile.exists())
                 return buildInlineStyle(nationalFile.getAbsolutePath(), darkMode,
-                        buildingsPath, boundariesPath, poiPath);
+                        buildingsPath, boundariesPath, poiPath, prefs.getNationalZoom());
         }
 
         return "asset://map/" + styleName;
@@ -56,7 +56,8 @@ public class StyleLoader {
     }
 
     private static String buildInlineStyle(String absolutePath, boolean darkMode,
-                                           String buildingsPath, String boundariesPath, String poiPath) {
+                                           String buildingsPath, String boundariesPath, String poiPath,
+                                           int nationalZoom) {
         // MapLibre Native Android 11.7+: local PMTiles via pmtiles://file:// prefix
         String tilesUrl = "pmtiles://file://" + jsonStr(absolutePath);
 
@@ -79,17 +80,21 @@ public class StyleLoader {
         String boundariesUrl = boundariesPath != null ? "pmtiles://file://" + jsonStr(boundariesPath) : null;
         String poiUrl        = poiPath        != null ? "pmtiles://file://" + jsonStr(poiPath)        : null;
 
-        // Extra sources appended after the base source
+        // Extra sources appended after the base source. maxzoom tells MapLibre the
+        // highest zoom tiles actually exist at, so it overzooms (reuses/scales) that
+        // tile beyond it instead of requesting nonexistent higher-zoom tiles and
+        // rendering nothing -- without this, buildings/boundaries/POI all silently
+        // disappear once the camera zooms in past the source's native max.
         StringBuilder extraSources = new StringBuilder();
         if (buildingsUrl != null)
             extraSources.append(",\"buildings\":{\"type\":\"vector\",\"url\":\"")
-                        .append(buildingsUrl).append("\"}");
+                        .append(buildingsUrl).append("\",\"maxzoom\":").append(nationalZoom).append("}");
         if (boundariesUrl != null)
             extraSources.append(",\"boundaries\":{\"type\":\"vector\",\"url\":\"")
-                        .append(boundariesUrl).append("\"}");
+                        .append(boundariesUrl).append("\",\"maxzoom\":12}");
         if (poiUrl != null)
             extraSources.append(",\"poi\":{\"type\":\"vector\",\"url\":\"")
-                        .append(poiUrl).append("\"}");
+                        .append(poiUrl).append("\",\"maxzoom\":").append(nationalZoom).append("}");
 
         // Legacy filter syntax: ["in", "property", value1, value2, ...]
         // Light: upper-left source → shadow falls on right/bottom faces of extruded buildings
@@ -115,7 +120,7 @@ public class StyleLoader {
             + "\"light\":{\"anchor\":\"viewport\",\"color\":\"white\","
             +  "\"intensity\":" + lightIntensity + ",\"position\":[1.5,210,35]},"
             + "\"sources\":{"
-            +   "\"omtiles\":{\"type\":\"vector\",\"url\":\"" + tilesUrl + "\"}"
+            +   "\"omtiles\":{\"type\":\"vector\",\"url\":\"" + tilesUrl + "\",\"maxzoom\":" + nationalZoom + "}"
             +   extraSources
             + "},"
             + "\"layers\":["
