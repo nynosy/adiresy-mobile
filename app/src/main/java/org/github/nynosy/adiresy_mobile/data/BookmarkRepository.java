@@ -198,10 +198,14 @@ public class BookmarkRepository {
         });
     }
 
-    public void deleteBookmarkByCode(String code, Runnable onDone) {
+    /** onDone receives the name of the list the bookmark was removed from
+     *  (empty string if the list no longer exists), for undo-snackbar text. */
+    public void deleteBookmarkByCode(String code, long listId, Callback<String> onDone) {
         executor.execute(() -> {
             bookmarkDao.deleteByCode(code);
-            if (onDone != null) mainHandler.post(onDone);
+            BookmarkListEntity list = listDao.getListByIdSync(listId);
+            String listName = list != null ? list.name : "";
+            if (onDone != null) mainHandler.post(() -> onDone.onResult(listName));
         });
     }
 

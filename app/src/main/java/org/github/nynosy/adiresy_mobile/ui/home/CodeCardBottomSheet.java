@@ -142,11 +142,11 @@ public class CodeCardBottomSheet extends BottomSheetDialogFragment {
             updateBookmarkIcon(false);
             binding.btnBookmark.setEnabled(false);
 
-            bookmarkRepository.deleteBookmarkByCode(code, () -> {
+            bookmarkRepository.deleteBookmarkByCode(code, snapshot.listId, listName -> {
                 binding.btnBookmark.setEnabled(true);
                 if (getView() == null) return;
                 Snackbar.make(requireView(),
-                        getString(R.string.bookmark_removed_from, ""),
+                        getString(R.string.bookmark_removed_from, listName),
                         Snackbar.LENGTH_LONG)
                         .setAction(R.string.bookmark_undo, v ->
                                 bookmarkRepository.insertBookmark(snapshot, () -> {

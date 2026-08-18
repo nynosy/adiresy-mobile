@@ -188,9 +188,9 @@ public class CodeDetailActivity extends AppCompatActivity {
             BookmarkEntity snapshot = currentBookmark;
             currentBookmark = null;
             updateBookmarkIcon(false);
-            bookmarkRepository.deleteBookmarkByCode(currentCode, () ->
+            bookmarkRepository.deleteBookmarkByCode(currentCode, snapshot.listId, listName ->
                     Snackbar.make(binding.getRoot(),
-                            getString(R.string.bookmark_removed_from, ""),
+                            getString(R.string.bookmark_removed_from, listName),
                             Snackbar.LENGTH_LONG)
                             .setAction(R.string.bookmark_undo, v ->
                                     bookmarkRepository.insertBookmark(snapshot, () -> {
