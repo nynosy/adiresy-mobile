@@ -1,0 +1,2 @@
+- Correction de l'icône de favori qui ne se mettait pas à jour immédiatement après l'enregistrement.
+- Correction de la barre d'outils affichée sous la barre d'état sur certains appareils, rendant le bouton favori difficile à toucher.

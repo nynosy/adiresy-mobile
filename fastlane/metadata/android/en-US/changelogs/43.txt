@@ -1,0 +1,2 @@
+- Fixed the bookmark icon not updating immediately after saving a favourite.
+- Fixed the toolbar being drawn under the status bar on some devices, which could make the bookmark button hard to tap.
