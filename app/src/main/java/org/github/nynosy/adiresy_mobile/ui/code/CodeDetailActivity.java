@@ -10,6 +10,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -48,6 +51,15 @@ public class CodeDetailActivity extends AppCompatActivity {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setTitle(R.string.app_name);
         }
+
+        // Edge-to-edge is enforced from API 35+: without this, the toolbar's background
+        // extends behind the status bar but its clickable content doesn't, so touches on
+        // e.g. the bookmark action only land in the thin strip below the status bar.
+        ViewCompat.setOnApplyWindowInsetsListener(binding.toolbar, (v, insets) -> {
+            Insets bars = insets.getInsets(WindowInsetsCompat.Type.statusBars());
+            v.setPadding(v.getPaddingLeft(), bars.top, v.getPaddingRight(), v.getPaddingBottom());
+            return insets;
+        });
 
         viewModel = new ViewModelProvider(this).get(CodeDetailViewModel.class);
         bookmarkRepository = BookmarkRepository.getInstance(this);
@@ -199,12 +211,13 @@ public class CodeDetailActivity extends AppCompatActivity {
                                     }))
                             .show());
         } else {
-            SaveToListBottomSheet.forAddress(
+            SaveToListBottomSheet sheet = SaveToListBottomSheet.forAddress(
                     currentAddress.canonicalCode,
                     currentAddress.latitude, currentAddress.longitude,
                     currentAddress.fokontanyName, currentAddress.communeName,
-                    currentAddress.districtName, currentAddress.regionName)
-                    .show(getSupportFragmentManager(), SaveToListBottomSheet.TAG);
+                    currentAddress.districtName, currentAddress.regionName);
+            sheet.setOnBookmarkSavedListener(this::refreshBookmarkState);
+            sheet.show(getSupportFragmentManager(), SaveToListBottomSheet.TAG);
         }
     }
 

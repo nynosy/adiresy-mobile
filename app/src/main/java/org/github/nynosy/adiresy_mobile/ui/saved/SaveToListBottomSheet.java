@@ -38,6 +38,17 @@ public class SaveToListBottomSheet extends BottomSheetDialogFragment {
 
     private BookmarkListWithCount selectedList;
 
+    /** Notified after a bookmark is actually persisted, so the host screen can refresh its icon. */
+    public interface OnBookmarkSavedListener {
+        void onBookmarkSaved();
+    }
+
+    private OnBookmarkSavedListener saveListener;
+
+    public void setOnBookmarkSavedListener(OnBookmarkSavedListener listener) {
+        this.saveListener = listener;
+    }
+
     public static SaveToListBottomSheet forAddress(String code, double lat, double lng,
                                                    String fokontany, String commune,
                                                    String district, String region) {
@@ -121,6 +132,10 @@ public class SaveToListBottomSheet extends BottomSheetDialogFragment {
                 name, desc, selectedList.list.id, result -> {
                     dismiss();
                     handleSaveResult(result);
+                    if (result.status != BookmarkRepository.SaveStatus.LIMIT_REACHED
+                            && saveListener != null) {
+                        saveListener.onBookmarkSaved();
+                    }
                 });
     }
 

@@ -86,16 +86,7 @@ public class CodeCardBottomSheet extends BottomSheetDialogFragment {
 
         bookmarkRepository = BookmarkRepository.getInstance(requireContext());
 
-        binding.btnBookmark.setEnabled(false);
-        new Thread(() -> {
-            BookmarkEntity existing = bookmarkRepository.findByCodeSync(code);
-            new Handler(Looper.getMainLooper()).post(() -> {
-                if (binding == null) return;
-                currentBookmark = existing;
-                updateBookmarkIcon(existing != null);
-                binding.btnBookmark.setEnabled(true);
-            });
-        }).start();
+        refreshBookmarkState(code);
 
         binding.btnBookmark.setOnClickListener(v -> onBookmarkClicked(
                 code, lat, lng, fokontany, commune, district, region));
@@ -156,9 +147,24 @@ public class CodeCardBottomSheet extends BottomSheetDialogFragment {
                         .show();
             });
         } else {
-            SaveToListBottomSheet.forAddress(code, lat, lng, fokontany, commune, district, region)
-                    .show(getChildFragmentManager(), SaveToListBottomSheet.TAG);
+            SaveToListBottomSheet sheet =
+                    SaveToListBottomSheet.forAddress(code, lat, lng, fokontany, commune, district, region);
+            sheet.setOnBookmarkSavedListener(() -> refreshBookmarkState(code));
+            sheet.show(getChildFragmentManager(), SaveToListBottomSheet.TAG);
         }
+    }
+
+    private void refreshBookmarkState(String code) {
+        binding.btnBookmark.setEnabled(false);
+        new Thread(() -> {
+            BookmarkEntity existing = bookmarkRepository.findByCodeSync(code);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (binding == null) return;
+                currentBookmark = existing;
+                updateBookmarkIcon(existing != null);
+                binding.btnBookmark.setEnabled(true);
+            });
+        }).start();
     }
 
     private void updateBookmarkIcon(boolean saved) {
