@@ -4,6 +4,9 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  # Lets a historical release be rebuilt/republished (e.g. after asset deletion)
+  # by running this workflow against an existing tag ref, without re-pushing it.
+  workflow_dispatch:
 
 permissions:
   contents: write
