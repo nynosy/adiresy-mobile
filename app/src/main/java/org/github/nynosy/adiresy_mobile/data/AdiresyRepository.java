@@ -6,6 +6,8 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,8 @@ import org.github.nynosy.adiresy_mobile.data.api.dto.AddressCodeDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ApiResponse;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AdminUnitDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.CategoryDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.ListingDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.SearchResponseDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.GeoJsonGeometryDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.PaginatedDto;
@@ -29,6 +33,7 @@ import org.github.nynosy.adiresy_mobile.data.cache.AdminUnitEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.AppDatabase;
 import org.github.nynosy.adiresy_mobile.data.cache.SearchHistoryDao;
 import org.github.nynosy.adiresy_mobile.data.cache.SearchHistoryEntity;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class AdiresyRepository {
@@ -340,6 +345,120 @@ public class AdiresyRepository {
         if (a.district != null) return a.district;
         if (a.region   != null) return a.region;
         return null;
+    }
+
+    // ── Directory (establishments / fiches) ─────────────────────────────────────
+    //
+    // Phase A: online browse only (no Room cache yet — offline sync is Phase C,
+    // gated on the key-permission answer; see docs/directory-api-integration.md).
+
+    /** Max listings per page the API allows — used for the one-shot browse fetch. */
+    private static final int LISTINGS_PAGE_SIZE = 200;
+
+    /** The full, unpaginated category set. */
+    public LiveData<Result<List<CategoryDto>>> listCategories() {
+        MutableLiveData<Result<List<CategoryDto>>> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                deviceAuth.ensureToken();
+                Response<ApiResponse<List<CategoryDto>>> resp = api.listCategories().execute();
+                ApiResponse<List<CategoryDto>> body = resp.body();
+                if (resp.isSuccessful() && body != null && body.isOk()) {
+                    out.postValue(Result.success(body.data));
+                } else {
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    out.postValue(Result.error(resp.code(), resp.message()));
+                }
+            } catch (Exception e) {
+                out.postValue(Result.networkError(e));
+            }
+        });
+        return out;
+    }
+
+    /** Directory search / proximity browse — first page only (Phase A).
+     *  Pass null for any unused filter; {@code lat}+{@code lng} must be supplied
+     *  together for a proximity query, with {@code radius} in metres. */
+    public LiveData<Result<List<ListingDto>>> listings(String search, String categoryUuid,
+                                                       Double lat, Double lng, Integer radius) {
+        MutableLiveData<Result<List<ListingDto>>> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                deviceAuth.ensureToken();
+                Response<ApiResponse<PaginatedDto<ListingDto>>> resp = api.listListings(
+                        categoryUuid, null, null, null, null, null, search,
+                        lat, lng, radius, null, null, 1, LISTINGS_PAGE_SIZE).execute();
+                ApiResponse<PaginatedDto<ListingDto>> body = resp.body();
+                if (resp.isSuccessful() && body != null && body.isOk()) {
+                    List<ListingDto> results = body.data.results != null
+                            ? body.data.results : new ArrayList<>();
+                    out.postValue(Result.success(results));
+                } else {
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    out.postValue(Result.error(resp.code(), resp.message()));
+                }
+            } catch (Exception e) {
+                out.postValue(Result.networkError(e));
+            }
+        });
+        return out;
+    }
+
+    /** One listing's detail, by UUID or slug. */
+    public LiveData<Result<ListingDto>> getListing(String idOrSlug) {
+        MutableLiveData<Result<ListingDto>> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                deviceAuth.ensureToken();
+                Response<ApiResponse<ListingDto>> resp = api.getListing(idOrSlug).execute();
+                ApiResponse<ListingDto> body = resp.body();
+                if (resp.isSuccessful() && body != null && body.isOk()) {
+                    out.postValue(Result.success(body.data));
+                } else {
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    out.postValue(Result.error(resp.code(), resp.message()));
+                }
+            } catch (Exception e) {
+                out.postValue(Result.networkError(e));
+            }
+        });
+        return out;
+    }
+
+    /** All located listings as a GeoJSON FeatureCollection string, ready to hand
+     *  to a MapLibre {@code GeoJsonSource}. */
+    public LiveData<Result<String>> listingsGeoJson() {
+        MutableLiveData<Result<String>> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                deviceAuth.ensureToken();
+                Response<ResponseBody> resp = api.listingsGeo().execute();
+                if (resp.isSuccessful() && resp.body() != null) {
+                    out.postValue(Result.success(unwrapGeoJson(resp.body().string())));
+                } else {
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    out.postValue(Result.error(resp.code(), resp.message()));
+                }
+            } catch (Exception e) {
+                out.postValue(Result.networkError(e));
+            }
+        });
+        return out;
+    }
+
+    /** The geo endpoint's envelope shape is unconfirmed. If the payload carries a
+     *  {@code data} wrapper (like the other directory endpoints) rather than a bare
+     *  FeatureCollection, unwrap it so MapLibre receives {@code {type:"FeatureCollection",…}}. */
+    private static String unwrapGeoJson(String raw) {
+        try {
+            JsonObject obj = JsonParser.parseString(raw).getAsJsonObject();
+            if (!obj.has("features") && obj.has("data") && obj.get("data").isJsonObject()) {
+                return obj.getAsJsonObject("data").toString();
+            }
+        } catch (Exception ignored) {
+            // Not a recognised object — hand the raw payload through unchanged.
+        }
+        return raw;
     }
 
     // ── Search history ────────────────────────────────────────────────────────
