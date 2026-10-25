@@ -12,62 +12,71 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/cd_map_view" />
 
-    <!-- No offline tiles banner (shown below the search bar). Tappable — jumps to
-         Settings > Offline map data. -->
-    <TextView
-        android:id="@+id/offline_banner"
+    <!-- Top chrome — search bar, offline banner, category filter — stacked in one
+         real vertical chain so each sits directly against the one above it. No
+         guessed marginTop offsets: a LinearLayout measures its children's actual
+         heights, so toggling the banner or chip row's visibility can never
+         produce a gap or an overlap. clipChildren/clipToPadding are off so the
+         SearchBar's elevation shadow isn't cut off at the chain's edges. -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="top"
-        android:layout_marginTop="64dp"
-        android:layout_marginHorizontal="8dp"
-        android:background="?attr/colorErrorContainer"
-        android:foreground="?attr/selectableItemBackground"
-        android:clickable="true"
-        android:focusable="true"
-        android:paddingHorizontal="16dp"
-        android:paddingVertical="8dp"
-        android:text="@string/map_offline_banner"
-        android:textAppearance="?attr/textAppearanceBodySmall"
-        android:textColor="?attr/colorOnErrorContainer"
-        android:gravity="center"
-        android:drawableEnd="@drawable/ic_chevron_end"
-        android:drawableTint="?attr/colorOnErrorContainer"
-        android:drawablePadding="4dp"
-        android:visibility="gone" />
+        android:orientation="vertical"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
-    <!-- Floating search bar -->
-    <com.google.android.material.search.SearchBar
-        android:id="@+id/search_bar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_margin="8dp"
-        android:hint="@string/search_hint"
-        app:navigationIcon="@drawable/ic_nav_search" />
+        <!-- Floating search bar -->
+        <com.google.android.material.search.SearchBar
+            android:id="@+id/search_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:hint="@string/search_hint"
+            app:navigationIcon="@drawable/ic_nav_search" />
 
-    <!-- Directory category filter chips — below the search bar / offline banner.
-         120dp is an approximation (search bar + offline banner aren't in a
-         vertical chain with this view, so it can't measure their real height);
-         revisit if either grows taller. Hidden until categories load. -->
-    <HorizontalScrollView
-        android:id="@+id/row_fiche_categories"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top"
-        android:layout_marginTop="120dp"
-        android:scrollbars="none"
-        android:visibility="gone">
-
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chip_group_categories"
-            android:layout_width="wrap_content"
+        <!-- No offline tiles banner. Tappable — jumps to Settings > Offline map data. -->
+        <TextView
+            android:id="@+id/offline_banner"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="8dp"
-            app:singleLine="true"
-            app:chipSpacingHorizontal="6dp" />
+            android:layout_marginBottom="8dp"
+            android:background="?attr/colorErrorContainer"
+            android:foreground="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp"
+            android:text="@string/map_offline_banner"
+            android:textAppearance="?attr/textAppearanceBodySmall"
+            android:textColor="?attr/colorOnErrorContainer"
+            android:gravity="center"
+            android:drawableEnd="@drawable/ic_chevron_end"
+            android:drawableTint="?attr/colorOnErrorContainer"
+            android:drawablePadding="4dp"
+            android:visibility="gone" />
 
-    </HorizontalScrollView>
+        <!-- Directory category filter chips. Hidden until categories load. -->
+        <HorizontalScrollView
+            android:id="@+id/row_fiche_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chip_group_categories"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                app:singleLine="true"
+                app:chipSpacingHorizontal="6dp" />
+
+        </HorizontalScrollView>
+
+    </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_legend"
