@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +20,11 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
 
 import org.github.nynosy.adiresy_mobile.R;
+import org.github.nynosy.adiresy_mobile.data.BookmarkRepository;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ListingDto;
+import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
 import org.github.nynosy.adiresy_mobile.databinding.BottomSheetFicheBinding;
+import org.github.nynosy.adiresy_mobile.ui.saved.SaveToListBottomSheet;
 
 /**
  * Directory listing ("fiche") detail sheet — Phase A, proof of concept.
@@ -39,6 +44,7 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
     private static final String ARG_CATEGORY_NAME = "category_name";
     private static final String ARG_CATEGORY_ICON = "category_icon";
     private static final String ARG_COMMUNE       = "commune_name";
+    private static final String ARG_DISTRICT      = "district_name";
     private static final String ARG_LEGACY_ADDR   = "legacy_address";
     private static final String ARG_VERIFIED      = "is_verified";
     private static final String ARG_RATING        = "average_rating";
@@ -50,6 +56,10 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
     private static final String ARG_LNG           = "longitude";
 
     private BottomSheetFicheBinding binding;
+    private BookmarkRepository bookmarkRepository;
+
+    // Loaded on a background thread; only read on the main thread after the post-back.
+    private BookmarkEntity currentBookmark;
 
     public static FicheBottomSheet forListing(ListingDto listing) {
         Bundle args = new Bundle();
@@ -57,6 +67,7 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         args.putString(ARG_CATEGORY_NAME, listing.categoryName);
         args.putString(ARG_CATEGORY_ICON, listing.categoryIcon);
         args.putString(ARG_COMMUNE,       listing.communeName);
+        args.putString(ARG_DISTRICT,      listing.districtName);
         args.putString(ARG_LEGACY_ADDR,   listing.legacyAddress);
         args.putBoolean(ARG_VERIFIED,     listing.isVerified);
         if (listing.averageRating != null) args.putDouble(ARG_RATING, listing.averageRating);
@@ -87,6 +98,7 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         String categoryName  = args.getString(ARG_CATEGORY_NAME);
         String categoryIcon  = args.getString(ARG_CATEGORY_ICON);
         String communeName   = args.getString(ARG_COMMUNE);
+        String districtName  = args.getString(ARG_DISTRICT);
         String legacyAddress = args.getString(ARG_LEGACY_ADDR);
         boolean verified      = args.getBoolean(ARG_VERIFIED, false);
         Double rating         = args.containsKey(ARG_RATING) ? args.getDouble(ARG_RATING) : null;
@@ -94,6 +106,7 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         String phone          = args.getString(ARG_PHONE);
         String website        = args.getString(ARG_WEBSITE);
         String code           = args.getString(ARG_CODE);
+        boolean hasLocation   = args.containsKey(ARG_LAT) && args.containsKey(ARG_LNG);
         double lat            = args.getDouble(ARG_LAT, 0.0);
         double lng            = args.getDouble(ARG_LNG, 0.0);
 
@@ -147,8 +160,16 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
             binding.btnFicheWebsite.setVisibility(View.GONE);
         }
 
-        if (!TextUtils.isEmpty(code)) {
+        bookmarkRepository = BookmarkRepository.getInstance(requireContext());
+
+        // Navigate needs real coordinates too, so the whole row — not just
+        // bookmarking — requires both the code and a location.
+        if (!TextUtils.isEmpty(code) && hasLocation) {
             binding.rowFicheCodeActions.setVisibility(View.VISIBLE);
+
+            refreshBookmarkState(code);
+            binding.btnFicheBookmark.setOnClickListener(v -> onBookmarkClicked(
+                    code, lat, lng, communeName, districtName));
 
             binding.btnFicheShare.setOnClickListener(v -> {
                 String text = getString(R.string.share_text, code);
@@ -176,6 +197,59 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         } else {
             binding.rowFicheCodeActions.setVisibility(View.GONE);
         }
+    }
+
+    /** Mirrors CodeCardBottomSheet.onBookmarkClicked — fokontany/region are null
+     *  since ListingDto carries neither; SaveToListBottomSheet and BookmarkEntity
+     *  both tolerate a null hierarchy field. */
+    private void onBookmarkClicked(String code, double lat, double lng,
+                                   String commune, String district) {
+        if (currentBookmark != null) {
+            BookmarkEntity snapshot = currentBookmark;
+            currentBookmark = null;
+            updateBookmarkIcon(false);
+            binding.btnFicheBookmark.setEnabled(false);
+
+            bookmarkRepository.deleteBookmarkByCode(code, snapshot.listId, listName -> {
+                binding.btnFicheBookmark.setEnabled(true);
+                if (getView() == null) return;
+                Snackbar.make(requireView(),
+                        getString(R.string.bookmark_removed_from, listName),
+                        Snackbar.LENGTH_LONG)
+                        .setAction(R.string.bookmark_undo, v ->
+                                bookmarkRepository.insertBookmark(snapshot, () -> {
+                                    currentBookmark = snapshot;
+                                    updateBookmarkIcon(true);
+                                }))
+                        .show();
+            });
+        } else {
+            SaveToListBottomSheet sheet = SaveToListBottomSheet.forAddress(
+                    code, lat, lng, null, commune, district, null);
+            sheet.setOnBookmarkSavedListener(() -> refreshBookmarkState(code));
+            sheet.show(getChildFragmentManager(), SaveToListBottomSheet.TAG);
+        }
+    }
+
+    private void refreshBookmarkState(String code) {
+        binding.btnFicheBookmark.setEnabled(false);
+        new Thread(() -> {
+            BookmarkEntity existing = bookmarkRepository.findByCodeSync(code);
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (binding == null) return;
+                currentBookmark = existing;
+                updateBookmarkIcon(existing != null);
+                binding.btnFicheBookmark.setEnabled(true);
+            });
+        }).start();
+    }
+
+    private void updateBookmarkIcon(boolean saved) {
+        if (binding == null) return;
+        binding.btnFicheBookmark.setImageResource(
+                saved ? R.drawable.ic_bookmark : R.drawable.ic_bookmark_border);
+        binding.btnFicheBookmark.setContentDescription(getString(
+                saved ? R.string.cd_bookmark_saved : R.string.cd_bookmark_unsaved));
     }
 
     private static void setOrHide(android.widget.TextView view, @Nullable String text) {

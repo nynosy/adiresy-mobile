@@ -111,7 +111,10 @@
 
     <!-- Code-based actions (Share / Copy / Open in Maps) — visible only when
          the fiche has an Adiresy address_code; reuses the Code Card's icons
-         and strings so a claimed fiche behaves exactly like a resolved code. -->
+         and strings so a claimed fiche behaves exactly like a resolved code.
+         Bookmark uses the existing favourites machinery (BookmarkRepository) —
+         note the saved hierarchy snapshot will have no fokontany/region, since
+         ListingDto doesn't carry those two fields. -->
     <LinearLayout
         android:id="@+id/row_fiche_code_actions"
         android:layout_width="match_parent"
@@ -119,6 +122,16 @@
         android:orientation="horizontal"
         android:layout_marginTop="8dp"
         android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/btn_fiche_bookmark"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_bookmark_border"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_bookmark_unsaved"
+            android:scaleType="center" />
 
         <ImageButton
             android:id="@+id/btn_fiche_share"
