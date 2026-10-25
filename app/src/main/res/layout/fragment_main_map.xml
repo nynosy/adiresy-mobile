@@ -12,12 +12,12 @@
         android:layout_height="match_parent"
         android:contentDescription="@string/cd_map_view" />
 
-    <!-- Top chrome — search bar, offline banner, category filter — stacked in one
-         real vertical chain so each sits directly against the one above it. No
-         guessed marginTop offsets: a LinearLayout measures its children's actual
-         heights, so toggling the banner or chip row's visibility can never
-         produce a gap or an overlap. clipChildren/clipToPadding are off so the
-         SearchBar's elevation shadow isn't cut off at the chain's edges. -->
+    <!-- Top chrome — search bar, offline banner — stacked in one real vertical
+         chain so the banner sits directly against the search bar. No guessed
+         marginTop offset: a LinearLayout measures its children's actual
+         heights, so toggling the banner's visibility can never produce a gap
+         or an overlap. clipChildren/clipToPadding are off so the SearchBar's
+         elevation shadow isn't cut off at the chain's edges. -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,25 +56,6 @@
             android:drawableTint="?attr/colorOnErrorContainer"
             android:drawablePadding="4dp"
             android:visibility="gone" />
-
-        <!-- Directory category filter chips. Hidden until categories load. -->
-        <HorizontalScrollView
-            android:id="@+id/row_fiche_categories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:scrollbars="none"
-            android:visibility="gone">
-
-            <com.google.android.material.chip.ChipGroup
-                android:id="@+id/chip_group_categories"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                app:singleLine="true"
-                app:chipSpacingHorizontal="6dp" />
-
-        </HorizontalScrollView>
 
     </LinearLayout>
 

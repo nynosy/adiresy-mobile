@@ -26,7 +26,6 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.google.android.material.chip.Chip;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.search.SearchView;
 import com.google.android.material.snackbar.Snackbar;
@@ -45,16 +44,13 @@ import org.maplibre.android.maps.Style;
 import org.maplibre.geojson.Feature;
 
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.github.nynosy.adiresy_mobile.R;
 import org.github.nynosy.adiresy_mobile.data.AdiresyRepository;
 import org.github.nynosy.adiresy_mobile.data.BookmarkRepository;
 import org.github.nynosy.adiresy_mobile.data.Result;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
-import org.github.nynosy.adiresy_mobile.data.api.dto.CategoryDto;
 import org.github.nynosy.adiresy_mobile.data.cache.AddressEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
@@ -178,7 +174,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         observeNearby();
         observeTapResult();
         observeFicheResult();
-        observeCategories();
         observeBookmarkFocus();
 
         // Clears the selection pin once the code card the user opened it for is gone,
@@ -527,37 +522,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
                         R.string.fiche_load_error, Snackbar.LENGTH_SHORT).show();
             }
         });
-    }
-
-    // ── Directory category filter chips ───────────────────────────────────────
-
-    private void observeCategories() {
-        homeViewModel.getCategories().observe(getViewLifecycleOwner(), result -> {
-            if (result == null || result.data == null || result.data.isEmpty()) return;
-            if (binding.chipGroupCategories.getChildCount() > 0) return; // already built
-            for (CategoryDto category : result.data) {
-                Chip chip = new Chip(requireContext());
-                chip.setCheckable(true);
-                chip.setChecked(true);
-                String label = (category.icon != null ? category.icon + " " : "") + category.name;
-                chip.setText(label);
-                chip.setTag(category.icon);
-                chip.setOnCheckedChangeListener((btn, checked) -> onCategoryFilterChanged());
-                binding.chipGroupCategories.addView(chip);
-            }
-            binding.rowFicheCategories.setVisibility(View.VISIBLE);
-        });
-    }
-
-    private void onCategoryFilterChanged() {
-        Set<String> hidden = new HashSet<>();
-        for (int i = 0; i < binding.chipGroupCategories.getChildCount(); i++) {
-            Chip chip = (Chip) binding.chipGroupCategories.getChildAt(i);
-            if (!chip.isChecked() && chip.getTag() != null) {
-                hidden.add((String) chip.getTag());
-            }
-        }
-        fichePinController.setHiddenCategoryIcons(hidden);
     }
 
     // ── Search result handling ────────────────────────────────────────────────
