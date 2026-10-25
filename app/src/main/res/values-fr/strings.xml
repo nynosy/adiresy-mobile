@@ -33,6 +33,13 @@
     <string name="share_text">Trouvez ce bâtiment sur Adiresy : %2$s</string>
     <string name="share_chooser_title">Partager le code d\'adresse</string>
 
+    <!-- Fiche (annuaire des établissements) — preuve de concept -->
+    <string name="fiche_label_verified">✓ Fiche vérifiée</string>
+    <string name="fiche_rating_format">★ %1$.1f</string>
+    <string name="fiche_action_call">Appeler %1$s</string>
+    <string name="fiche_action_website">Visiter le site web</string>
+    <string name="fiche_load_error">Impossible de charger cette fiche — vérifiez votre connexion et réessayez</string>
+
     <!-- Code detail errors -->
     <string name="error_code_not_found">Impossible de résoudre ce code — vérifiez votre connexion et réessayez</string>
     <string name="error_no_network">Pas de connexion réseau</string>

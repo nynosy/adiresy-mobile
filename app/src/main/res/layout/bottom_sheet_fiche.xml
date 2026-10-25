@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fiche (directory listing) detail sheet — Phase A, proof of concept.
+
+  Only fields confirmed by the live ListingList schema plus ONE detail-only
+  field (description) are wired up here; description is the most likely
+  detail-only field to exist (Category already has one) and stands in as the
+  proof that "render only what the API actually returns" works end-to-end.
+
+  TODO(directory-api #Q2): once the API developer confirms the full
+  /listings/{id}/ field set, add rows here — each only visible when present —
+  for at least:
+    - opening_hours   (structured or free-text; no UI yet)
+    - photo gallery   (beyond cover_image/logo; needs an image-loading
+                        dependency decision — none exists in the app today)
+    - social_links    (Facebook / WhatsApp — common for MG businesses)
+    - reviews         (if the API exposes them at all)
+  See docs/directory-api-integration.md §5 Q2 for the question as sent.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp">
+
+    <!-- Category · commune -->
+    <TextView
+        android:id="@+id/label_fiche_category"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?android:attr/textColorSecondary"
+        android:layout_marginBottom="2dp" />
+
+    <!-- Establishment name -->
+    <TextView
+        android:id="@+id/label_fiche_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceHeadlineSmall"
+        android:layout_marginBottom="4dp" />
+
+    <!-- "✓ Verified listing" — visible only when is_verified -->
+    <TextView
+        android:id="@+id/label_fiche_verified"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fiche_label_verified"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        android:textColor="?attr/colorPrimary"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- legacy_address — official Malagasy address -->
+    <TextView
+        android:id="@+id/label_fiche_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- average_rating -->
+    <TextView
+        android:id="@+id/label_fiche_rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- description — the one detail-only field wired up as proof of concept -->
+    <TextView
+        android:id="@+id/label_fiche_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone" />
+
+    <!-- TODO(directory-api #Q2): opening_hours row — shown here once confirmed -->
+    <!-- TODO(directory-api #Q2): photo gallery — needs an image-loading dependency -->
+    <!-- TODO(directory-api #Q2): social_links row(s) -->
+    <!-- TODO(directory-api #Q2): reviews section -->
+
+    <!-- Call — visible only when phone is present -->
+    <TextView
+        android:id="@+id/btn_fiche_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?attr/colorPrimary"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone" />
+
+    <!-- Website — visible only when website is present -->
+    <TextView
+        android:id="@+id/btn_fiche_website"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?attr/colorPrimary"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone" />
+
+    <!-- Code-based actions (Share / Copy / Open in Maps) — visible only when
+         the fiche has an Adiresy address_code; reuses the Code Card's icons
+         and strings so a claimed fiche behaves exactly like a resolved code. -->
+    <LinearLayout
+        android:id="@+id/row_fiche_code_actions"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/btn_fiche_share"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_share"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_share_code"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_fiche_copy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_copy"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_copy_code"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_fiche_navigate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_navigate"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_navigate"
+            android:scaleType="center" />
+
+    </LinearLayout>
+
+</LinearLayout>

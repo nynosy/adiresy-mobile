@@ -64,6 +64,7 @@ import org.github.nynosy.adiresy_mobile.map.SelectionPinController;
 import org.github.nynosy.adiresy_mobile.map.StyleLoader;
 import org.github.nynosy.adiresy_mobile.ui.code.CodeDetailActivity;
 import org.github.nynosy.adiresy_mobile.ui.home.CodeCardBottomSheet;
+import org.github.nynosy.adiresy_mobile.ui.home.FicheBottomSheet;
 import org.github.nynosy.adiresy_mobile.ui.home.HomeViewModel;
 import org.github.nynosy.adiresy_mobile.ui.home.LocationRationaleBottomSheet;
 import org.github.nynosy.adiresy_mobile.ui.home.NearbyAdapter;
@@ -172,6 +173,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         observeLocation();
         observeNearby();
         observeTapResult();
+        observeFicheResult();
         observeBookmarkFocus();
 
         // Clears the selection pin once the code card the user opened it for is gone,
@@ -245,6 +247,17 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
                 binding.loadingOverlay.setVisibility(View.VISIBLE);
                 homeViewModel.identifyAt(lat, lng);
                 return true;
+            }
+
+            List<Feature> ficheHits =
+                    map.queryRenderedFeatures(screen, FichePinController.FICHE_LAYER);
+            if (!ficheHits.isEmpty()) {
+                String slug = ficheHits.get(0).getStringProperty("slug");
+                if (slug != null && !slug.isEmpty()) {
+                    binding.loadingOverlay.setVisibility(View.VISIBLE);
+                    homeViewModel.identifyFiche(slug);
+                    return true;
+                }
             }
 
             List<Feature> hits = map.queryRenderedFeatures(screen, "buildings-fill");
@@ -491,6 +504,22 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
             } else {
                 Snackbar.make(binding.getRoot(),
                         R.string.tap_no_address, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // ── Fiche tap → directory detail sheet ────────────────────────────────────
+
+    private void observeFicheResult() {
+        homeViewModel.getFicheResult().observe(getViewLifecycleOwner(), result -> {
+            if (result == null) return;
+            binding.loadingOverlay.setVisibility(View.GONE);
+            if (result.data != null) {
+                FicheBottomSheet.forListing(result.data)
+                        .show(getChildFragmentManager(), FicheBottomSheet.TAG);
+            } else {
+                Snackbar.make(binding.getRoot(),
+                        R.string.fiche_load_error, Snackbar.LENGTH_SHORT).show();
             }
         });
     }

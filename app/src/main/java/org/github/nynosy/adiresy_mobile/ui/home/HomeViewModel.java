@@ -24,6 +24,7 @@ import java.util.Set;
 import org.github.nynosy.adiresy_mobile.BuildConfig;
 import org.github.nynosy.adiresy_mobile.data.AdiresyRepository;
 import org.github.nynosy.adiresy_mobile.data.Result;
+import org.github.nynosy.adiresy_mobile.data.api.dto.ListingDto;
 import org.github.nynosy.adiresy_mobile.data.cache.AddressEntity;
 
 public class HomeViewModel extends AndroidViewModel {
@@ -191,6 +192,21 @@ public class HomeViewModel extends AndroidViewModel {
         return Transformations.switchMap(tapLocation, coords ->
                 coords != null
                         ? repository.reverseGeocode(coords[0], coords[1])
+                        : new MutableLiveData<>());
+    }
+
+    // ── Fiche tap-to-identify (directory listing detail) ─────────────────────
+
+    private final MutableLiveData<String> ficheSlug = new MutableLiveData<>();
+
+    public void identifyFiche(String slug) {
+        ficheSlug.setValue(slug);
+    }
+
+    public LiveData<Result<ListingDto>> getFicheResult() {
+        return Transformations.switchMap(ficheSlug, slug ->
+                slug != null
+                        ? repository.getListing(slug)
                         : new MutableLiveData<>());
     }
 

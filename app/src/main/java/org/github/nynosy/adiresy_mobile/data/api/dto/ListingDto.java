@@ -7,7 +7,17 @@ import com.google.gson.annotations.SerializedName;
  *  Maps the {@code ListingList} schema returned by {@code GET /api/v1/listings/}.
  *  {@code GET /api/v1/listings/{id}/} returns a superset — any extra detail
  *  fields are simply ignored by Gson until we add them (the detail schema is
- *  still undocumented; see docs/directory-api-integration.md §5 Q2). */
+ *  still undocumented; see docs/directory-api-integration.md §5 Q2).
+ *
+ *  {@code description} below is wired up as a proof of concept for exactly one
+ *  detail-only field — it's the most likely to exist (Category already has
+ *  one) and nothing here breaks if it turns out to be absent or differently
+ *  named, since FicheBottomSheet hides the row when it's blank.
+ *
+ *  TODO(directory-api #Q2): add the rest of the detail-only fields once the
+ *  dev confirms them — at least opening_hours, a photo gallery beyond
+ *  cover_image/logo, social_links, and reviews (see
+ *  docs/directory-api-integration.md §5 Q2 for the question as sent). */
 public class ListingDto {
     @SerializedName("id")                  public String id;
     @SerializedName("name")                public String name;
@@ -40,4 +50,15 @@ public class ListingDto {
     @SerializedName("average_rating")      public Double averageRating;
 
     @SerializedName("updated_at")          public String updatedAt;
+
+    // ── Detail-only fields (GET /listings/{id}/), unconfirmed — see class doc ──
+
+    /** Proof-of-concept detail field — null on the list response, present (if
+     *  it exists at all) only on the detail response. */
+    @SerializedName("description")         public String description;
+
+    // TODO(directory-api #Q2): opening_hours
+    // TODO(directory-api #Q2): photo gallery (beyond cover_image/logo)
+    // TODO(directory-api #Q2): social_links
+    // TODO(directory-api #Q2): reviews
 }

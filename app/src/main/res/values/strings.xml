@@ -36,6 +36,13 @@
     <string name="share_text">https://adiresy.mg/%1$s</string>
     <string name="share_chooser_title">Share address code</string>
 
+    <!-- Fiche (directory listing) detail sheet — Phase A proof of concept -->
+    <string name="fiche_label_verified">✓ Verified listing</string>
+    <string name="fiche_rating_format">★ %1$.1f</string>
+    <string name="fiche_action_call">Call %1$s</string>
+    <string name="fiche_action_website">Visit website</string>
+    <string name="fiche_load_error">Could not load this listing — check your connection and try again</string>
+
     <!-- Code detail errors -->
     <string name="error_code_not_found">Could not resolve this code — check your connection and try again</string>
     <string name="error_no_network">No network connection</string>
