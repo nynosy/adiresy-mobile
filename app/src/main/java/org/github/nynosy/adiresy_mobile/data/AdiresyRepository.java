@@ -425,25 +425,22 @@ public class AdiresyRepository {
         return out;
     }
 
-    /** All located listings as a GeoJSON FeatureCollection string, ready to hand
-     *  to a MapLibre {@code GeoJsonSource}. */
-    public LiveData<Result<String>> listingsGeoJson() {
-        MutableLiveData<Result<String>> out = new MutableLiveData<>();
-        executor.execute(() -> {
-            try {
-                deviceAuth.ensureToken();
-                Response<ResponseBody> resp = api.listingsGeo().execute();
-                if (resp.isSuccessful() && resp.body() != null) {
-                    out.postValue(Result.success(unwrapGeoJson(resp.body().string())));
-                } else {
-                    if (resp.code() == 401) deviceAuth.invalidateToken();
-                    out.postValue(Result.error(resp.code(), resp.message()));
-                }
-            } catch (Exception e) {
-                out.postValue(Result.networkError(e));
+    /** Blocking fetch of all located listings as a GeoJSON FeatureCollection
+     *  string, ready for a MapLibre {@code GeoJsonSource}. Returns null on any
+     *  failure. Called by FichePinController on its own executor, mirroring how
+     *  the other map-layer controllers pull from the repository. */
+    public String listingsGeoJsonBlocking() {
+        try {
+            deviceAuth.ensureToken();
+            Response<ResponseBody> resp = api.listingsGeo().execute();
+            if (resp.isSuccessful() && resp.body() != null) {
+                return unwrapGeoJson(resp.body().string());
             }
-        });
-        return out;
+            if (resp.code() == 401) deviceAuth.invalidateToken();
+        } catch (Exception ignored) {
+            // Offline or error — no fiche pins this session.
+        }
+        return null;
     }
 
     /** The geo endpoint's envelope shape is unconfirmed. If the payload carries a

@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.github.nynosy.adiresy_mobile.R;
+import org.github.nynosy.adiresy_mobile.data.AdiresyRepository;
 import org.github.nynosy.adiresy_mobile.data.BookmarkRepository;
 import org.github.nynosy.adiresy_mobile.data.Result;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
@@ -56,6 +57,7 @@ import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import org.github.nynosy.adiresy_mobile.databinding.FragmentMainMapBinding;
 import org.github.nynosy.adiresy_mobile.map.AttributionBottomSheet;
 import org.github.nynosy.adiresy_mobile.map.BookmarkPinController;
+import org.github.nynosy.adiresy_mobile.map.FichePinController;
 import org.github.nynosy.adiresy_mobile.map.MapController;
 import org.github.nynosy.adiresy_mobile.map.PoiIconFactory;
 import org.github.nynosy.adiresy_mobile.map.SelectionPinController;
@@ -93,6 +95,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     private BottomSheetBehavior<View> sheetBehavior;
 
     private BookmarkPinController  bookmarkPinController;
+    private FichePinController     fichePinController;
     private SelectionPinController selectionPinController;
     private SearchController       searchController;
 
@@ -162,6 +165,8 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
 
         bookmarkPinController = new BookmarkPinController(
                 BookmarkRepository.getInstance(requireContext()), requireContext());
+        fichePinController = new FichePinController(
+                AdiresyRepository.getInstance(requireContext()), requireContext());
         selectionPinController = new SelectionPinController();
 
         observeLocation();
@@ -198,6 +203,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         mapRef = map;
         mapController = new MapController(map);
         bookmarkPinController.setMap(map);
+        fichePinController.setMap(map);
         selectionPinController.setMap(map);
         configureCompass(map);
 
@@ -210,6 +216,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
             PoiIconFactory.addAllToStyle(style, requireContext());
             mapController.jumpTo(MADAGASCAR_CENTRE, ZOOM_OVERVIEW);
             bookmarkPinController.onStyleReady(style);
+            fichePinController.onStyleReady(style);
             selectionPinController.onStyleReady(style, requireContext());
             configureLocationComponent(style);
             if (pendingFocusBookmark != null) {
@@ -618,6 +625,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         homeViewModel.cancelLocating();
         stopLocateSpin();
         bookmarkPinController.shutdown();
+        fichePinController.shutdown();
         binding.mapView.onDestroy();
         binding = null;
     }
