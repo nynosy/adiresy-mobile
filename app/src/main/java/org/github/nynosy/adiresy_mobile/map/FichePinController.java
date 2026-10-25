@@ -17,9 +17,11 @@ import org.maplibre.geojson.Feature;
 import org.maplibre.geojson.FeatureCollection;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -37,6 +39,13 @@ import org.github.nynosy.adiresy_mobile.data.AdiresyRepository;
  * names are read defensively because the geo feature schema is not published. Pins
  * are drawn from the category emoji. Taps are handled by the host fragment, which
  * queries {@link #FICHE_LAYER} and reads the {@code slug}/{@code name} properties.
+ *
+ * <p><b>Category filtering:</b> the geo payload documents no stable per-feature
+ * category identifier (just "category icon"), so filtering keys off the same
+ * normalised {@code category_icon} emoji used for rendering, matched against the
+ * confirmed {@code Category.icon} field from {@code /categories/}. Two categories
+ * that happened to share an icon glyph would be filtered together — an accepted
+ * approximation until the geo schema is confirmed (see docs/directory-api-integration.md §5 Q2).
  */
 public final class FichePinController {
 
@@ -59,6 +68,10 @@ public final class FichePinController {
     private final int               iconSizePx;
 
     private MapLibreMap mapRef;
+    /** All features from the last successful load, pre-filter. Re-filtered in
+     *  place when the category selection changes — no re-fetch needed. */
+    private List<Feature> allFeatures = new ArrayList<>();
+    private Set<String>   hiddenCategoryIcons = Collections.emptySet();
 
     public FichePinController(AdiresyRepository repository, Context context) {
         this.repository = repository;
@@ -72,6 +85,7 @@ public final class FichePinController {
 
     /** Adds the (empty) source + layer, then kicks off the one-shot network load. */
     public void onStyleReady(Style style) {
+        allFeatures = new ArrayList<>();
         style.addSource(new GeoJsonSource(FICHE_SOURCE,
                 FeatureCollection.fromFeatures(new ArrayList<>())));
         SymbolLayer layer = new SymbolLayer(FICHE_LAYER, FICHE_SOURCE)
@@ -105,7 +119,8 @@ public final class FichePinController {
             List<Feature> src = fc.features();
             if (src == null || src.isEmpty()) return;
 
-            // Give each feature a stable "icon" image key, collecting the distinct
+            // Give each feature a stable "icon" image key plus a normalised, unprefixed
+            // "category_icon" property (used for filtering), collecting the distinct
             // emoji so we can register one bitmap per icon.
             Map<String, String> toRegister = new HashMap<>();
             for (Feature f : src) {
@@ -113,6 +128,7 @@ public final class FichePinController {
                 String iconKey = "fiche_" + emoji;
                 toRegister.putIfAbsent(iconKey, emoji);
                 f.addStringProperty("icon", iconKey);
+                f.addStringProperty("category_icon", emoji);
                 // Normalise the label/slug under keys the layer + tap handler expect.
                 f.addStringProperty("name", firstProperty(f, NAME_KEYS, ""));
                 f.addStringProperty("slug", firstProperty(f, SLUG_KEYS, ""));
@@ -123,18 +139,44 @@ public final class FichePinController {
                 bitmaps.put(e.getKey(), emojiBitmap(e.getValue(), iconSizePx));
             }
 
-            FeatureCollection normalised = FeatureCollection.fromFeatures(src);
             mainHandler.post(() -> {
+                allFeatures = src;
                 if (mapRef == null) return;
                 Style style = mapRef.getStyle();
                 if (style == null) return;
                 for (Map.Entry<String, Bitmap> e : bitmaps.entrySet()) {
                     style.addImage(e.getKey(), e.getValue());
                 }
-                GeoJsonSource source = style.getSourceAs(FICHE_SOURCE);
-                if (source != null) source.setGeoJson(normalised);
+                applyFilter();
             });
         });
+    }
+
+    /** Hides every pin whose normalised {@code category_icon} is in
+     *  {@code hiddenIcons} (an empty set shows everything); must be called on
+     *  the main thread. Cheap — filters the in-memory list, no re-fetch. */
+    public void setHiddenCategoryIcons(Set<String> hiddenIcons) {
+        hiddenCategoryIcons = hiddenIcons != null ? hiddenIcons : Collections.emptySet();
+        applyFilter();
+    }
+
+    private void applyFilter() {
+        if (mapRef == null) return;
+        Style style = mapRef.getStyle();
+        if (style == null) return;
+        GeoJsonSource source = style.getSourceAs(FICHE_SOURCE);
+        if (source == null) return;
+
+        if (hiddenCategoryIcons.isEmpty()) {
+            source.setGeoJson(FeatureCollection.fromFeatures(allFeatures));
+            return;
+        }
+        List<Feature> visible = new ArrayList<>();
+        for (Feature f : allFeatures) {
+            String icon = f.getStringProperty("category_icon");
+            if (icon == null || !hiddenCategoryIcons.contains(icon)) visible.add(f);
+        }
+        source.setGeoJson(FeatureCollection.fromFeatures(visible));
     }
 
     /** First non-empty string property among {@code keys}, else {@code fallback}. */

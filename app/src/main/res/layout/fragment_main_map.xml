@@ -46,6 +46,29 @@
         android:hint="@string/search_hint"
         app:navigationIcon="@drawable/ic_nav_search" />
 
+    <!-- Directory category filter chips — below the search bar / offline banner.
+         120dp is an approximation (search bar + offline banner aren't in a
+         vertical chain with this view, so it can't measure their real height);
+         revisit if either grows taller. Hidden until categories load. -->
+    <HorizontalScrollView
+        android:id="@+id/row_fiche_categories"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_marginTop="120dp"
+        android:scrollbars="none"
+        android:visibility="gone">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chip_group_categories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="8dp"
+            app:singleLine="true"
+            app:chipSpacingHorizontal="6dp" />
+
+    </HorizontalScrollView>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_legend"
         style="@style/Widget.Material3.FloatingActionButton.Small.Surface"
