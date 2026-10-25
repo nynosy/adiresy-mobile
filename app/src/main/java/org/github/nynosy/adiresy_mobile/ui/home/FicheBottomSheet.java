@@ -25,6 +25,7 @@ import org.github.nynosy.adiresy_mobile.data.api.dto.ListingDto;
 import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
 import org.github.nynosy.adiresy_mobile.databinding.BottomSheetFicheBinding;
 import org.github.nynosy.adiresy_mobile.ui.saved.SaveToListBottomSheet;
+import org.github.nynosy.adiresy_mobile.util.ImageLoader;
 
 /**
  * Directory listing ("fiche") detail sheet — Phase A, proof of concept.
@@ -54,6 +55,8 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
     private static final String ARG_CODE          = "address_code";
     private static final String ARG_LAT           = "latitude";
     private static final String ARG_LNG           = "longitude";
+    private static final String ARG_COVER_IMAGE   = "cover_image";
+    private static final String ARG_LOGO          = "logo";
 
     private BottomSheetFicheBinding binding;
     private BookmarkRepository bookmarkRepository;
@@ -77,6 +80,8 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         args.putString(ARG_CODE,          listing.addressCode);
         if (listing.latitude  != null) args.putDouble(ARG_LAT, listing.latitude);
         if (listing.longitude != null) args.putDouble(ARG_LNG, listing.longitude);
+        args.putString(ARG_COVER_IMAGE,   listing.coverImage);
+        args.putString(ARG_LOGO,          listing.logo);
         FicheBottomSheet sheet = new FicheBottomSheet();
         sheet.setArguments(args);
         return sheet;
@@ -109,8 +114,13 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         boolean hasLocation   = args.containsKey(ARG_LAT) && args.containsKey(ARG_LNG);
         double lat            = args.getDouble(ARG_LAT, 0.0);
         double lng            = args.getDouble(ARG_LNG, 0.0);
+        String coverImageUrl  = args.getString(ARG_COVER_IMAGE);
+        String logoUrl        = args.getString(ARG_LOGO);
 
         binding.labelFicheName.setText(name);
+
+        loadInto(binding.imageFicheCover, coverImageUrl);
+        loadInto(binding.imageFicheLogo, logoUrl);
 
         StringBuilder subtitle = new StringBuilder();
         if (categoryIcon != null && !categoryIcon.isEmpty()) subtitle.append(categoryIcon).append(' ');
@@ -250,6 +260,20 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
                 saved ? R.drawable.ic_bookmark : R.drawable.ic_bookmark_border);
         binding.btnFicheBookmark.setContentDescription(getString(
                 saved ? R.string.cd_bookmark_saved : R.string.cd_bookmark_unsaved));
+    }
+
+    /** Hidden by default in the layout; shown only on a successful decode, so a
+     *  missing or broken image URL just leaves the row absent. */
+    private void loadInto(android.widget.ImageView view, @Nullable String url) {
+        ImageLoader.load(url, bitmap -> {
+            if (binding == null) return; // view destroyed before the load finished
+            if (bitmap != null) {
+                view.setImageBitmap(bitmap);
+                view.setVisibility(View.VISIBLE);
+            } else {
+                view.setVisibility(View.GONE);
+            }
+        });
     }
 
     private static void setOrHide(android.widget.TextView view, @Nullable String text) {
