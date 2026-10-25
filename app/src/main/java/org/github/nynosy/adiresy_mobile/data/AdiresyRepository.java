@@ -1,6 +1,7 @@
 package org.github.nynosy.adiresy_mobile.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.github.nynosy.adiresy_mobile.BuildConfig;
 import org.github.nynosy.adiresy_mobile.data.api.AdiresyApi;
 import org.github.nynosy.adiresy_mobile.data.api.ApiClient;
 import org.github.nynosy.adiresy_mobile.data.api.DeviceAuthManager;
@@ -301,6 +303,7 @@ public class AdiresyRepository {
                     null, null, null, null, null, 1, AUTOCOMPLETE_LISTINGS_LIMIT).execute();
             ApiResponse<PaginatedDto<ListingDto>> body = resp.body();
             if (!resp.isSuccessful() || body == null || !body.isOk() || body.data.results == null) {
+                logDirectoryFailure("GET /listings/?search= (autocomplete)", resp, null);
                 return new ArrayList<>();
             }
             List<AutocompleteDto.Item> items = new ArrayList<>();
@@ -315,8 +318,11 @@ public class AdiresyRepository {
                 item.lng = listing.longitude;
                 items.add(item);
             }
+            logDirectoryOk("GET /listings/?search= (autocomplete)", resp.code(),
+                    items.size() + " fiche results for \"" + query + "\"");
             return items;
         } catch (Exception e) {
+            logDirectoryFailure("GET /listings/?search= (autocomplete)", null, e);
             return new ArrayList<>(); // Soft-fail — the address/admin results still stand.
         }
     }
@@ -390,6 +396,50 @@ public class AdiresyRepository {
     //
     // Phase A: online browse only (no Room cache yet — offline sync is Phase C,
     // gated on the key-permission answer; see docs/directory-api-integration.md).
+    //
+    // Every call logs its outcome under TAG_DIRECTORY (debug builds only) with
+    // the real HTTP code and a body/error snippet. Added because OkHttp's own
+    // HttpLoggingInterceptor (see ApiClient), which logs at INFO, never showed up
+    // on a real low-end test device: `getprop persist.log.tag` was `W` there —
+    // a vendor policy (seen on Transsion/ZTE-style Android Go firmware) that
+    // silently drops INFO/DEBUG/VERBOSE logs system-wide, not an app bug. Exactly
+    // this app's target hardware (see README "Design constraints"), so both log
+    // calls below use WARN — the only level reliably visible on that class of
+    // device — even for the success case, which Android log-level purists will
+    // wince at; diagnostic visibility on real target devices wins here.
+    // Filter logcat with `-s DirectoryApi` to see only these.
+
+    private static final String TAG_DIRECTORY = "DirectoryApi";
+
+    private static void logDirectoryOk(String endpoint, int httpCode, String detail) {
+        if (BuildConfig.DEBUG) {
+            Log.w(TAG_DIRECTORY, endpoint + " -> HTTP " + httpCode + " OK, " + detail);
+        }
+    }
+
+    /** Pass {@code resp} for an HTTP-level failure (non-2xx or an unexpected
+     *  envelope), or {@code error} for a network/parse exception — exactly one
+     *  should be non-null. Reads {@code errorBody} defensively: it's only
+     *  available once and may be null even on a non-2xx response. */
+    private static void logDirectoryFailure(String endpoint, Response<?> resp, Exception error) {
+        if (!BuildConfig.DEBUG) return;
+        if (error != null) {
+            Log.w(TAG_DIRECTORY, endpoint + " -> network/parse error: " + error);
+            return;
+        }
+        String snippet = null;
+        try {
+            if (resp != null && resp.errorBody() != null) {
+                String raw = resp.errorBody().string();
+                snippet = raw.length() > 300 ? raw.substring(0, 300) + "…" : raw;
+            }
+        } catch (Exception ignored) {
+            // errorBody is a one-shot stream — a failure reading it isn't itself
+            // worth logging over the HTTP code we already have.
+        }
+        Log.w(TAG_DIRECTORY, endpoint + " -> HTTP " + (resp != null ? resp.code() : -1)
+                + (snippet != null ? ": " + snippet : " (no error body)"));
+    }
 
     /** Max listings per page the API allows — used for the one-shot browse fetch. */
     private static final int LISTINGS_PAGE_SIZE = 200;
@@ -403,12 +453,15 @@ public class AdiresyRepository {
                 Response<ApiResponse<List<CategoryDto>>> resp = api.listCategories().execute();
                 ApiResponse<List<CategoryDto>> body = resp.body();
                 if (resp.isSuccessful() && body != null && body.isOk()) {
+                    logDirectoryOk("GET /categories/", resp.code(), body.data.size() + " categories");
                     out.postValue(Result.success(body.data));
                 } else {
+                    logDirectoryFailure("GET /categories/", resp, null);
                     if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(resp.code(), resp.message()));
                 }
             } catch (Exception e) {
+                logDirectoryFailure("GET /categories/", null, e);
                 out.postValue(Result.networkError(e));
             }
         });
@@ -431,12 +484,16 @@ public class AdiresyRepository {
                 if (resp.isSuccessful() && body != null && body.isOk()) {
                     List<ListingDto> results = body.data.results != null
                             ? body.data.results : new ArrayList<>();
+                    logDirectoryOk("GET /listings/", resp.code(),
+                            results.size() + " results (search=" + search + ")");
                     out.postValue(Result.success(results));
                 } else {
+                    logDirectoryFailure("GET /listings/", resp, null);
                     if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(resp.code(), resp.message()));
                 }
             } catch (Exception e) {
+                logDirectoryFailure("GET /listings/", null, e);
                 out.postValue(Result.networkError(e));
             }
         });
@@ -452,12 +509,15 @@ public class AdiresyRepository {
                 Response<ApiResponse<ListingDto>> resp = api.getListing(idOrSlug).execute();
                 ApiResponse<ListingDto> body = resp.body();
                 if (resp.isSuccessful() && body != null && body.isOk()) {
+                    logDirectoryOk("GET /listings/" + idOrSlug + "/", resp.code(), body.data.name);
                     out.postValue(Result.success(body.data));
                 } else {
+                    logDirectoryFailure("GET /listings/" + idOrSlug + "/", resp, null);
                     if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(resp.code(), resp.message()));
                 }
             } catch (Exception e) {
+                logDirectoryFailure("GET /listings/" + idOrSlug + "/", null, e);
                 out.postValue(Result.networkError(e));
             }
         });
@@ -473,13 +533,30 @@ public class AdiresyRepository {
             deviceAuth.ensureToken();
             Response<ResponseBody> resp = api.listingsGeo().execute();
             if (resp.isSuccessful() && resp.body() != null) {
-                return unwrapGeoJson(resp.body().string());
+                String json = unwrapGeoJson(resp.body().string());
+                // Whitespace-agnostic (server may or may not pretty-print) — a rough
+                // count, not a real parse; FichePinController does the real parsing.
+                int featureCount = countOccurrences(json, "\"Feature\"");
+                logDirectoryOk("GET /listings/geo/", resp.code(),
+                        json.length() + " chars, ~" + featureCount + " features");
+                return json;
             }
+            logDirectoryFailure("GET /listings/geo/", resp, null);
             if (resp.code() == 401) deviceAuth.invalidateToken();
-        } catch (Exception ignored) {
-            // Offline or error — no fiche pins this session.
+        } catch (Exception e) {
+            logDirectoryFailure("GET /listings/geo/", null, e);
         }
         return null;
+    }
+
+    /** Cheap substring count — avoids a second full JSON parse just for a log line. */
+    private static int countOccurrences(String haystack, String needle) {
+        int count = 0, from = 0;
+        while ((from = haystack.indexOf(needle, from)) != -1) {
+            count++;
+            from += needle.length();
+        }
+        return count;
     }
 
     /** The geo endpoint's envelope shape is unconfirmed. If the payload carries a
