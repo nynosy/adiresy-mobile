@@ -570,6 +570,12 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
             Intent intent = new Intent(requireContext(), CodeDetailActivity.class);
             intent.putExtra(CodeDetailActivity.EXTRA_CODE, item.code);
             startActivity(intent);
+        } else if ("fiche".equals(item.type) && item.slug != null) {
+            if (item.lat != null && item.lng != null && mapRef != null) {
+                mapController.centreOn(new LatLng(item.lat, item.lng), ZOOM_DETAIL);
+            }
+            binding.loadingOverlay.setVisibility(View.VISIBLE);
+            homeViewModel.identifyFiche(item.slug);
         } else if (item.lat != null && item.lng != null && mapRef != null) {
             if (item.bbox != null && item.bbox.length == 4) {
                 LatLngBounds bounds = new LatLngBounds.Builder()

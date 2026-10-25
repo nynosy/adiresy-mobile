@@ -263,6 +263,11 @@ public class AdiresyRepository {
 
     // ── Search autocomplete ───────────────────────────────────────────────────
 
+    /** Autocomplete, with directory listings merged in client-side (the server
+     *  endpoint doesn't carry them — see {@link #searchListingsForAutocomplete}).
+     *  A listings-search failure (e.g. a key-permission gap — see
+     *  docs/directory-api-integration.md §5 Q1) never fails the whole search;
+     *  it just means no fiche results get merged in for that query. */
     public LiveData<Result<List<AutocompleteDto.Item>>> autocomplete(String query) {
         MutableLiveData<Result<List<AutocompleteDto.Item>>> out = new MutableLiveData<>();
         executor.execute(() -> {
@@ -270,7 +275,9 @@ public class AdiresyRepository {
                 deviceAuth.ensureToken();
                 retrofit2.Response<SearchResponseDto> resp = api.autocomplete(query, 20).execute();
                 if (resp.isSuccessful() && resp.body() != null && resp.body().data != null) {
-                    out.postValue(Result.success(flattenSearchResponse(resp.body().data)));
+                    List<AutocompleteDto.Item> items = flattenSearchResponse(resp.body().data);
+                    items.addAll(searchListingsForAutocomplete(query));
+                    out.postValue(Result.success(items));
                 } else {
                     if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(resp.code(), resp.message()));
@@ -280,6 +287,38 @@ public class AdiresyRepository {
             }
         });
         return out;
+    }
+
+    /** Up to this many fiches appended to a text search, after the address/admin
+     *  results — directory search is a secondary result type here, not the
+     *  primary one. */
+    private static final int AUTOCOMPLETE_LISTINGS_LIMIT = 5;
+
+    private List<AutocompleteDto.Item> searchListingsForAutocomplete(String query) {
+        try {
+            Response<ApiResponse<PaginatedDto<ListingDto>>> resp = api.listListings(
+                    null, null, null, null, null, null, query,
+                    null, null, null, null, null, 1, AUTOCOMPLETE_LISTINGS_LIMIT).execute();
+            ApiResponse<PaginatedDto<ListingDto>> body = resp.body();
+            if (!resp.isSuccessful() || body == null || !body.isOk() || body.data.results == null) {
+                return new ArrayList<>();
+            }
+            List<AutocompleteDto.Item> items = new ArrayList<>();
+            for (ListingDto listing : body.data.results) {
+                AutocompleteDto.Item item = new AutocompleteDto.Item();
+                item.type = "fiche";
+                item.slug = listing.slug;
+                item.label = listing.communeName != null && !listing.communeName.isEmpty()
+                        ? listing.name + " · " + listing.communeName
+                        : listing.name;
+                item.lat = listing.latitude;
+                item.lng = listing.longitude;
+                items.add(item);
+            }
+            return items;
+        } catch (Exception e) {
+            return new ArrayList<>(); // Soft-fail — the address/admin results still stand.
+        }
     }
 
     private List<AutocompleteDto.Item> flattenSearchResponse(SearchResponseDto.Data data) {

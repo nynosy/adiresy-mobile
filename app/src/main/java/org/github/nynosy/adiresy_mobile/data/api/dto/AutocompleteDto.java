@@ -9,7 +9,7 @@ public class AutocompleteDto {
     @SerializedName("results") public List<Item> results;
 
     public static class Item {
-        @SerializedName("type")    public String type;   // "code" | "place" | "admin"
+        @SerializedName("type")    public String type;   // "code" | "place" | "admin" | "fiche"
         @SerializedName("level")   public String level;  // "region"|"district"|"commune"|"fokontany"
         @SerializedName("label")   public String label;
         @SerializedName("code")    public String code;   // present when type == "code"
@@ -17,5 +17,9 @@ public class AutocompleteDto {
         @SerializedName("bbox")    public double[] bbox; // present when type == "admin"
         @SerializedName("lat")     public Double lat;
         @SerializedName("lng")     public Double lng;
+        // "fiche" items are merged in client-side from /listings/?search= — they
+        // never come from the /search/autocomplete/ response itself, so there's
+        // no @SerializedName mapping on the server side for this one.
+        public String slug;        // present when type == "fiche"
     }
 }
