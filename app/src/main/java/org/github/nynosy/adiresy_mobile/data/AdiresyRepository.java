@@ -33,8 +33,13 @@ import org.github.nynosy.adiresy_mobile.data.cache.AddressEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.AdminUnitDao;
 import org.github.nynosy.adiresy_mobile.data.cache.AdminUnitEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.AppDatabase;
+import org.github.nynosy.adiresy_mobile.data.cache.CategoryDao;
+import org.github.nynosy.adiresy_mobile.data.cache.CategoryEntity;
+import org.github.nynosy.adiresy_mobile.data.cache.ListingDao;
+import org.github.nynosy.adiresy_mobile.data.cache.ListingEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.SearchHistoryDao;
 import org.github.nynosy.adiresy_mobile.data.cache.SearchHistoryEntity;
+import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -51,6 +56,9 @@ public class AdiresyRepository {
     private final AddressDao addressDao;
     private final AdminUnitDao adminUnitDao;
     private final SearchHistoryDao searchHistoryDao;
+    private final ListingDao listingDao;
+    private final CategoryDao categoryDao;
+    private final AppPrefs appPrefs;
     private final ExecutorService executor = Executors.newFixedThreadPool(3);
     private final Gson gson = new Gson();
 
@@ -64,6 +72,9 @@ public class AdiresyRepository {
         addressDao = db.addressDao();
         adminUnitDao = db.adminUnitDao();
         searchHistoryDao = db.searchHistoryDao();
+        listingDao = db.listingDao();
+        categoryDao = db.categoryDao();
+        appPrefs = AppPrefs.get(appCtx);
     }
 
     public static AdiresyRepository getInstance(Context context) {
@@ -572,6 +583,137 @@ public class AdiresyRepository {
             // Not a recognised object — hand the raw payload through unchanged.
         }
         return raw;
+    }
+
+    // ── Directory offline sync (Phase C) ────────────────────────────────────────
+    //
+    // Blocking — called from ListingSyncWorker's background thread, mirroring
+    // listingsGeoJsonBlocking(). Pulls every page of /listings/?updated_since=,
+    // upserting active rows and deleting rows the API flags is_active=false or
+    // is_deleted=true (see docs/api-reply-2026-10-27-tasks.md §1 — a delta row
+    // naming an id we never cached is a correctly-silent no-op, since DELETE
+    // WHERE id = ? on a missing row just does nothing). Refreshes the full
+    // category set in the same pass (small, unpaginated, no delta semantics).
+    //
+    // The cursor only advances after every page of a run completes — a run that
+    // fails partway through leaves the old cursor in place, so the next attempt
+    // retries the same window rather than silently skipping whatever the failed
+    // run didn't reach.
+
+    private static final int SYNC_PAGE_SIZE = 200;
+
+    /** @return true if the sync completed (even if there was nothing new);
+     *  false on any network/HTTP failure, in which case the cursor was not
+     *  advanced. */
+    public boolean syncListingsBlocking() {
+        try {
+            deviceAuth.ensureToken();
+            syncCategoriesBlocking();
+
+            String cursor = appPrefs.getListingsSyncCursor();
+            String sinceParam = cursor.isEmpty() ? null : cursor;
+            String maxUpdatedAt = cursor;
+
+            List<ListingEntity> toUpsert = new ArrayList<>();
+            List<String> toDelete = new ArrayList<>();
+            int page = 1;
+            int totalSeen = 0;
+
+            while (true) {
+                Response<ApiResponse<PaginatedDto<ListingDto>>> resp = api.listListings(
+                        null, null, null, null, null, null, null,
+                        null, null, null, "updated_at", sinceParam, page, SYNC_PAGE_SIZE)
+                        .execute();
+                ApiResponse<PaginatedDto<ListingDto>> body = resp.body();
+                if (!resp.isSuccessful() || body == null || !body.isOk()) {
+                    logDirectoryFailure("SYNC /listings/ (page " + page + ")", resp, null);
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    return false;
+                }
+
+                List<ListingDto> results = body.data.results != null
+                        ? body.data.results : new ArrayList<>();
+                for (ListingDto dto : results) {
+                    totalSeen++;
+                    if (dto.updatedAt != null
+                            && dto.updatedAt.compareTo(maxUpdatedAt) > 0) {
+                        maxUpdatedAt = dto.updatedAt;
+                    }
+                    if (!dto.isActive || dto.isDeleted) {
+                        toDelete.add(dto.id);
+                    } else {
+                        toUpsert.add(toEntity(dto));
+                    }
+                }
+
+                if (body.data.next == null) break;
+                page++;
+            }
+
+            for (String id : toDelete) listingDao.deleteById(id);
+            if (!toUpsert.isEmpty()) listingDao.upsertAll(toUpsert);
+            appPrefs.setListingsSyncCursor(maxUpdatedAt);
+
+            logDirectoryOk("SYNC /listings/", 200, totalSeen + " rows across " + page
+                    + " page(s), " + toUpsert.size() + " upserted, " + toDelete.size()
+                    + " deleted, cursor=" + maxUpdatedAt);
+            return true;
+        } catch (Exception e) {
+            logDirectoryFailure("SYNC /listings/", null, e);
+            return false;
+        }
+    }
+
+    private void syncCategoriesBlocking() throws Exception {
+        Response<ApiResponse<List<CategoryDto>>> resp = api.listCategories().execute();
+        ApiResponse<List<CategoryDto>> body = resp.body();
+        if (!resp.isSuccessful() || body == null || !body.isOk()) {
+            logDirectoryFailure("SYNC /categories/", resp, null);
+            return;
+        }
+        List<CategoryEntity> entities = new ArrayList<>();
+        long now = System.currentTimeMillis();
+        for (CategoryDto dto : body.data) {
+            CategoryEntity e = new CategoryEntity();
+            e.id          = dto.id != null ? dto.id : "";
+            e.name        = dto.name;
+            e.slug        = dto.slug;
+            e.icon        = dto.icon;
+            e.color       = dto.color;
+            e.description = dto.description;
+            e.cachedAt    = now;
+            entities.add(e);
+        }
+        categoryDao.upsertAll(entities);
+        logDirectoryOk("SYNC /categories/", resp.code(), entities.size() + " categories");
+    }
+
+    private static ListingEntity toEntity(ListingDto dto) {
+        ListingEntity e = new ListingEntity();
+        e.id                = dto.id != null ? dto.id : "";
+        e.name              = dto.name;
+        e.slug              = dto.slug;
+        e.categoryUuid      = dto.categoryUuid;
+        e.categoryName      = dto.categoryName;
+        e.categoryIcon      = dto.categoryIcon;
+        e.categorySlug      = dto.categorySlug;
+        e.addressCode       = dto.addressCode;
+        e.latitude          = dto.latitude;
+        e.longitude         = dto.longitude;
+        e.communeName       = dto.communeName;
+        e.communeShortCode  = dto.communeShortCode;
+        e.districtName      = dto.districtName;
+        e.districtShortCode = dto.districtShortCode;
+        e.phone             = dto.phone;
+        e.website           = dto.website;
+        e.legacyAddress     = dto.legacyAddress;
+        e.isVerified        = dto.isVerified;
+        e.coverImage        = dto.coverImage;
+        e.logo              = dto.logo;
+        e.averageRating     = dto.averageRating;
+        e.updatedAt         = dto.updatedAt;
+        e.cachedAt          = System.currentTimeMillis();
+        return e;
     }
 
     // ── Search history ────────────────────────────────────────────────────────

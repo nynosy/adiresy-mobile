@@ -261,4 +261,20 @@ public class AppPrefs {
     public int getNationalPausedZoom() {
         return prefs.getInt(KEY_NATIONAL_PAUSED_ZOOM, 0);
     }
+
+    // ── Directory listings sync cursor ───────────────────────────────────────
+    // The server's own max `updated_at` seen across the last fully-completed
+    // sync pass (not the device clock — see docs/directory-api-integration.md
+    // §5 Q6) passed back as `updated_since` on the next call.
+
+    private static final String KEY_LISTINGS_SYNC_CURSOR = "listings_sync_cursor";
+
+    /** ISO-8601 timestamp, or "" if a full sync has never completed. */
+    public String getListingsSyncCursor() {
+        return prefs.getString(KEY_LISTINGS_SYNC_CURSOR, "");
+    }
+
+    public void setListingsSyncCursor(String cursor) {
+        prefs.edit().putString(KEY_LISTINGS_SYNC_CURSOR, cursor).apply();
+    }
 }

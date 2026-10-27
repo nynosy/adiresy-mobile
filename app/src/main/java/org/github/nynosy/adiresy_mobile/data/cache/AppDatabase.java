@@ -15,9 +15,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
                 AdminUnitEntity.class,
                 SearchHistoryEntity.class,
                 BookmarkListEntity.class,
-                BookmarkEntity.class
+                BookmarkEntity.class,
+                ListingEntity.class,
+                CategoryEntity.class
         },
-        version = 3,
+        version = 4,
         exportSchema = true
 )
 public abstract class AppDatabase extends RoomDatabase {
@@ -29,6 +31,8 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract SearchHistoryDao searchHistoryDao();
     public abstract BookmarkListDao bookmarkListDao();
     public abstract BookmarkDao     bookmarkDao();
+    public abstract ListingDao      listingDao();
+    public abstract CategoryDao     categoryDao();
 
     static final Migration MIGRATION_1_2 = new Migration(1, 2) {
         @Override
@@ -74,6 +78,56 @@ public abstract class AppDatabase extends RoomDatabase {
         }
     };
 
+    static final Migration MIGRATION_3_4 = new Migration(3, 4) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase db) {
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `listings` (" +
+                "`id` TEXT NOT NULL PRIMARY KEY, " +
+                "`name` TEXT, " +
+                "`slug` TEXT, " +
+                "`categoryUuid` TEXT, " +
+                "`categoryName` TEXT, " +
+                "`categoryIcon` TEXT, " +
+                "`categorySlug` TEXT, " +
+                "`addressCode` TEXT, " +
+                "`latitude` REAL, " +
+                "`longitude` REAL, " +
+                "`communeName` TEXT, " +
+                "`communeShortCode` TEXT, " +
+                "`districtName` TEXT, " +
+                "`districtShortCode` TEXT, " +
+                "`phone` TEXT, " +
+                "`website` TEXT, " +
+                "`legacyAddress` TEXT, " +
+                "`isVerified` INTEGER NOT NULL, " +
+                "`coverImage` TEXT, " +
+                "`logo` TEXT, " +
+                "`averageRating` REAL, " +
+                "`updatedAt` TEXT, " +
+                "`cachedAt` INTEGER NOT NULL)"
+            );
+            db.execSQL(
+                "CREATE INDEX IF NOT EXISTS `index_listings_categoryUuid` " +
+                "ON `listings` (`categoryUuid`)"
+            );
+            db.execSQL(
+                "CREATE INDEX IF NOT EXISTS `index_listings_communeName` " +
+                "ON `listings` (`communeName`)"
+            );
+            db.execSQL(
+                "CREATE TABLE IF NOT EXISTS `categories` (" +
+                "`id` TEXT NOT NULL PRIMARY KEY, " +
+                "`name` TEXT, " +
+                "`slug` TEXT, " +
+                "`icon` TEXT, " +
+                "`color` TEXT, " +
+                "`description` TEXT, " +
+                "`cachedAt` INTEGER NOT NULL)"
+            );
+        }
+    };
+
     public static AppDatabase getInstance(Context context) {
         if (instance == null) {
             synchronized (AppDatabase.class) {
@@ -82,7 +136,7 @@ public abstract class AppDatabase extends RoomDatabase {
                                     context.getApplicationContext(),
                                     AppDatabase.class,
                                     "adiresy.db")
-                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3)
+                            .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
                             .build();
                 }
             }
