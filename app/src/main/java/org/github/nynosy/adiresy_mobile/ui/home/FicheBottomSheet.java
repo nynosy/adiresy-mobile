@@ -12,30 +12,36 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
+import java.util.List;
 
 import org.github.nynosy.adiresy_mobile.R;
 import org.github.nynosy.adiresy_mobile.data.BookmarkRepository;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ListingDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.ReviewDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.TipDto;
 import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
 import org.github.nynosy.adiresy_mobile.databinding.BottomSheetFicheBinding;
 import org.github.nynosy.adiresy_mobile.ui.saved.SaveToListBottomSheet;
 import org.github.nynosy.adiresy_mobile.util.ImageLoader;
 
 /**
- * Directory listing ("fiche") detail sheet — Phase A, proof of concept.
+ * Directory listing ("fiche") detail sheet.
  *
- * <p>Renders only the fields confirmed on {@link ListingDto}, each one hidden
- * when absent ("show what's filled, hide what's blank" — see
- * docs/directory-api-integration.md §5 Q2) — plus {@code description} as the
- * one detail-only field wired up to prove that pattern end-to-end. The rest of
- * the detail schema is still unconfirmed; see the TODOs in
- * {@code bottom_sheet_fiche.xml} and {@link ListingDto}.
+ * <p>Renders every field confirmed on {@link ListingDto}'s detail schema, each
+ * one hidden rather than shown blank when absent — see that class's doc and
+ * docs/api-reply-2026-10-27-tasks.md §2 for exactly what's wired up here vs.
+ * deliberately left out (opening_hours, claim/ownership fields).
  */
 public class FicheBottomSheet extends BottomSheetDialogFragment {
 
@@ -57,6 +63,15 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
     private static final String ARG_LNG           = "longitude";
     private static final String ARG_COVER_IMAGE   = "cover_image";
     private static final String ARG_LOGO          = "logo";
+    // reviews/tips aren't Bundle-friendly as-is (List<ReviewDto>/List<TipDto>
+    // aren't Parcelable) — round-tripped through Gson instead, same library
+    // BookmarkRepository already uses for its own JSON work.
+    private static final String ARG_REVIEWS_JSON  = "reviews_json";
+    private static final String ARG_TIPS_JSON     = "tips_json";
+
+    private static final Gson GSON = new Gson();
+    private static final Type REVIEW_LIST_TYPE = new TypeToken<List<ReviewDto>>() {}.getType();
+    private static final Type TIP_LIST_TYPE    = new TypeToken<List<TipDto>>() {}.getType();
 
     private BottomSheetFicheBinding binding;
     private BookmarkRepository bookmarkRepository;
@@ -82,6 +97,12 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         if (listing.longitude != null) args.putDouble(ARG_LNG, listing.longitude);
         args.putString(ARG_COVER_IMAGE,   listing.coverImage);
         args.putString(ARG_LOGO,          listing.logo);
+        if (listing.reviews != null && !listing.reviews.isEmpty()) {
+            args.putString(ARG_REVIEWS_JSON, GSON.toJson(listing.reviews));
+        }
+        if (listing.tips != null && !listing.tips.isEmpty()) {
+            args.putString(ARG_TIPS_JSON, GSON.toJson(listing.tips));
+        }
         FicheBottomSheet sheet = new FicheBottomSheet();
         sheet.setArguments(args);
         return sheet;
@@ -207,6 +228,93 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         } else {
             binding.rowFicheCodeActions.setVisibility(View.GONE);
         }
+
+        renderReviews(args.getString(ARG_REVIEWS_JSON));
+        renderTips(args.getString(ARG_TIPS_JSON));
+    }
+
+    private void renderReviews(@Nullable String reviewsJson) {
+        if (TextUtils.isEmpty(reviewsJson)) {
+            binding.sectionFicheReviews.setVisibility(View.GONE);
+            return;
+        }
+        List<ReviewDto> reviews = GSON.fromJson(reviewsJson, REVIEW_LIST_TYPE);
+        if (reviews == null || reviews.isEmpty()) {
+            binding.sectionFicheReviews.setVisibility(View.GONE);
+            return;
+        }
+        binding.containerFicheReviews.removeAllViews();
+        for (ReviewDto review : reviews) {
+            binding.containerFicheReviews.addView(buildReviewRow(review));
+        }
+        binding.sectionFicheReviews.setVisibility(View.VISIBLE);
+    }
+
+    private View buildReviewRow(ReviewDto review) {
+        Context ctx = requireContext();
+        android.widget.LinearLayout row = new android.widget.LinearLayout(ctx);
+        row.setOrientation(android.widget.LinearLayout.VERTICAL);
+        row.setPadding(0, 0, 0, dp(10));
+
+        TextView header = new TextView(ctx);
+        header.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelLarge);
+        String author = !TextUtils.isEmpty(review.authorName) ? review.authorName : "—";
+        header.setText(getString(R.string.fiche_review_header, review.rating, author));
+        row.addView(header);
+
+        if (!TextUtils.isEmpty(review.comment)) {
+            TextView comment = new TextView(ctx);
+            comment.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+            comment.setText(review.comment);
+            row.addView(comment);
+        }
+        return row;
+    }
+
+    private void renderTips(@Nullable String tipsJson) {
+        if (TextUtils.isEmpty(tipsJson)) {
+            binding.sectionFicheTips.setVisibility(View.GONE);
+            return;
+        }
+        List<TipDto> tips = GSON.fromJson(tipsJson, TIP_LIST_TYPE);
+        if (tips == null || tips.isEmpty()) {
+            binding.sectionFicheTips.setVisibility(View.GONE);
+            return;
+        }
+        binding.containerFicheTips.removeAllViews();
+        for (TipDto tip : tips) {
+            binding.containerFicheTips.addView(buildTipRow(tip));
+        }
+        binding.sectionFicheTips.setVisibility(View.VISIBLE);
+    }
+
+    private View buildTipRow(TipDto tip) {
+        Context ctx = requireContext();
+        android.widget.LinearLayout row = new android.widget.LinearLayout(ctx);
+        row.setOrientation(android.widget.LinearLayout.VERTICAL);
+        row.setPadding(0, 0, 0, dp(10));
+
+        TextView text = new TextView(ctx);
+        text.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_BodyMedium);
+        String author = !TextUtils.isEmpty(tip.authorName) ? tip.authorName : "—";
+        text.setText(getString(R.string.fiche_tip_text, author, tip.text));
+        row.addView(text);
+
+        if (tip.likes > 0) {
+            TextView likes = new TextView(ctx);
+            likes.setTextAppearance(com.google.android.material.R.style.TextAppearance_Material3_LabelMedium);
+            android.util.TypedValue secondary = new android.util.TypedValue();
+            ctx.getTheme().resolveAttribute(android.R.attr.textColorSecondary, secondary, true);
+            likes.setTextColor(secondary.data);
+            likes.setText(getString(R.string.fiche_tip_likes, tip.likes));
+            row.addView(likes);
+        }
+        return row;
+    }
+
+    private int dp(int value) {
+        float density = getResources().getDisplayMetrics().density;
+        return Math.round(value * density);
     }
 
     /** Mirrors CodeCardBottomSheet.onBookmarkClicked — fokontany/region are null

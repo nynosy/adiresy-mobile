@@ -1,24 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Fiche (directory listing) detail sheet — Phase A, proof of concept.
+  Fiche (directory listing) detail sheet.
 
-  Only fields confirmed by the live ListingList schema plus ONE detail-only
-  field (description) are wired up here; description is the most likely
-  detail-only field to exist (Category already has one) and stands in as the
-  proof that "render only what the API actually returns" works end-to-end.
+  Renders every field confirmed on the live ListingDetail schema (see
+  ListingDto's class doc), each one hidden rather than shown blank when
+  absent. cover_image/logo use util.ImageLoader (plain HttpURLConnection, not
+  the API's OkHttpClient — see that class's doc for why) rather than a new
+  image-loading dependency.
 
-  TODO(directory-api #Q2): once the API developer confirms the full
-  /listings/{id}/ field set, add rows here — each only visible when present —
-  for at least:
-    - opening_hours   (structured or free-text; no UI yet)
-    - a real photo gallery beyond the single cover_image/logo rendered below
-    - social_links    (Facebook / WhatsApp — common for MG businesses)
-    - reviews         (if the API exposes them at all)
-  See docs/directory-api-integration.md §5 Q2 for the question as sent.
-
-  cover_image/logo use util.ImageLoader (plain HttpURLConnection, not the API's
-  OkHttpClient — see that class's doc for why) rather than a new image-loading
-  dependency.
+  Not wired up: opening_hours (schema gives no type/shape — ask the dev
+  before guessing one), a real photo gallery beyond cover_image/logo,
+  social_links, claim_state/pending_claim_count/owner_id (more relevant to a
+  future "claim this listing" flow than Phase A browse). See
+  docs/api-reply-2026-10-27-tasks.md §2.
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
@@ -123,11 +117,6 @@
         android:layout_marginBottom="12dp"
         android:visibility="gone" />
 
-    <!-- TODO(directory-api #Q2): opening_hours row — shown here once confirmed -->
-    <!-- TODO(directory-api #Q2): a real photo gallery beyond cover_image/logo -->
-    <!-- TODO(directory-api #Q2): social_links row(s) -->
-    <!-- TODO(directory-api #Q2): reviews section -->
-
     <!-- Call — visible only when phone is present -->
     <TextView
         android:id="@+id/btn_fiche_call"
@@ -207,6 +196,57 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:contentDescription="@string/cd_navigate"
             android:scaleType="center" />
+
+    </LinearLayout>
+
+    <!-- Reviews — populated in Java (one row per ReviewDto), each row built the
+         same way as the Legend dialog's rows (MainMapFragment.showLegendDialog).
+         A RecyclerView would be overkill for the handful of items a bottom
+         sheet reasonably shows. Hidden entirely when there are none. -->
+    <LinearLayout
+        android:id="@+id/section_fiche_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fiche_section_reviews"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:id="@+id/container_fiche_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+    <!-- Tips — same pattern as reviews. -->
+    <LinearLayout
+        android:id="@+id/section_fiche_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fiche_section_tips"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:id="@+id/container_fiche_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
 
     </LinearLayout>
 

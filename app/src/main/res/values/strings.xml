@@ -42,6 +42,11 @@
     <string name="fiche_action_call">Call %1$s</string>
     <string name="fiche_action_website">Visit website</string>
     <string name="fiche_load_error">Could not load this listing — check your connection and try again</string>
+    <string name="fiche_section_reviews">Reviews</string>
+    <string name="fiche_section_tips">Tips</string>
+    <string name="fiche_review_header">★ %1$d — %2$s</string>
+    <string name="fiche_tip_text">%1$s: %2$s</string>
+    <string name="fiche_tip_likes">%1$d likes</string>
 
     <!-- Code detail errors -->
     <string name="error_code_not_found">Could not resolve this code — check your connection and try again</string>
