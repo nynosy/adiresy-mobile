@@ -1,12 +1,18 @@
 package org.github.nynosy.adiresy_mobile.data.api;
 
+import java.util.List;
+
 import org.github.nynosy.adiresy_mobile.data.api.dto.AddressCodeDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AdminUnitDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ApiResponse;
+import org.github.nynosy.adiresy_mobile.data.api.dto.CategoryDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.ClaimStatusDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.DeviceRegisterDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.ListingDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.SearchResponseDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.GeoJsonGeometryDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.PaginatedDto;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -85,6 +91,55 @@ public interface AdiresyApi {
 
     @GET("api/v1/geo/fokontany/{pcode}/geometry/")
     Call<GeoJsonGeometryDto> fokontanyGeometry(@Path("pcode") String pcode);
+
+    // ── Directory (establishments / fiches) ────────────────────────────────────
+
+    /** Full category set, unpaginated. A listing's {@code categorySlug} refers
+     *  to one of these. */
+    @GET("api/v1/categories/")
+    Call<ApiResponse<List<CategoryDto>>> listCategories();
+
+    /** Active, non-deleted directory listings. Every query param is optional —
+     *  pass null to omit it (Retrofit drops null query params).
+     *
+     *  For offline sync pass {@code updatedSince} (ISO-8601, the last successful
+     *  pull) with {@code ordering="updated_at"} for a stable cursor, and
+     *  {@code pageSize} up to 200. For a proximity search pass {@code lat}+{@code lng}
+     *  (both required together) with {@code radius} in metres. */
+    @GET("api/v1/listings/")
+    Call<ApiResponse<PaginatedDto<ListingDto>>> listListings(
+            @Query("category")      String categoryUuid,
+            @Query("commune")       String communeUuid,
+            @Query("district")      String districtUuid,
+            @Query("fokontany")     String fokontanyUuid,
+            @Query("region")        String regionUuid,
+            @Query("is_verified")   Boolean isVerified,
+            @Query("search")        String search,
+            @Query("lat")           Double lat,
+            @Query("lng")           Double lng,
+            @Query("radius")        Integer radiusMetres,
+            @Query("ordering")      String ordering,
+            @Query("updated_since") String updatedSince,
+            @Query("page")          Integer page,
+            @Query("page_size")     Integer pageSize);
+
+    /** One listing, looked up by UUID or by slug. */
+    @GET("api/v1/listings/{id}/")
+    Call<ApiResponse<ListingDto>> getListing(@Path("id") String idOrSlug);
+
+    /** Every active listing that has a location, as a single GeoJSON
+     *  FeatureCollection (capped at 5000 features) — minimal per feature
+     *  (slug, name, category icon, logo). Returned raw rather than decoded so
+     *  the repository can hand it straight to MapLibre; the envelope shape is
+     *  unconfirmed, so the repo unwraps a {@code data} wrapper if present. */
+    @GET("api/v1/listings/geo/")
+    Call<ResponseBody> listingsGeo();
+
+    /** Whether an OSM feature already has a fiche. Not on the primary path —
+     *  see ClaimStatusDto. */
+    @GET("api/v1/osm/claim-status/")
+    Call<ApiResponse<ClaimStatusDto>> claimStatus(@Query("osm_type") String osmType,
+                                                  @Query("osm_id") long osmId);
 
     // ── Search ────────────────────────────────────────────────────────────────
 

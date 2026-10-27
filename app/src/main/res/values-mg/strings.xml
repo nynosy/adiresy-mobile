@@ -36,6 +36,18 @@
     <string name="share_text">Hitadiava ity trano ity amin\'ny Adiresy: %2$s</string><!-- [MG-REVIEW] -->
     <string name="share_chooser_title">Zarao ny kaody adiresy</string><!-- [MG-REVIEW] -->
 
+    <!-- Fiche (lisitry ny orinasa) — porofo ny foto-kevitra -->
+    <string name="fiche_label_verified">✓ Fiche voamarina</string><!-- [MG-REVIEW] -->
+    <string name="fiche_rating_format">★ %1$.1f</string><!-- [MG-REVIEW] -->
+    <string name="fiche_action_call">Antsoy %1$s</string><!-- [MG-REVIEW] -->
+    <string name="fiche_action_website">Tsidiho ny tranonkala</string><!-- [MG-REVIEW] -->
+    <string name="fiche_load_error">Tsy afaka naka ity fiche ity — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
+    <string name="fiche_section_reviews">Hevitra</string><!-- [MG-REVIEW] -->
+    <string name="fiche_section_tips">Torohevitra</string><!-- [MG-REVIEW] -->
+    <string name="fiche_review_header">★ %1$d — %2$s</string><!-- [MG-REVIEW] -->
+    <string name="fiche_tip_text">%1$s: %2$s</string><!-- [MG-REVIEW] -->
+    <string name="fiche_tip_likes">Tiana %1$d</string><!-- [MG-REVIEW] -->
+
     <!-- Code detail errors -->
     <string name="error_code_not_found">Tsy afaka namaha ity kaody ity — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
     <string name="error_no_network">Tsy misy fifandraisana amin\'ny tambajotra</string><!-- [MG-REVIEW] -->

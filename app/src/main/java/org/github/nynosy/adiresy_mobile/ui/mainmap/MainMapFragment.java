@@ -47,6 +47,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.github.nynosy.adiresy_mobile.R;
+import org.github.nynosy.adiresy_mobile.data.AdiresyRepository;
 import org.github.nynosy.adiresy_mobile.data.BookmarkRepository;
 import org.github.nynosy.adiresy_mobile.data.Result;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
@@ -56,12 +57,14 @@ import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import org.github.nynosy.adiresy_mobile.databinding.FragmentMainMapBinding;
 import org.github.nynosy.adiresy_mobile.map.AttributionBottomSheet;
 import org.github.nynosy.adiresy_mobile.map.BookmarkPinController;
+import org.github.nynosy.adiresy_mobile.map.FichePinController;
 import org.github.nynosy.adiresy_mobile.map.MapController;
 import org.github.nynosy.adiresy_mobile.map.PoiIconFactory;
 import org.github.nynosy.adiresy_mobile.map.SelectionPinController;
 import org.github.nynosy.adiresy_mobile.map.StyleLoader;
 import org.github.nynosy.adiresy_mobile.ui.code.CodeDetailActivity;
 import org.github.nynosy.adiresy_mobile.ui.home.CodeCardBottomSheet;
+import org.github.nynosy.adiresy_mobile.ui.home.FicheBottomSheet;
 import org.github.nynosy.adiresy_mobile.ui.home.HomeViewModel;
 import org.github.nynosy.adiresy_mobile.ui.home.LocationRationaleBottomSheet;
 import org.github.nynosy.adiresy_mobile.ui.home.NearbyAdapter;
@@ -93,6 +96,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     private BottomSheetBehavior<View> sheetBehavior;
 
     private BookmarkPinController  bookmarkPinController;
+    private FichePinController     fichePinController;
     private SelectionPinController selectionPinController;
     private SearchController       searchController;
 
@@ -162,11 +166,14 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
 
         bookmarkPinController = new BookmarkPinController(
                 BookmarkRepository.getInstance(requireContext()), requireContext());
+        fichePinController = new FichePinController(
+                AdiresyRepository.getInstance(requireContext()), requireContext());
         selectionPinController = new SelectionPinController();
 
         observeLocation();
         observeNearby();
         observeTapResult();
+        observeFicheResult();
         observeBookmarkFocus();
 
         // Clears the selection pin once the code card the user opened it for is gone,
@@ -198,6 +205,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         mapRef = map;
         mapController = new MapController(map);
         bookmarkPinController.setMap(map);
+        fichePinController.setMap(map);
         selectionPinController.setMap(map);
         configureCompass(map);
 
@@ -210,6 +218,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
             PoiIconFactory.addAllToStyle(style, requireContext());
             mapController.jumpTo(MADAGASCAR_CENTRE, ZOOM_OVERVIEW);
             bookmarkPinController.onStyleReady(style);
+            fichePinController.onStyleReady(style);
             selectionPinController.onStyleReady(style, requireContext());
             configureLocationComponent(style);
             if (pendingFocusBookmark != null) {
@@ -238,6 +247,17 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
                 binding.loadingOverlay.setVisibility(View.VISIBLE);
                 homeViewModel.identifyAt(lat, lng);
                 return true;
+            }
+
+            List<Feature> ficheHits =
+                    map.queryRenderedFeatures(screen, FichePinController.FICHE_LAYER);
+            if (!ficheHits.isEmpty()) {
+                String slug = ficheHits.get(0).getStringProperty("slug");
+                if (slug != null && !slug.isEmpty()) {
+                    binding.loadingOverlay.setVisibility(View.VISIBLE);
+                    homeViewModel.identifyFiche(slug);
+                    return true;
+                }
             }
 
             List<Feature> hits = map.queryRenderedFeatures(screen, "buildings-fill");
@@ -488,6 +508,22 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
+    // ── Fiche tap → directory detail sheet ────────────────────────────────────
+
+    private void observeFicheResult() {
+        homeViewModel.getFicheResult().observe(getViewLifecycleOwner(), result -> {
+            if (result == null) return;
+            binding.loadingOverlay.setVisibility(View.GONE);
+            if (result.data != null) {
+                FicheBottomSheet.forListing(result.data)
+                        .show(getChildFragmentManager(), FicheBottomSheet.TAG);
+            } else {
+                Snackbar.make(binding.getRoot(),
+                        R.string.fiche_load_error, Snackbar.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     // ── Search result handling ────────────────────────────────────────────────
 
     private void onSearchResultSelected(AutocompleteDto.Item item) {
@@ -498,6 +534,12 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
             Intent intent = new Intent(requireContext(), CodeDetailActivity.class);
             intent.putExtra(CodeDetailActivity.EXTRA_CODE, item.code);
             startActivity(intent);
+        } else if ("fiche".equals(item.type) && item.slug != null) {
+            if (item.lat != null && item.lng != null && mapRef != null) {
+                mapController.centreOn(new LatLng(item.lat, item.lng), ZOOM_DETAIL);
+            }
+            binding.loadingOverlay.setVisibility(View.VISIBLE);
+            homeViewModel.identifyFiche(item.slug);
         } else if (item.lat != null && item.lng != null && mapRef != null) {
             if (item.bbox != null && item.bbox.length == 4) {
                 LatLngBounds bounds = new LatLngBounds.Builder()
@@ -618,6 +660,7 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         homeViewModel.cancelLocating();
         stopLocateSpin();
         bookmarkPinController.shutdown();
+        fichePinController.shutdown();
         binding.mapView.onDestroy();
         binding = null;
     }

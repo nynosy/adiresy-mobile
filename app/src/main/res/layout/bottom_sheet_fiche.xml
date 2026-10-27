@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Fiche (directory listing) detail sheet.
+
+  Renders every field confirmed on the live ListingDetail schema (see
+  ListingDto's class doc), each one hidden rather than shown blank when
+  absent. cover_image/logo use util.ImageLoader (plain HttpURLConnection, not
+  the API's OkHttpClient — see that class's doc for why) rather than a new
+  image-loading dependency.
+
+  Not wired up: opening_hours (schema gives no type/shape — ask the dev
+  before guessing one), a real photo gallery beyond cover_image/logo,
+  social_links, claim_state/pending_claim_count/owner_id (more relevant to a
+  future "claim this listing" flow than Phase A browse). See
+  docs/api-reply-2026-10-27-tasks.md §2.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <!-- cover_image — edge-to-edge banner, outside the padded content below.
+         Hidden until a bitmap successfully loads. -->
+    <ImageView
+        android:id="@+id/image_fiche_cover"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:scaleType="centerCrop"
+        android:background="?attr/colorSurfaceVariant"
+        android:contentDescription="@null"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+    <!-- logo (left) + category/name (right) -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:id="@+id/image_fiche_logo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginEnd="12dp"
+            android:scaleType="centerCrop"
+            android:background="?attr/colorSurfaceVariant"
+            android:contentDescription="@null"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <!-- Category · commune -->
+            <TextView
+                android:id="@+id/label_fiche_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceLabelLarge"
+                android:textColor="?android:attr/textColorSecondary"
+                android:layout_marginBottom="2dp" />
+
+            <!-- Establishment name -->
+            <TextView
+                android:id="@+id/label_fiche_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <!-- "✓ Verified listing" — visible only when is_verified -->
+    <TextView
+        android:id="@+id/label_fiche_verified"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/fiche_label_verified"
+        android:textAppearance="?attr/textAppearanceLabelMedium"
+        android:textColor="?attr/colorPrimary"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- legacy_address — official Malagasy address -->
+    <TextView
+        android:id="@+id/label_fiche_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- average_rating -->
+    <TextView
+        android:id="@+id/label_fiche_rating"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <!-- description — the one detail-only field wired up as proof of concept -->
+    <TextView
+        android:id="@+id/label_fiche_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?attr/textAppearanceBodyMedium"
+        android:layout_marginBottom="12dp"
+        android:visibility="gone" />
+
+    <!-- Call — visible only when phone is present -->
+    <TextView
+        android:id="@+id/btn_fiche_call"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?attr/colorPrimary"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone" />
+
+    <!-- Website — visible only when website is present -->
+    <TextView
+        android:id="@+id/btn_fiche_website"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="4dp"
+        android:textAppearance="?attr/textAppearanceLabelLarge"
+        android:textColor="?attr/colorPrimary"
+        android:background="?attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone" />
+
+    <!-- Code-based actions (Share / Copy / Open in Maps) — visible only when
+         the fiche has an Adiresy address_code; reuses the Code Card's icons
+         and strings so a claimed fiche behaves exactly like a resolved code.
+         Bookmark uses the existing favourites machinery (BookmarkRepository) —
+         note the saved hierarchy snapshot will have no fokontany/region, since
+         ListingDto doesn't carry those two fields. -->
+    <LinearLayout
+        android:id="@+id/row_fiche_code_actions"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/btn_fiche_bookmark"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_bookmark_border"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_bookmark_unsaved"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_fiche_share"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_share"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_share_code"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_fiche_copy"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_copy"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_copy_code"
+            android:scaleType="center" />
+
+        <ImageButton
+            android:id="@+id/btn_fiche_navigate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@drawable/ic_navigate"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/cd_navigate"
+            android:scaleType="center" />
+
+    </LinearLayout>
+
+    <!-- Reviews — populated in Java (one row per ReviewDto), each row built the
+         same way as the Legend dialog's rows (MainMapFragment.showLegendDialog).
+         A RecyclerView would be overkill for the handful of items a bottom
+         sheet reasonably shows. Hidden entirely when there are none. -->
+    <LinearLayout
+        android:id="@+id/section_fiche_reviews"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fiche_section_reviews"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:id="@+id/container_fiche_reviews"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+    <!-- Tips — same pattern as reviews. -->
+    <LinearLayout
+        android:id="@+id/section_fiche_tips"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/fiche_section_tips"
+            android:textAppearance="?attr/textAppearanceTitleSmall"
+            android:layout_marginBottom="4dp" />
+
+        <LinearLayout
+            android:id="@+id/container_fiche_tips"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+    </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

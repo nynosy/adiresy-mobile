@@ -11,6 +11,7 @@ import org.maplibre.android.MapLibre;
 import org.maplibre.android.WellKnownTileServer;
 
 import org.github.nynosy.adiresy_mobile.data.AdiresyRepository;
+import org.github.nynosy.adiresy_mobile.data.ListingSyncWorker;
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import org.github.nynosy.adiresy_mobile.i18n.LocaleHelper;
 
@@ -26,6 +27,7 @@ public class AdiresyApplication extends Application {
         applyTheme();
         LocaleHelper.applyFromPrefs(this);
         AdiresyRepository.getInstance(this).evictExpiredCache();
+        ListingSyncWorker.scheduleImmediateAndPeriodic(this);
         if (BuildConfig.DEBUG) registerMockLocationReceiver();
     }
 

@@ -1,17 +1,21 @@
 package org.github.nynosy.adiresy_mobile.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.github.nynosy.adiresy_mobile.BuildConfig;
 import org.github.nynosy.adiresy_mobile.data.api.AdiresyApi;
 import org.github.nynosy.adiresy_mobile.data.api.ApiClient;
 import org.github.nynosy.adiresy_mobile.data.api.DeviceAuthManager;
@@ -19,6 +23,8 @@ import org.github.nynosy.adiresy_mobile.data.api.dto.AddressCodeDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ApiResponse;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AdminUnitDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.CategoryDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.ListingDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.SearchResponseDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.GeoJsonGeometryDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.PaginatedDto;
@@ -27,8 +33,14 @@ import org.github.nynosy.adiresy_mobile.data.cache.AddressEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.AdminUnitDao;
 import org.github.nynosy.adiresy_mobile.data.cache.AdminUnitEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.AppDatabase;
+import org.github.nynosy.adiresy_mobile.data.cache.CategoryDao;
+import org.github.nynosy.adiresy_mobile.data.cache.CategoryEntity;
+import org.github.nynosy.adiresy_mobile.data.cache.ListingDao;
+import org.github.nynosy.adiresy_mobile.data.cache.ListingEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.SearchHistoryDao;
 import org.github.nynosy.adiresy_mobile.data.cache.SearchHistoryEntity;
+import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
+import okhttp3.ResponseBody;
 import retrofit2.Response;
 
 public class AdiresyRepository {
@@ -44,6 +56,9 @@ public class AdiresyRepository {
     private final AddressDao addressDao;
     private final AdminUnitDao adminUnitDao;
     private final SearchHistoryDao searchHistoryDao;
+    private final ListingDao listingDao;
+    private final CategoryDao categoryDao;
+    private final AppPrefs appPrefs;
     private final ExecutorService executor = Executors.newFixedThreadPool(3);
     private final Gson gson = new Gson();
 
@@ -57,6 +72,9 @@ public class AdiresyRepository {
         addressDao = db.addressDao();
         adminUnitDao = db.adminUnitDao();
         searchHistoryDao = db.searchHistoryDao();
+        listingDao = db.listingDao();
+        categoryDao = db.categoryDao();
+        appPrefs = AppPrefs.get(appCtx);
     }
 
     public static AdiresyRepository getInstance(Context context) {
@@ -258,6 +276,11 @@ public class AdiresyRepository {
 
     // ── Search autocomplete ───────────────────────────────────────────────────
 
+    /** Autocomplete, with directory listings merged in client-side (the server
+     *  endpoint doesn't carry them — see {@link #searchListingsForAutocomplete}).
+     *  A listings-search failure (e.g. a key-permission gap — see
+     *  docs/directory-api-integration.md §5 Q1) never fails the whole search;
+     *  it just means no fiche results get merged in for that query. */
     public LiveData<Result<List<AutocompleteDto.Item>>> autocomplete(String query) {
         MutableLiveData<Result<List<AutocompleteDto.Item>>> out = new MutableLiveData<>();
         executor.execute(() -> {
@@ -265,7 +288,9 @@ public class AdiresyRepository {
                 deviceAuth.ensureToken();
                 retrofit2.Response<SearchResponseDto> resp = api.autocomplete(query, 20).execute();
                 if (resp.isSuccessful() && resp.body() != null && resp.body().data != null) {
-                    out.postValue(Result.success(flattenSearchResponse(resp.body().data)));
+                    List<AutocompleteDto.Item> items = flattenSearchResponse(resp.body().data);
+                    items.addAll(searchListingsForAutocomplete(query));
+                    out.postValue(Result.success(items));
                 } else {
                     if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(resp.code(), resp.message()));
@@ -275,6 +300,42 @@ public class AdiresyRepository {
             }
         });
         return out;
+    }
+
+    /** Up to this many fiches appended to a text search, after the address/admin
+     *  results — directory search is a secondary result type here, not the
+     *  primary one. */
+    private static final int AUTOCOMPLETE_LISTINGS_LIMIT = 5;
+
+    private List<AutocompleteDto.Item> searchListingsForAutocomplete(String query) {
+        try {
+            Response<ApiResponse<PaginatedDto<ListingDto>>> resp = api.listListings(
+                    null, null, null, null, null, null, query,
+                    null, null, null, null, null, 1, AUTOCOMPLETE_LISTINGS_LIMIT).execute();
+            ApiResponse<PaginatedDto<ListingDto>> body = resp.body();
+            if (!resp.isSuccessful() || body == null || !body.isOk() || body.data.results == null) {
+                logDirectoryFailure("GET /listings/?search= (autocomplete)", resp, null);
+                return new ArrayList<>();
+            }
+            List<AutocompleteDto.Item> items = new ArrayList<>();
+            for (ListingDto listing : body.data.results) {
+                AutocompleteDto.Item item = new AutocompleteDto.Item();
+                item.type = "fiche";
+                item.slug = listing.slug;
+                item.label = listing.communeName != null && !listing.communeName.isEmpty()
+                        ? listing.name + " · " + listing.communeName
+                        : listing.name;
+                item.lat = listing.latitude;
+                item.lng = listing.longitude;
+                items.add(item);
+            }
+            logDirectoryOk("GET /listings/?search= (autocomplete)", resp.code(),
+                    items.size() + " fiche results for \"" + query + "\"");
+            return items;
+        } catch (Exception e) {
+            logDirectoryFailure("GET /listings/?search= (autocomplete)", null, e);
+            return new ArrayList<>(); // Soft-fail — the address/admin results still stand.
+        }
     }
 
     private List<AutocompleteDto.Item> flattenSearchResponse(SearchResponseDto.Data data) {
@@ -340,6 +401,319 @@ public class AdiresyRepository {
         if (a.district != null) return a.district;
         if (a.region   != null) return a.region;
         return null;
+    }
+
+    // ── Directory (establishments / fiches) ─────────────────────────────────────
+    //
+    // Phase A: online browse only (no Room cache yet — offline sync is Phase C,
+    // gated on the key-permission answer; see docs/directory-api-integration.md).
+    //
+    // Every call logs its outcome under TAG_DIRECTORY (debug builds only) with
+    // the real HTTP code and a body/error snippet. Added because OkHttp's own
+    // HttpLoggingInterceptor (see ApiClient), which logs at INFO, never showed up
+    // on a real low-end test device: `getprop persist.log.tag` was `W` there —
+    // a vendor policy (seen on Transsion/ZTE-style Android Go firmware) that
+    // silently drops INFO/DEBUG/VERBOSE logs system-wide, not an app bug. Exactly
+    // this app's target hardware (see README "Design constraints"), so both log
+    // calls below use WARN — the only level reliably visible on that class of
+    // device — even for the success case, which Android log-level purists will
+    // wince at; diagnostic visibility on real target devices wins here.
+    // Filter logcat with `-s DirectoryApi` to see only these.
+
+    private static final String TAG_DIRECTORY = "DirectoryApi";
+
+    private static void logDirectoryOk(String endpoint, int httpCode, String detail) {
+        if (BuildConfig.DEBUG) {
+            Log.w(TAG_DIRECTORY, endpoint + " -> HTTP " + httpCode + " OK, " + detail);
+        }
+    }
+
+    /** Pass {@code resp} for an HTTP-level failure (non-2xx or an unexpected
+     *  envelope), or {@code error} for a network/parse exception — exactly one
+     *  should be non-null. Reads {@code errorBody} defensively: it's only
+     *  available once and may be null even on a non-2xx response. */
+    private static void logDirectoryFailure(String endpoint, Response<?> resp, Exception error) {
+        if (!BuildConfig.DEBUG) return;
+        if (error != null) {
+            Log.w(TAG_DIRECTORY, endpoint + " -> network/parse error: " + error);
+            return;
+        }
+        String snippet = null;
+        try {
+            if (resp != null && resp.errorBody() != null) {
+                String raw = resp.errorBody().string();
+                snippet = raw.length() > 300 ? raw.substring(0, 300) + "…" : raw;
+            }
+        } catch (Exception ignored) {
+            // errorBody is a one-shot stream — a failure reading it isn't itself
+            // worth logging over the HTTP code we already have.
+        }
+        Log.w(TAG_DIRECTORY, endpoint + " -> HTTP " + (resp != null ? resp.code() : -1)
+                + (snippet != null ? ": " + snippet : " (no error body)"));
+    }
+
+    /** Max listings per page the API allows — used for the one-shot browse fetch. */
+    private static final int LISTINGS_PAGE_SIZE = 200;
+
+    /** The full, unpaginated category set. */
+    public LiveData<Result<List<CategoryDto>>> listCategories() {
+        MutableLiveData<Result<List<CategoryDto>>> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                deviceAuth.ensureToken();
+                Response<ApiResponse<List<CategoryDto>>> resp = api.listCategories().execute();
+                ApiResponse<List<CategoryDto>> body = resp.body();
+                if (resp.isSuccessful() && body != null && body.isOk()) {
+                    logDirectoryOk("GET /categories/", resp.code(), body.data.size() + " categories");
+                    out.postValue(Result.success(body.data));
+                } else {
+                    logDirectoryFailure("GET /categories/", resp, null);
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    out.postValue(Result.error(resp.code(), resp.message()));
+                }
+            } catch (Exception e) {
+                logDirectoryFailure("GET /categories/", null, e);
+                out.postValue(Result.networkError(e));
+            }
+        });
+        return out;
+    }
+
+    /** Directory search / proximity browse — first page only (Phase A).
+     *  Pass null for any unused filter; {@code lat}+{@code lng} must be supplied
+     *  together for a proximity query, with {@code radius} in metres. */
+    public LiveData<Result<List<ListingDto>>> listings(String search, String categoryUuid,
+                                                       Double lat, Double lng, Integer radius) {
+        MutableLiveData<Result<List<ListingDto>>> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                deviceAuth.ensureToken();
+                Response<ApiResponse<PaginatedDto<ListingDto>>> resp = api.listListings(
+                        categoryUuid, null, null, null, null, null, search,
+                        lat, lng, radius, null, null, 1, LISTINGS_PAGE_SIZE).execute();
+                ApiResponse<PaginatedDto<ListingDto>> body = resp.body();
+                if (resp.isSuccessful() && body != null && body.isOk()) {
+                    List<ListingDto> results = body.data.results != null
+                            ? body.data.results : new ArrayList<>();
+                    logDirectoryOk("GET /listings/", resp.code(),
+                            results.size() + " results (search=" + search + ")");
+                    out.postValue(Result.success(results));
+                } else {
+                    logDirectoryFailure("GET /listings/", resp, null);
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    out.postValue(Result.error(resp.code(), resp.message()));
+                }
+            } catch (Exception e) {
+                logDirectoryFailure("GET /listings/", null, e);
+                out.postValue(Result.networkError(e));
+            }
+        });
+        return out;
+    }
+
+    /** One listing's detail, by UUID or slug. */
+    public LiveData<Result<ListingDto>> getListing(String idOrSlug) {
+        MutableLiveData<Result<ListingDto>> out = new MutableLiveData<>();
+        executor.execute(() -> {
+            try {
+                deviceAuth.ensureToken();
+                Response<ApiResponse<ListingDto>> resp = api.getListing(idOrSlug).execute();
+                ApiResponse<ListingDto> body = resp.body();
+                if (resp.isSuccessful() && body != null && body.isOk()) {
+                    logDirectoryOk("GET /listings/" + idOrSlug + "/", resp.code(), body.data.name);
+                    out.postValue(Result.success(body.data));
+                } else {
+                    logDirectoryFailure("GET /listings/" + idOrSlug + "/", resp, null);
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    out.postValue(Result.error(resp.code(), resp.message()));
+                }
+            } catch (Exception e) {
+                logDirectoryFailure("GET /listings/" + idOrSlug + "/", null, e);
+                out.postValue(Result.networkError(e));
+            }
+        });
+        return out;
+    }
+
+    /** Blocking fetch of all located listings as a GeoJSON FeatureCollection
+     *  string, ready for a MapLibre {@code GeoJsonSource}. Returns null on any
+     *  failure. Called by FichePinController on its own executor, mirroring how
+     *  the other map-layer controllers pull from the repository. */
+    public String listingsGeoJsonBlocking() {
+        try {
+            deviceAuth.ensureToken();
+            Response<ResponseBody> resp = api.listingsGeo().execute();
+            if (resp.isSuccessful() && resp.body() != null) {
+                String json = unwrapGeoJson(resp.body().string());
+                // Whitespace-agnostic (server may or may not pretty-print) — a rough
+                // count, not a real parse; FichePinController does the real parsing.
+                int featureCount = countOccurrences(json, "\"Feature\"");
+                logDirectoryOk("GET /listings/geo/", resp.code(),
+                        json.length() + " chars, ~" + featureCount + " features");
+                return json;
+            }
+            logDirectoryFailure("GET /listings/geo/", resp, null);
+            if (resp.code() == 401) deviceAuth.invalidateToken();
+        } catch (Exception e) {
+            logDirectoryFailure("GET /listings/geo/", null, e);
+        }
+        return null;
+    }
+
+    /** Cheap substring count — avoids a second full JSON parse just for a log line. */
+    private static int countOccurrences(String haystack, String needle) {
+        int count = 0, from = 0;
+        while ((from = haystack.indexOf(needle, from)) != -1) {
+            count++;
+            from += needle.length();
+        }
+        return count;
+    }
+
+    /** The geo endpoint's envelope shape is unconfirmed. If the payload carries a
+     *  {@code data} wrapper (like the other directory endpoints) rather than a bare
+     *  FeatureCollection, unwrap it so MapLibre receives {@code {type:"FeatureCollection",…}}. */
+    private static String unwrapGeoJson(String raw) {
+        try {
+            JsonObject obj = JsonParser.parseString(raw).getAsJsonObject();
+            if (!obj.has("features") && obj.has("data") && obj.get("data").isJsonObject()) {
+                return obj.getAsJsonObject("data").toString();
+            }
+        } catch (Exception ignored) {
+            // Not a recognised object — hand the raw payload through unchanged.
+        }
+        return raw;
+    }
+
+    // ── Directory offline sync (Phase C) ────────────────────────────────────────
+    //
+    // Blocking — called from ListingSyncWorker's background thread, mirroring
+    // listingsGeoJsonBlocking(). Pulls every page of /listings/?updated_since=,
+    // upserting active rows and deleting rows the API flags is_active=false or
+    // is_deleted=true (see docs/api-reply-2026-10-27-tasks.md §1 — a delta row
+    // naming an id we never cached is a correctly-silent no-op, since DELETE
+    // WHERE id = ? on a missing row just does nothing). Refreshes the full
+    // category set in the same pass (small, unpaginated, no delta semantics).
+    //
+    // The cursor only advances after every page of a run completes — a run that
+    // fails partway through leaves the old cursor in place, so the next attempt
+    // retries the same window rather than silently skipping whatever the failed
+    // run didn't reach.
+
+    private static final int SYNC_PAGE_SIZE = 200;
+
+    /** @return true if the sync completed (even if there was nothing new);
+     *  false on any network/HTTP failure, in which case the cursor was not
+     *  advanced. */
+    public boolean syncListingsBlocking() {
+        try {
+            deviceAuth.ensureToken();
+            syncCategoriesBlocking();
+
+            String cursor = appPrefs.getListingsSyncCursor();
+            String sinceParam = cursor.isEmpty() ? null : cursor;
+            String maxUpdatedAt = cursor;
+
+            List<ListingEntity> toUpsert = new ArrayList<>();
+            List<String> toDelete = new ArrayList<>();
+            int page = 1;
+            int totalSeen = 0;
+
+            while (true) {
+                Response<ApiResponse<PaginatedDto<ListingDto>>> resp = api.listListings(
+                        null, null, null, null, null, null, null,
+                        null, null, null, "updated_at", sinceParam, page, SYNC_PAGE_SIZE)
+                        .execute();
+                ApiResponse<PaginatedDto<ListingDto>> body = resp.body();
+                if (!resp.isSuccessful() || body == null || !body.isOk()) {
+                    logDirectoryFailure("SYNC /listings/ (page " + page + ")", resp, null);
+                    if (resp.code() == 401) deviceAuth.invalidateToken();
+                    return false;
+                }
+
+                List<ListingDto> results = body.data.results != null
+                        ? body.data.results : new ArrayList<>();
+                for (ListingDto dto : results) {
+                    totalSeen++;
+                    if (dto.updatedAt != null
+                            && dto.updatedAt.compareTo(maxUpdatedAt) > 0) {
+                        maxUpdatedAt = dto.updatedAt;
+                    }
+                    if (!dto.isActive || dto.isDeleted) {
+                        toDelete.add(dto.id);
+                    } else {
+                        toUpsert.add(toEntity(dto));
+                    }
+                }
+
+                if (body.data.next == null) break;
+                page++;
+            }
+
+            for (String id : toDelete) listingDao.deleteById(id);
+            if (!toUpsert.isEmpty()) listingDao.upsertAll(toUpsert);
+            appPrefs.setListingsSyncCursor(maxUpdatedAt);
+
+            logDirectoryOk("SYNC /listings/", 200, totalSeen + " rows across " + page
+                    + " page(s), " + toUpsert.size() + " upserted, " + toDelete.size()
+                    + " deleted, cursor=" + maxUpdatedAt);
+            return true;
+        } catch (Exception e) {
+            logDirectoryFailure("SYNC /listings/", null, e);
+            return false;
+        }
+    }
+
+    private void syncCategoriesBlocking() throws Exception {
+        Response<ApiResponse<List<CategoryDto>>> resp = api.listCategories().execute();
+        ApiResponse<List<CategoryDto>> body = resp.body();
+        if (!resp.isSuccessful() || body == null || !body.isOk()) {
+            logDirectoryFailure("SYNC /categories/", resp, null);
+            return;
+        }
+        List<CategoryEntity> entities = new ArrayList<>();
+        long now = System.currentTimeMillis();
+        for (CategoryDto dto : body.data) {
+            CategoryEntity e = new CategoryEntity();
+            e.id          = dto.id != null ? dto.id : "";
+            e.name        = dto.name;
+            e.slug        = dto.slug;
+            e.icon        = dto.icon;
+            e.color       = dto.color;
+            e.description = dto.description;
+            e.cachedAt    = now;
+            entities.add(e);
+        }
+        categoryDao.upsertAll(entities);
+        logDirectoryOk("SYNC /categories/", resp.code(), entities.size() + " categories");
+    }
+
+    private static ListingEntity toEntity(ListingDto dto) {
+        ListingEntity e = new ListingEntity();
+        e.id                = dto.id != null ? dto.id : "";
+        e.name              = dto.name;
+        e.slug              = dto.slug;
+        e.categoryUuid      = dto.categoryUuid;
+        e.categoryName      = dto.categoryName;
+        e.categoryIcon      = dto.categoryIcon;
+        e.categorySlug      = dto.categorySlug;
+        e.addressCode       = dto.addressCode;
+        e.latitude          = dto.latitude;
+        e.longitude         = dto.longitude;
+        e.communeName       = dto.communeName;
+        e.communeShortCode  = dto.communeShortCode;
+        e.districtName      = dto.districtName;
+        e.districtShortCode = dto.districtShortCode;
+        e.phone             = dto.phone;
+        e.website           = dto.website;
+        e.legacyAddress     = dto.legacyAddress;
+        e.isVerified        = dto.isVerified;
+        e.coverImage        = dto.coverImage;
+        e.logo              = dto.logo;
+        e.averageRating     = dto.averageRating;
+        e.updatedAt         = dto.updatedAt;
+        e.cachedAt          = System.currentTimeMillis();
+        return e;
     }
 
     // ── Search history ────────────────────────────────────────────────────────
