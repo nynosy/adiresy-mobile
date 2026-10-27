@@ -7,6 +7,7 @@ import org.github.nynosy.adiresy_mobile.data.api.dto.AdminUnitDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ApiResponse;
 import org.github.nynosy.adiresy_mobile.data.api.dto.CategoryDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ClaimStatusDto;
+import org.github.nynosy.adiresy_mobile.data.api.dto.DeviceChallengeDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.DeviceRegisterDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.ListingDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.SearchResponseDto;
@@ -24,6 +25,13 @@ import retrofit2.http.Query;
 public interface AdiresyApi {
 
     // ── Auth ──────────────────────────────────────────────────────────────────
+
+    /** Step 1 of an attested registration (GitHub issue #5) — a single-use
+     *  Android Key Attestation challenge, valid for challenge.expiresIn
+     *  seconds. Like registerDevice, the live OpenAPI schema shows
+     *  DeviceChallenge unwrapped but the server always wraps it. */
+    @POST("api/v1/auth/device/challenge/")
+    Call<ApiResponse<DeviceChallengeDto>> deviceChallenge();
 
     /** First-launch anonymous device registration — no account required.
      *  Returns a per-install token to send as X-Adiresy-Key on every
