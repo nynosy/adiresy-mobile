@@ -72,7 +72,7 @@ There is no in-app routing, turn-by-turn navigation, or voice guidance, and none
 
 | Item | Value | Rationale |
 |------|-------|-----------|
-| Language | **Java 21** | Entire codebase and samples in Java; Java 21 is the current LTS and is fully supported by AGP 9.x + D8/R8 desugaring down to `minSdk 26` |
+| Language | **Java 21** | Entire codebase and samples in Java. Java 25 (Sept 2025) is now the current LTS, superseding 21, but isn't usable here yet: raising `sourceCompatibility`/`targetCompatibility` to `VERSION_25` was tested directly and fails — a Kotlin compile task pulled in transitively by a dependency (not applied by this project) caps out at JVM target 24. `minSdk`/desugaring are not the blocker: D8/R8 desugaring targets *language features*, independent of the device's Android version, so a higher Java language level would reach `minSdk 26` fine once the Kotlin-side constraint clears. |
 | Core library desugaring | **Enabled** (`desugar_jdk_libs 2.1.x`) | Backports Java 9–21 standard-library APIs (streams, new collection methods, etc.) to API 26+; small runtime cost (~few hundred KB) |
 | `minSdkVersion` | **26 (Android 8.0)** | Raised from 24 — Android Key Attestation (device registration, see §9 and GitHub issue #5) can't verify *which app* is calling on API 24–25, only that some app holds the key, so those devices can't be supported once attestation enforcement is switched on server-side. |
 | `targetSdkVersion` | **API 36.1 (Android 16.1)** | Current stable; required by Play; keep current as new versions release |
