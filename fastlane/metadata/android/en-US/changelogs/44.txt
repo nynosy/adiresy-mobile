@@ -1,0 +1,9 @@
+- New: Browse nearby businesses and establishments right on the map, with full details, address codes, and bookmarking.
+- New: Establishment data is synced for offline browsing.
+- Changed: Device registration now uses Android hardware attestation for stronger anti-abuse protection. This raises the minimum supported version to Android 8.0.
+- Fixed: Establishment pins sometimes not appearing on the map.
+- Fixed: Offline map data not updating when a new quarterly release was available.
+- Fixed: Search history showing overlapping, confusing text.
+- Fixed: A misleading "No network connection" message shown for other kinds of errors, like a busy server.
+- Improved: Search results now show matching establishments first.
+- Removed: The category filter chips on the map, which were confusing and only covered a small subset of results.

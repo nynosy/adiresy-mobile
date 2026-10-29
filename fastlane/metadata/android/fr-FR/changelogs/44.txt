@@ -1,0 +1,9 @@
+- Nouveau : parcourez les commerces et établissements à proximité directement sur la carte, avec leurs détails complets, leur code d'adresse, et la possibilité de les mettre en favori.
+- Nouveau : les données des établissements sont synchronisées pour une consultation hors ligne.
+- Changement : l'enregistrement de l'appareil utilise désormais l'attestation matérielle Android pour une meilleure protection contre les abus. Cela relève la version minimale requise à Android 8.0.
+- Correction : les repères d'établissements qui n'apparaissaient parfois pas sur la carte.
+- Correction : les données hors ligne qui ne se mettaient pas à jour lors de la sortie d'une nouvelle version trimestrielle.
+- Correction : l'historique de recherche affichant un texte qui se chevauchait, peu lisible.
+- Correction : un message « Pas de connexion réseau » trompeur, affiché même pour d'autres types d'erreurs, comme un serveur surchargé.
+- Amélioration : les résultats de recherche affichent désormais les établissements correspondants en premier.
+- Suppression : les puces de filtre par catégorie sur la carte, qui prêtaient à confusion et ne couvraient qu'une petite partie des résultats.
