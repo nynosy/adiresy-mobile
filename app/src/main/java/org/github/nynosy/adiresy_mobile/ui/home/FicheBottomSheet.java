@@ -32,6 +32,8 @@ import org.github.nynosy.adiresy_mobile.data.api.dto.ReviewDto;
 import org.github.nynosy.adiresy_mobile.data.api.dto.TipDto;
 import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
 import org.github.nynosy.adiresy_mobile.databinding.BottomSheetFicheBinding;
+import org.github.nynosy.adiresy_mobile.map.QrCodeGenerator;
+import org.github.nynosy.adiresy_mobile.ui.fiche.FicheDetailActivity;
 import org.github.nynosy.adiresy_mobile.ui.saved.SaveToListBottomSheet;
 import org.github.nynosy.adiresy_mobile.util.ImageLoader;
 
@@ -47,6 +49,7 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
 
     public static final String TAG = "FicheDetail";
 
+    private static final String ARG_SLUG          = "slug";
     private static final String ARG_NAME          = "name";
     private static final String ARG_CATEGORY_NAME = "category_name";
     private static final String ARG_CATEGORY_ICON = "category_icon";
@@ -81,6 +84,7 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
 
     public static FicheBottomSheet forListing(ListingDto listing) {
         Bundle args = new Bundle();
+        args.putString(ARG_SLUG,          listing.slug);
         args.putString(ARG_NAME,          listing.name);
         args.putString(ARG_CATEGORY_NAME, listing.categoryName);
         args.putString(ARG_CATEGORY_ICON, listing.categoryIcon);
@@ -120,6 +124,7 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         Bundle args = requireArguments();
+        String slug           = args.getString(ARG_SLUG);
         String name          = args.getString(ARG_NAME, "");
         String categoryName  = args.getString(ARG_CATEGORY_NAME);
         String categoryIcon  = args.getString(ARG_CATEGORY_ICON);
@@ -198,6 +203,22 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
         if (!TextUtils.isEmpty(code) && hasLocation) {
             binding.rowFicheCodeActions.setVisibility(View.VISIBLE);
 
+            binding.sectionFicheCode.setVisibility(View.VISIBLE);
+            binding.labelFicheCode.setText(code);
+            binding.imageFicheQrCode.setImageBitmap(
+                    QrCodeGenerator.generate(getString(R.string.share_text, code)));
+            binding.btnFicheFullDetails.setOnClickListener(v -> {
+                // Deliberately not dismissed — mirrors CodeCardBottomSheet's
+                // btnFullDetails, so the fiche sheet reappears as-is on back.
+                // Goes to FicheDetailActivity (fiche info + the same code
+                // block shown here), not the code-only CodeDetailActivity —
+                // that screen has no fiche context at all.
+                Intent intent = new Intent(requireContext(), FicheDetailActivity.class);
+                intent.putExtra(FicheDetailActivity.EXTRA_SLUG, slug);
+                intent.putExtra(FicheDetailActivity.EXTRA_CODE, code);
+                startActivity(intent);
+            });
+
             refreshBookmarkState(code);
             binding.btnFicheBookmark.setOnClickListener(v -> onBookmarkClicked(
                     code, lat, lng, communeName, districtName));
@@ -227,6 +248,7 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
             });
         } else {
             binding.rowFicheCodeActions.setVisibility(View.GONE);
+            binding.sectionFicheCode.setVisibility(View.GONE);
         }
 
         renderReviews(args.getString(ARG_REVIEWS_JSON));

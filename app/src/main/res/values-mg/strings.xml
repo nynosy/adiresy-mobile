@@ -47,6 +47,8 @@
     <string name="fiche_review_header">★ %1$d — %2$s</string><!-- [MG-REVIEW] -->
     <string name="fiche_tip_text">%1$s: %2$s</string><!-- [MG-REVIEW] -->
     <string name="fiche_tip_likes">Tiana %1$d</string><!-- [MG-REVIEW] -->
+    <string name="btn_fiche_full_details">Antsipiriany feno ›</string><!-- [MG-REVIEW] -->
+    <string name="fiche_claim_notice">Ianao ve no tompony na mpitantana ity fiche ity? Azonao atao ny mitaky azy ao amin\'ny adiresy.mg mba hitantanana ny fifandraisana, ny ora ary ny sary.</string><!-- [MG-REVIEW] -->
 
     <!-- Code detail errors -->
     <string name="error_code_not_found">Tsy afaka namaha ity kaody ity — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->

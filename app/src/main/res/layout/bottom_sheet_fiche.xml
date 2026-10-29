@@ -143,6 +143,81 @@
         android:focusable="true"
         android:visibility="gone" />
 
+    <!-- Address code block — same info/link as the Code Card for a resolved
+         address (CodeCardBottomSheet / CodeDetailActivity): code text, QR
+         code, and a link to the full Code Detail screen. Visible under the
+         same condition as row_fiche_code_actions below (code + location
+         present) — the two sections are one logical unit. -->
+    <LinearLayout
+        android:id="@+id/section_fiche_code"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="8dp"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="8dp">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginEnd="16dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_code_headline"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:layout_marginBottom="2dp" />
+
+                <TextView
+                    android:id="@+id/label_fiche_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                    android:textColor="?attr/colorPrimary"
+                    android:maxLines="1"
+                    android:autoSizeTextType="uniform"
+                    android:autoSizeMinTextSize="14sp"
+                    android:autoSizeMaxTextSize="24sp"
+                    android:autoSizeStepGranularity="1sp" />
+
+            </LinearLayout>
+
+            <!-- QR code — fixed light background regardless of app theme, for scan contrast -->
+            <ImageView
+                android:id="@+id/image_fiche_qr_code"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:background="@android:color/white"
+                android:padding="4dp"
+                android:contentDescription="@string/cd_qr_code" />
+
+        </LinearLayout>
+
+        <!-- Link to the full Code Detail screen (admin hierarchy + GPS coordinates) -->
+        <TextView
+            android:id="@+id/btn_fiche_full_details"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:text="@string/btn_fiche_full_details"
+            android:textAppearance="?attr/textAppearanceLabelLarge"
+            android:textColor="?attr/colorPrimary"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+
     <!-- Code-based actions (Share / Copy / Open in Maps) — visible only when
          the fiche has an Adiresy address_code; reuses the Code Card's icons
          and strings so a claimed fiche behaves exactly like a resolved code.

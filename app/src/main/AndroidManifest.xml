@@ -40,6 +40,11 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.fiche.FicheDetailActivity"
+            android:exported="false"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
             android:name=".ui.code.CodeDetailActivity"
             android:exported="true"
             android:parentActivityName=".MainActivity">

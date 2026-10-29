@@ -47,6 +47,8 @@
     <string name="fiche_review_header">★ %1$d — %2$s</string>
     <string name="fiche_tip_text">%1$s: %2$s</string>
     <string name="fiche_tip_likes">%1$d likes</string>
+    <string name="btn_fiche_full_details">Full details ›</string>
+    <string name="fiche_claim_notice">Are you the owner or manager of this listing? You can claim it on adiresy.mg to manage its contact info, hours, and photos.</string>
 
     <!-- Code detail errors -->
     <string name="error_code_not_found">Could not resolve this code — check your connection and try again</string>

@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Full-screen fiche detail: everything the bottom sheet (bottom_sheet_fiche.xml)
+  shows, plus the same address-code block CodeDetailActivity shows (hierarchy,
+  GPS coordinates, QR code, Share/Copy/Navigate) — reached from the bottom
+  sheet's "Full details" link, which used to hand off to the code-only screen.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Error state -->
+    <LinearLayout
+        android:id="@+id/error_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="32dp"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/label_error"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textAppearance="?attr/textAppearanceBodyMedium"
+            android:textColor="?android:attr/textColorSecondary"
+            android:layout_marginBottom="16dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_retry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/btn_retry" />
+
+    </LinearLayout>
+
+    <!-- Content state -->
+    <ScrollView
+        android:id="@+id/content_group"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- cover_image — edge-to-edge banner. Hidden until a bitmap successfully loads. -->
+            <ImageView
+                android:id="@+id/image_fiche_cover"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:background="?attr/colorSurfaceVariant"
+                android:contentDescription="@null"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- logo (left) + category/name (right) -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:id="@+id/image_fiche_logo"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginEnd="12dp"
+                        android:scaleType="centerCrop"
+                        android:background="?attr/colorSurfaceVariant"
+                        android:contentDescription="@null"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/label_fiche_category"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceLabelLarge"
+                            android:textColor="?android:attr/textColorSecondary"
+                            android:layout_marginBottom="2dp" />
+
+                        <TextView
+                            android:id="@+id/label_fiche_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAppearance="?attr/textAppearanceHeadlineSmall" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- "✓ Verified listing" — visible only when is_verified -->
+                <TextView
+                    android:id="@+id/label_fiche_verified"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fiche_label_verified"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?attr/colorPrimary"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+
+                <!-- legacy_address — official Malagasy address -->
+                <TextView
+                    android:id="@+id/label_fiche_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+
+                <!-- average_rating -->
+                <TextView
+                    android:id="@+id/label_fiche_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone" />
+
+                <!-- description -->
+                <TextView
+                    android:id="@+id/label_fiche_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodyMedium"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone" />
+
+                <!-- Call — visible only when phone is present -->
+                <TextView
+                    android:id="@+id/btn_fiche_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:layout_marginTop="8dp"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone" />
+
+                <!-- Website — visible only when website is present -->
+                <TextView
+                    android:id="@+id/btn_fiche_website"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:textAppearance="?attr/textAppearanceLabelLarge"
+                    android:textColor="?attr/colorPrimary"
+                    android:background="?attr/selectableItemBackground"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:visibility="gone" />
+
+                <!-- Unclaimed-listing notice — plain info text, no login/claim
+                     action here (that flow belongs on the website, not this
+                     app); visible only when claim_state == "unclaimed". -->
+                <TextView
+                    android:id="@+id/label_fiche_claim_notice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?attr/textAppearanceBodySmall"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:layout_marginTop="12dp"
+                    android:visibility="gone" />
+
+                <View
+                    android:id="@+id/divider_fiche_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?attr/colorOutline"
+                    android:layout_marginVertical="20dp"
+                    android:visibility="gone" />
+
+                <!-- Address code block — same content as CodeDetailActivity:
+                     code + QR, admin hierarchy, GPS coordinates. Visible only
+                     when the fiche has a resolvable Adiresy address_code. -->
+                <LinearLayout
+                    android:id="@+id/section_fiche_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="20dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="16dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_code_headline"
+                                android:textAppearance="?attr/textAppearanceLabelLarge"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:layout_marginBottom="2dp" />
+
+                            <TextView
+                                android:id="@+id/label_code"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?attr/textAppearanceHeadlineSmall"
+                                android:textColor="?attr/colorPrimary"
+                                android:maxLines="1"
+                                android:autoSizeTextType="uniform"
+                                android:autoSizeMinTextSize="14sp"
+                                android:autoSizeMaxTextSize="24sp"
+                                android:autoSizeStepGranularity="1sp" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/image_qr_code"
+                            android:layout_width="80dp"
+                            android:layout_height="80dp"
+                            android:background="@android:color/white"
+                            android:padding="4dp"
+                            android:contentDescription="@string/cd_qr_code" />
+
+                    </LinearLayout>
+
+                    <!-- Admin hierarchy card: Fokontany / Commune (code) / District (code) / Région -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="?attr/colorOutline"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout style="@style/CodeDetail.HierarchyRow">
+                                <TextView
+                                    style="@style/CodeDetail.HierarchyRow.Label"
+                                    android:text="@string/label_fokontany" />
+                                <TextView
+                                    android:id="@+id/value_fokontany"
+                                    style="@style/CodeDetail.HierarchyRow.Value" />
+                            </LinearLayout>
+
+                            <LinearLayout style="@style/CodeDetail.HierarchyRow">
+                                <TextView
+                                    style="@style/CodeDetail.HierarchyRow.Label"
+                                    android:text="@string/label_commune" />
+                                <TextView
+                                    android:id="@+id/value_commune"
+                                    style="@style/CodeDetail.HierarchyRow.Value" />
+                            </LinearLayout>
+
+                            <LinearLayout style="@style/CodeDetail.HierarchyRow">
+                                <TextView
+                                    style="@style/CodeDetail.HierarchyRow.Label"
+                                    android:text="@string/label_district" />
+                                <TextView
+                                    android:id="@+id/value_district"
+                                    style="@style/CodeDetail.HierarchyRow.Value" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                style="@style/CodeDetail.HierarchyRow"
+                                android:layout_marginBottom="0dp">
+                                <TextView
+                                    style="@style/CodeDetail.HierarchyRow.Label"
+                                    android:text="@string/label_region" />
+                                <TextView
+                                    android:id="@+id/value_region"
+                                    style="@style/CodeDetail.HierarchyRow.Value" />
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- GPS coordinates card -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
+                        app:cardElevation="0dp"
+                        app:strokeWidth="1dp"
+                        app:strokeColor="?attr/colorOutline"
+                        app:cardBackgroundColor="?attr/colorSurfaceVariant">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/label_gps_coordinates"
+                                android:textAppearance="?attr/textAppearanceLabelLarge"
+                                android:textColor="?android:attr/textColorSecondary"
+                                android:layout_marginBottom="8dp" />
+
+                            <TextView
+                                android:id="@+id/value_latitude"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?attr/textAppearanceBodyMedium"
+                                android:layout_marginBottom="2dp" />
+
+                            <TextView
+                                android:id="@+id/value_longitude"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:textAppearance="?attr/textAppearanceBodyMedium" />
+
+                        </LinearLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Action buttons -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_share"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginEnd="8dp"
+                            android:text="@string/btn_share" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_copy"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/btn_copy"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton" />
+
+                    </LinearLayout>
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btn_navigate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/btn_navigate"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/navigate_external_hint"
+                        android:textAppearance="?attr/textAppearanceLabelSmall"
+                        android:textColor="?android:attr/textColorSecondary"
+                        android:gravity="center" />
+
+                </LinearLayout>
+
+                <!-- Reviews — populated in Java, one row per ReviewDto. -->
+                <LinearLayout
+                    android:id="@+id/section_fiche_reviews"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fiche_section_reviews"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:id="@+id/container_fiche_reviews"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+
+                <!-- Tips — same pattern as reviews. -->
+                <LinearLayout
+                    android:id="@+id/section_fiche_tips"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginTop="16dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/fiche_section_tips"
+                        android:textAppearance="?attr/textAppearanceTitleSmall"
+                        android:layout_marginBottom="4dp" />
+
+                    <LinearLayout
+                        android:id="@+id/container_fiche_tips"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

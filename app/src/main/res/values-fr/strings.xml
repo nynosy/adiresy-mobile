@@ -44,6 +44,8 @@
     <string name="fiche_review_header">★ %1$d — %2$s</string>
     <string name="fiche_tip_text">%1$s : %2$s</string>
     <string name="fiche_tip_likes">%1$d mentions J\'aime</string>
+    <string name="btn_fiche_full_details">Détails complets ›</string>
+    <string name="fiche_claim_notice">Vous êtes le propriétaire ou le gérant de cette fiche ? Vous pouvez la revendiquer sur adiresy.mg pour gérer ses coordonnées, ses horaires et ses photos.</string>
 
     <!-- Code detail errors -->
     <string name="error_code_not_found">Impossible de résoudre ce code — vérifiez votre connexion et réessayez</string>
