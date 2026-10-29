@@ -122,6 +122,7 @@
     <string name="warning_mobile_data_title">Utiliser les données mobiles ?</string>
     <string name="warning_mobile_data_message">Le téléchargement des données cartographiques via les données mobiles peut consommer une quantité importante de données et entraîner des frais supplémentaires.</string>
     <string name="btn_download">Télécharger</string>
+    <string name="btn_update">Mettre à jour</string>
     <string name="btn_delete_map_data">Supprimer les données</string>
     <string name="confirm_delete_title">Supprimer les données cartographiques ?</string>
     <string name="confirm_delete_message">Cela supprimera toutes les tuiles cartographiques téléchargées. Vous pourrez les télécharger à nouveau à tout moment.</string>

@@ -15,25 +15,35 @@ import okhttp3.Response;
  * Fetches and parses adiresy-tiles' manifest.json, the source of truth for
  * download URLs and SHA-256 checksums (see docs/Issues.md issue 3 — the app
  * previously hardcoded URLs and never verified integrity, despite both
- * repos' docs claiming otherwise). Cached in memory for the process
- * lifetime: the manifest only changes on a quarterly release, and every
- * caller already tolerates a stale/missing manifest by falling back to
- * constructed URLs, so there's no need to re-fetch per screen visit.
+ * repos' docs claiming otherwise).
+ *
+ * <p>Cached in memory with a short TTL, not indefinitely for the process
+ * lifetime as a previous version of this class did — that meant a long-lived
+ * (even just backgrounded, not force-stopped) process could never see a new
+ * quarterly release without the user killing the app, which is exactly the
+ * "I know there's a new release but the app still downloads the old one"
+ * failure mode. A fetch failure (offline, etc.) falls back to returning
+ * whatever's cached, even if expired — stale-but-checksummed beats nothing.
  */
 public final class ManifestClient {
 
     private static final String MANIFEST_URL =
             "https://github.com/nynosy/adiresy-tiles/releases/latest/download/manifest.json";
+    private static final long CACHE_TTL_MS = 30 * 60 * 1000; // 30 minutes
 
     private static volatile ManifestDto cached;
+    private static volatile long cachedAt;
 
     private ManifestClient() {}
 
-    /** Blocking — call from a background thread. Returns null on any
-     *  failure (offline, malformed response, etc.); callers must fall back
-     *  gracefully rather than treat a null manifest as an error. */
+    /** Blocking — call from a background thread. Returns null only when
+     *  there's no cached manifest at all and the fetch also failed; callers
+     *  must fall back gracefully rather than treat a null manifest as an
+     *  error. */
     public static ManifestDto fetchSync() {
-        if (cached != null) return cached;
+        if (cached != null && System.currentTimeMillis() - cachedAt < CACHE_TTL_MS) {
+            return cached;
+        }
         OkHttpClient client = new OkHttpClient.Builder()
                 .followRedirects(true)
                 .connectTimeout(10, TimeUnit.SECONDS)
@@ -41,12 +51,13 @@ public final class ManifestClient {
                 .build();
         Request request = new Request.Builder().url(MANIFEST_URL).build();
         try (Response response = client.newCall(request).execute()) {
-            if (!response.isSuccessful() || response.body() == null) return null;
+            if (!response.isSuccessful() || response.body() == null) return cached;
             ManifestDto manifest = new Gson().fromJson(response.body().string(), ManifestDto.class);
             cached = manifest;
+            cachedAt = System.currentTimeMillis();
             return manifest;
         } catch (Exception e) {
-            return null;
+            return cached;
         }
     }
 

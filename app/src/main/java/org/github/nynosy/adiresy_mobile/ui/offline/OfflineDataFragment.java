@@ -32,7 +32,11 @@ public class OfflineDataFragment extends Fragment {
 
     private static final String BASE_URL =
             "https://github.com/nynosy/adiresy-tiles/releases/latest/download/";
-    private static final String DATA_VERSION = "2026-Q3";
+    /** Fallback label only — used when the manifest can't be fetched at all
+     *  (so its real `version` field is unavailable), not the version actually
+     *  being downloaded. Was previously used unconditionally, which is why
+     *  the displayed version used to stay stuck at this literal forever. */
+    private static final String FALLBACK_VERSION_LABEL = "latest";
 
     // Map tiles + buildings tiles combined per zoom level
     private static final int[] NATIONAL_SIZES_MB = {190, 410};
@@ -82,7 +86,17 @@ public class OfflineDataFragment extends Fragment {
 
         viewModel.getNationalWorkInfo().observe(getViewLifecycleOwner(), this::onNationalWorkInfo);
 
-        manifestExecutor.execute(() -> manifest = ManifestClient.fetchSync());
+        manifestExecutor.execute(() -> {
+            manifest = ManifestClient.fetchSync();
+            // The card's "already downloaded" vs "update available" state depends
+            // on the manifest's version, which wasn't known yet when it was first
+            // drawn above — re-evaluate now that it's (maybe) loaded.
+            if (getActivity() != null) {
+                requireActivity().runOnUiThread(() -> {
+                    if (binding != null) updateNationalCard();
+                });
+            }
+        });
     }
 
     // ── National zoom selection ───────────────────────────────────────────────
@@ -137,7 +151,17 @@ public class OfflineDataFragment extends Fragment {
 
         binding.btnNationalDownload.setVisibility(View.VISIBLE);
         boolean alreadyHaveSelected = hasNational && storedZoom == selectedNationalZoom;
-        binding.btnNationalDownload.setEnabled(!alreadyHaveSelected);
+        // Previously this disabled the button whenever *any* version of the
+        // selected tier was present, with no way to tell a newer release had
+        // shipped short of manually deleting the data first. Now: still
+        // disabled if we already have this exact tier and either match the
+        // manifest's version or don't have a manifest to compare against (never
+        // force a redundant re-download without evidence it'd actually differ).
+        String liveVersion = manifest != null ? manifest.version : null;
+        boolean updateAvailable = alreadyHaveSelected && liveVersion != null
+                && !liveVersion.equals(viewModel.getNationalVersion());
+        binding.btnNationalDownload.setEnabled(!alreadyHaveSelected || updateAvailable);
+        binding.btnNationalDownload.setText(updateAvailable ? R.string.btn_update : R.string.btn_download);
     }
 
     private void showNationalPaused() {
@@ -152,7 +176,9 @@ public class OfflineDataFragment extends Fragment {
 
     private void confirmAndStartNational() {
         int storedZoom = viewModel.getNationalZoom();
-        boolean hasOtherZoom = viewModel.hasNationalData() && storedZoom != selectedNationalZoom;
+        boolean hasData = viewModel.hasNationalData();
+        boolean hasOtherZoom = hasData && storedZoom != selectedNationalZoom;
+        boolean sameTierUpdate = hasData && storedZoom == selectedNationalZoom;
 
         if (hasOtherZoom) {
             new MaterialAlertDialogBuilder(requireContext())
@@ -165,6 +191,19 @@ public class OfflineDataFragment extends Fragment {
                     })
                     .setNegativeButton(R.string.btn_cancel, null)
                     .show();
+        } else if (sameTierUpdate) {
+            // The button is only enabled+relabelled "Update" here when a newer
+            // manifest version was actually detected (see updateNationalCard) —
+            // delete the old files first so TileDownloadWorker starts clean
+            // rather than "resuming" into a same-named file from a different
+            // release. Its resume logic trusts the existing file's byte length
+            // as a correct offset into *whatever URL it's given next*; across a
+            // version bump that's a different file, so a stale partial would
+            // get a Range request spliced from the wrong release's bytes onto
+            // the end of the old one — caught by the checksum check and
+            // retried, but only after wasting a doomed download attempt.
+            viewModel.deleteNationalData();
+            maybePromptMobileAndStartNational();
         } else {
             maybePromptMobileAndStartNational();
         }
@@ -194,7 +233,14 @@ public class OfflineDataFragment extends Fragment {
         DownloadTarget poiTarget = resolveTarget(m != null ? m.poi : null, tier,
                 BASE_URL + "poi-madagascar-z" + zoom + ".pmtiles");
         showNationalDownloading();
-        viewModel.startNationalDownload(mapTarget, buildingsTarget, poiTarget, DATA_VERSION, zoom, allowMobile);
+        viewModel.startNationalDownload(mapTarget, buildingsTarget, poiTarget, versionLabel(m), zoom, allowMobile);
+    }
+
+    /** The manifest's real version when available — was previously a hardcoded
+     *  literal here, which is why the displayed version never advanced past
+     *  whatever that literal happened to say. */
+    private static String versionLabel(ManifestDto m) {
+        return (m != null && m.version != null) ? m.version : FALLBACK_VERSION_LABEL;
     }
 
     private void maybePromptMobileAndResumeNational() {
@@ -222,7 +268,7 @@ public class OfflineDataFragment extends Fragment {
         DownloadTarget poiTarget = resolveTarget(m != null ? m.poi : null, tier,
                 BASE_URL + "poi-madagascar-z" + zoom + ".pmtiles");
         showNationalDownloading();
-        viewModel.resumeNationalDownload(mapTarget, buildingsTarget, poiTarget, DATA_VERSION, zoom, allowMobile);
+        viewModel.resumeNationalDownload(mapTarget, buildingsTarget, poiTarget, versionLabel(m), zoom, allowMobile);
     }
 
     private void showNationalDownloading() {

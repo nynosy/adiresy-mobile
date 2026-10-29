@@ -124,6 +124,7 @@
     <string name="warning_mobile_data_title">Mampiasa angon-databà finday?</string><!-- [MG-REVIEW] -->
     <string name="warning_mobile_data_message">Ny falaiana angon-tsarintany amin\'ny databà finday dia mety hampiasa angona be ary mety hiteraka saran\'asa fanampiny.</string><!-- [MG-REVIEW] -->
     <string name="btn_download">Alaina</string><!-- [MG-REVIEW] -->
+    <string name="btn_update">Havaozina</string><!-- [MG-REVIEW] -->
     <string name="btn_delete_map_data">Fafao ny angon-tsarintany</string><!-- [MG-REVIEW] -->
     <string name="confirm_delete_title">Fafao ny angon-tsarintany?</string><!-- [MG-REVIEW] -->
     <string name="confirm_delete_message">Izany dia hamafa ny sarintany alaina rehetra. Azonao alaina indray amin\'ny fotoana rehetra.</string><!-- [MG-REVIEW] -->

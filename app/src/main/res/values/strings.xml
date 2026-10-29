@@ -134,6 +134,7 @@
     <string name="warning_mobile_data_title">Use mobile data?</string>
     <string name="warning_mobile_data_message">Downloading map data over mobile data may use a significant amount of data and incur costs on your plan.</string>
     <string name="btn_download">Download</string>
+    <string name="btn_update">Update</string>
     <string name="btn_delete_map_data">Delete map data</string>
     <string name="confirm_delete_title">Delete map data?</string>
     <string name="confirm_delete_message">This will remove all downloaded map tiles. You can download again at any time.</string>
