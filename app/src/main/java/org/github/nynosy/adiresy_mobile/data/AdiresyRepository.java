@@ -292,10 +292,12 @@ public class AdiresyRepository {
                     items.addAll(searchListingsForAutocomplete(query));
                     out.postValue(Result.success(items));
                 } else {
+                    logDirectoryFailure("GET /search/ (autocomplete)", resp, null);
                     if (resp.code() == 401) deviceAuth.invalidateToken();
                     out.postValue(Result.error(resp.code(), resp.message()));
                 }
             } catch (Exception e) {
+                logDirectoryFailure("GET /search/ (autocomplete)", null, e);
                 out.postValue(Result.networkError(e));
             }
         });
