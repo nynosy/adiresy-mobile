@@ -168,51 +168,62 @@
         android:layout_height="match_parent"
         android:hint="@string/search_hint">
 
-        <!-- History header row -->
+        <!-- SearchView lays out a single direct child; history_header,
+             recycler_search, and label_search_empty must share one vertical
+             container here or they overlap (same top-left origin). -->
         <LinearLayout
-            android:id="@+id/history_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="8dp"
-            android:gravity="center_vertical"
-            android:visibility="gone">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
+            <!-- History header row -->
+            <LinearLayout
+                android:id="@+id/history_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="12dp"
+                android:gravity="center_vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/label_recent_searches"
+                    android:textAppearance="?attr/textAppearanceLabelMedium"
+                    android:textColor="?android:attr/textColorSecondary" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/btn_clear_history"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btn_clear_history"
+                    style="@style/Widget.MaterialComponents.Chip.Action" />
+
+            </LinearLayout>
+
+            <!-- Search results / history list -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_search"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <!-- Empty search state -->
             <TextView
-                android:layout_width="0dp"
+                android:id="@+id/label_search_empty"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/label_recent_searches"
-                android:textAppearance="?attr/textAppearanceLabelMedium"
-                android:textColor="?android:attr/textColorSecondary" />
-
-            <com.google.android.material.chip.Chip
-                android:id="@+id/btn_clear_history"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/btn_clear_history"
-                style="@style/Widget.MaterialComponents.Chip.Action" />
+                android:layout_marginTop="32dp"
+                android:paddingHorizontal="16dp"
+                android:textAppearance="?attr/textAppearanceBodyMedium"
+                android:textColor="?android:attr/textColorSecondary"
+                android:gravity="center"
+                android:visibility="gone" />
 
         </LinearLayout>
-
-        <!-- Search results / history list -->
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_search"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <!-- Empty search state -->
-        <TextView
-            android:id="@+id/label_search_empty"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:paddingHorizontal="16dp"
-            android:textAppearance="?attr/textAppearanceBodyMedium"
-            android:textColor="?android:attr/textColorSecondary"
-            android:gravity="center"
-            android:visibility="gone" />
 
     </com.google.android.material.search.SearchView>
 

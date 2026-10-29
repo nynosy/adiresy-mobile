@@ -1,6 +1,7 @@
 package org.github.nynosy.adiresy_mobile.ui.search;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,9 @@ public class HistoryAdapter extends ListAdapter<SearchHistoryEntity, HistoryAdap
 
         void bind(SearchHistoryEntity item, OnItemClickListener listener) {
             binding.labelLabel.setText(item.query);
-            binding.labelType.setText("recent");
+            // No per-row subtitle — the "Recent searches" section header above
+            // the list already says so; repeating it on every row is noise.
+            binding.labelType.setVisibility(View.GONE);
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) listener.onItemClick(item.query);
             });

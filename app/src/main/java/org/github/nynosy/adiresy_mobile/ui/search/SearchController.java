@@ -18,6 +18,7 @@ import java.util.List;
 import org.github.nynosy.adiresy_mobile.R;
 import org.github.nynosy.adiresy_mobile.data.Result;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
+import org.github.nynosy.adiresy_mobile.data.cache.SearchHistoryEntity;
 
 public class SearchController {
 
@@ -37,6 +38,7 @@ public class SearchController {
     private final HistoryAdapter historyAdapter = new HistoryAdapter();
 
     private boolean showingHistory = true;
+    private List<SearchHistoryEntity> lastHistory = Collections.emptyList();
 
     public SearchController(Context context,
                             RecyclerView recycler,
@@ -90,16 +92,9 @@ public class SearchController {
         });
 
         viewModel.getSearchHistory().observe(owner, history -> {
-            if (!showingHistory) return;
-            boolean hasHistory = history != null && !history.isEmpty();
-            historyHeader.setVisibility(hasHistory ? View.VISIBLE : View.GONE);
-            if (hasHistory) {
-                historyAdapter.submitList(history);
-                recycler.setAdapter(historyAdapter);
-                recycler.setVisibility(View.VISIBLE);
-            } else {
-                recycler.setVisibility(View.GONE);
-            }
+            lastHistory = history != null ? history : Collections.emptyList();
+            historyAdapter.submitList(lastHistory);
+            if (showingHistory) applyHistoryVisibility();
         });
 
         switchToHistory();
@@ -109,7 +104,21 @@ public class SearchController {
         showingHistory = true;
         recycler.setAdapter(historyAdapter);
         emptyLabel.setVisibility(View.GONE);
+        applyHistoryVisibility();
         viewModel.clearQuery();
+    }
+
+    /** Shows/hides the header and list based on the last-seen history list.
+     *  Used both by the history LiveData observer and by switchToHistory() —
+     *  the observer only re-runs on a fresh emission, which switching modes
+     *  alone doesn't trigger, so mode switches need their own call to stay in
+     *  sync. Reads {@code lastHistory} rather than historyAdapter.getItemCount():
+     *  ListAdapter diffs submitList() asynchronously, so the adapter's count
+     *  can still reflect the previous list for a moment after submitList(). */
+    private void applyHistoryVisibility() {
+        boolean hasHistory = !lastHistory.isEmpty();
+        historyHeader.setVisibility(hasHistory ? View.VISIBLE : View.GONE);
+        recycler.setVisibility(hasHistory ? View.VISIBLE : View.GONE);
     }
 
     public void switchToResults() {
