@@ -278,9 +278,13 @@ public class AdiresyRepository {
 
     /** Autocomplete, with directory listings merged in client-side (the server
      *  endpoint doesn't carry them — see {@link #searchListingsForAutocomplete}).
-     *  A listings-search failure (e.g. a key-permission gap — see
-     *  docs/directory-api-integration.md §5 Q1) never fails the whole search;
-     *  it just means no fiche results get merged in for that query. */
+     *  Fiches are placed first: they're the app's own content (establishments
+     *  the user can actually visit/interact with), ahead of raw admin units
+     *  and OSM places which exist mostly to geolocate a search, not to be
+     *  destinations themselves. A listings-search failure (e.g. a
+     *  key-permission gap — see docs/directory-api-integration.md §5 Q1)
+     *  never fails the whole search; it just means no fiche results get
+     *  merged in for that query. */
     public LiveData<Result<List<AutocompleteDto.Item>>> autocomplete(String query) {
         MutableLiveData<Result<List<AutocompleteDto.Item>>> out = new MutableLiveData<>();
         executor.execute(() -> {
@@ -288,8 +292,8 @@ public class AdiresyRepository {
                 deviceAuth.ensureToken();
                 retrofit2.Response<SearchResponseDto> resp = api.autocomplete(query, 20).execute();
                 if (resp.isSuccessful() && resp.body() != null && resp.body().data != null) {
-                    List<AutocompleteDto.Item> items = flattenSearchResponse(resp.body().data);
-                    items.addAll(searchListingsForAutocomplete(query));
+                    List<AutocompleteDto.Item> items = searchListingsForAutocomplete(query);
+                    items.addAll(flattenSearchResponse(resp.body().data));
                     out.postValue(Result.success(items));
                 } else {
                     logDirectoryFailure("GET /search/ (autocomplete)", resp, null);
