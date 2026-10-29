@@ -20,5 +20,3 @@ local.properties
 .env.*
 /playstore/
 /certs/
-/docs/directory-api-integration.md
-/docs/api-reply-2026-10-27-tasks.md
