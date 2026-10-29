@@ -157,8 +157,8 @@
     <string name="about_what_body">Adiresy is an unofficial, community-built addressing system for Madagascar — it is not a government service and codes have no legal standing. Every structure in the country — from city apartments to rural homes — can receive a unique, permanent code that makes it findable without a street name or postcode.\n\nThe system can be used for deliveries, emergency services, official correspondence, and development planning across all 24 regions of Madagascar.</string>
     <string name="about_section_codes">How codes work</string>
     <string name="about_codes_body">Each code follows the administrative hierarchy of Madagascar: Region › District › Commune › Fokontany › Building. A code like 203-AMBS-01234 uniquely identifies a single building within its fokontany.\n\nCodes are permanent — a building keeps its code even if it changes hands or use.</string>
-    <string name="about_section_independent">Independent app</string>
-    <string name="about_independent_body">This mobile app is an independent project and is not developed, operated, or endorsed by the team behind adiresy.mg. It uses the public API provided by adiresy.mg to look up building codes and administrative areas.</string>
+    <string name="about_section_independent">Coordinated with adiresy.mg</string>
+    <string name="about_independent_body">This mobile app is developed in coordination with the team behind adiresy.mg. It uses the public API provided by adiresy.mg to look up building codes and administrative areas.</string>
     <string name="about_section_website">Official website</string>
     <string name="about_section_source">Source code</string>
     <string name="link_repo_app">App — github.com/nynosy/adiresy-mobile</string>
