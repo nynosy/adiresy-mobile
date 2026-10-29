@@ -51,6 +51,8 @@
     <!-- Code detail errors -->
     <string name="error_code_not_found">Could not resolve this code — check your connection and try again</string>
     <string name="error_no_network">No network connection</string>
+    <string name="error_rate_limited">Too many requests — please wait a moment and try again</string>
+    <string name="error_generic">Something went wrong — please try again</string>
     <string name="error_api_key">Couldn\'t verify this device — check your connection and try again</string>
     <string name="btn_retry">Retry</string>
 

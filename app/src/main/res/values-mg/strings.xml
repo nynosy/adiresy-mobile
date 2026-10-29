@@ -51,6 +51,8 @@
     <!-- Code detail errors -->
     <string name="error_code_not_found">Tsy afaka namaha ity kaody ity — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
     <string name="error_no_network">Tsy misy fifandraisana amin\'ny tambajotra</string><!-- [MG-REVIEW] -->
+    <string name="error_rate_limited">Maro loatra ny fangatahana — miandrasa kely dia andramo indray</string><!-- [MG-REVIEW] -->
+    <string name="error_generic">Nisy olana — andramo indray</string><!-- [MG-REVIEW] -->
     <string name="error_api_key">Tsy voamarina ity fitaovana ity — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
     <string name="btn_retry">Andramo indray</string><!-- [MG-REVIEW] -->
 

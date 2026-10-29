@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import androidx.annotation.StringRes;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,6 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.github.nynosy.adiresy_mobile.R;
+import org.github.nynosy.adiresy_mobile.data.Result;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
 
 public class SearchController {
@@ -79,7 +81,7 @@ public class SearchController {
             emptyLabel.setVisibility(empty ? View.VISIBLE : View.GONE);
             if (empty) {
                 if (result.isError()) {
-                    emptyLabel.setText(R.string.error_no_network);
+                    emptyLabel.setText(errorMessageRes(result));
                 } else {
                     String q = editText.getText() != null ? editText.getText().toString() : "";
                     emptyLabel.setText(context.getString(R.string.search_empty, q));
@@ -116,5 +118,12 @@ public class SearchController {
             recycler.setAdapter(searchAdapter);
             historyHeader.setVisibility(View.GONE);
         }
+    }
+
+    @StringRes
+    private static int errorMessageRes(Result<?> result) {
+        if (result.isNetworkError()) return R.string.error_no_network;
+        if (result.isRateLimited()) return R.string.error_rate_limited;
+        return R.string.error_generic;
     }
 }

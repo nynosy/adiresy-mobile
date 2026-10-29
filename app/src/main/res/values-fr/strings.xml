@@ -48,6 +48,8 @@
     <!-- Code detail errors -->
     <string name="error_code_not_found">Impossible de résoudre ce code — vérifiez votre connexion et réessayez</string>
     <string name="error_no_network">Pas de connexion réseau</string>
+    <string name="error_rate_limited">Trop de requêtes — veuillez patienter un instant et réessayer</string>
+    <string name="error_generic">Une erreur est survenue — veuillez réessayer</string>
     <string name="error_api_key">Impossible de vérifier cet appareil — vérifiez votre connexion et réessayez</string>
     <string name="btn_retry">Réessayer</string>
 

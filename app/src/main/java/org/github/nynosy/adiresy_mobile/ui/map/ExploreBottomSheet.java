@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
@@ -17,6 +18,7 @@ import java.util.Deque;
 import java.util.List;
 
 import org.github.nynosy.adiresy_mobile.R;
+import org.github.nynosy.adiresy_mobile.data.Result;
 import org.github.nynosy.adiresy_mobile.data.cache.AdminUnitEntity;
 import org.github.nynosy.adiresy_mobile.databinding.BottomSheetExploreBinding;
 
@@ -86,7 +88,7 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
             binding.labelAdminEmpty.setVisibility(empty ? View.VISIBLE : View.GONE);
             if (empty) {
                 binding.labelAdminEmpty.setText(
-                        result.isError() ? R.string.error_no_network : R.string.explore_empty);
+                        result.isError() ? errorMessageRes(result) : R.string.explore_empty);
             }
         });
 
@@ -222,6 +224,13 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
                 return getString(R.string.label_fokontany);
             }
         }
+    }
+
+    @StringRes
+    private static int errorMessageRes(Result<?> result) {
+        if (result.isNetworkError()) return R.string.error_no_network;
+        if (result.isRateLimited()) return R.string.error_rate_limited;
+        return R.string.error_generic;
     }
 
     @Override

@@ -42,4 +42,16 @@ public final class Result<T> {
     public boolean isApiKeyError() {
         return status == Status.ERROR_HTTP && httpCode == 401;
     }
+
+    /** True connectivity failure (no signal, DNS, timeout) — distinct from a
+     *  server response the device successfully received but that signals an
+     *  error (rate limiting, 5xx, etc.). Only this case should ever be shown
+     *  to the user as "no network connection". */
+    public boolean isNetworkError() {
+        return status == Status.ERROR_NETWORK;
+    }
+
+    public boolean isRateLimited() {
+        return status == Status.ERROR_HTTP && httpCode == 429;
+    }
 }

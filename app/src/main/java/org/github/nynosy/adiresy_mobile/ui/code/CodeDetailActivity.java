@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import org.github.nynosy.adiresy_mobile.R;
 import org.github.nynosy.adiresy_mobile.data.BookmarkRepository;
+import org.github.nynosy.adiresy_mobile.data.Result;
 import org.github.nynosy.adiresy_mobile.data.cache.AddressEntity;
 import org.github.nynosy.adiresy_mobile.data.cache.BookmarkEntity;
 import org.github.nynosy.adiresy_mobile.databinding.ActivityCodeDetailBinding;
@@ -124,11 +126,7 @@ public class CodeDetailActivity extends AppCompatActivity {
             if (result.isError()) {
                 binding.contentGroup.setVisibility(View.GONE);
                 binding.errorGroup.setVisibility(View.VISIBLE);
-                binding.labelError.setText(result.isApiKeyError()
-                        ? R.string.error_api_key
-                        : result.httpCode == 0
-                                ? R.string.error_no_network
-                                : R.string.error_code_not_found);
+                binding.labelError.setText(errorMessageRes(result));
                 return;
             }
             binding.contentGroup.setVisibility(View.VISIBLE);
@@ -155,6 +153,14 @@ public class CodeDetailActivity extends AppCompatActivity {
                 viewModel.setCoordinates(result.data.latitude, result.data.longitude);
             }
         });
+    }
+
+    @StringRes
+    private static int errorMessageRes(Result<?> result) {
+        if (result.isApiKeyError()) return R.string.error_api_key;
+        if (result.isNetworkError()) return R.string.error_no_network;
+        if (result.isRateLimited()) return R.string.error_rate_limited;
+        return R.string.error_code_not_found;
     }
 
     private void wireButtons() {
