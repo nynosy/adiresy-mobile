@@ -36,7 +36,7 @@ See [`docs/Adiresy-Android-Specification.md`](docs/Adiresy-Android-Specification
 
 | Concern | Choice |
 |---------|--------|
-| Language | Java 21, `minSdk` 24 (Android 7.0), `targetSdk`/`compileSdk` 36.1 |
+| Language | Java 21, `minSdk` 26 (Android 8.0), `targetSdk`/`compileSdk` 36.1 |
 | UI | Android Views + Material Components (no Jetpack Compose, to stay light on Android Go) |
 | Architecture | MVVM (`ViewModel` + `LiveData`) |
 | Map | MapLibre Native Android, offline PMTiles vector tiles |

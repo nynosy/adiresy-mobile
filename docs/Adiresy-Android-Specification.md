@@ -72,9 +72,9 @@ There is no in-app routing, turn-by-turn navigation, or voice guidance, and none
 
 | Item | Value | Rationale |
 |------|-------|-----------|
-| Language | **Java 21** | Entire codebase and samples in Java; Java 21 is the current LTS and is fully supported by AGP 9.x + D8/R8 desugaring down to `minSdk 24` |
-| Core library desugaring | **Enabled** (`desugar_jdk_libs 2.1.x`) | Backports Java 9–21 standard-library APIs (streams, new collection methods, etc.) to API 24+; small runtime cost (~few hundred KB) |
-| `minSdkVersion` | **24 (Android 7.0)** | Inclusive floor that still captures older budget devices while remaining supported by MapLibre. Can drop to 21 if field data shows a meaningful older tail. |
+| Language | **Java 21** | Entire codebase and samples in Java; Java 21 is the current LTS and is fully supported by AGP 9.x + D8/R8 desugaring down to `minSdk 26` |
+| Core library desugaring | **Enabled** (`desugar_jdk_libs 2.1.x`) | Backports Java 9–21 standard-library APIs (streams, new collection methods, etc.) to API 26+; small runtime cost (~few hundred KB) |
+| `minSdkVersion` | **26 (Android 8.0)** | Raised from 24 — Android Key Attestation (device registration, see §9 and GitHub issue #5) can't verify *which app* is calling on API 24–25, only that some app holds the key, so those devices can't be supported once attestation enforcement is switched on server-side. |
 | `targetSdkVersion` | **API 36.1 (Android 16.1)** | Current stable; required by Play; keep current as new versions release |
 | `compileSdkVersion` | **API 36.1** (matches target) | AGP 9.x DSL: `release(36) { minorApiLevel = 1 }` |
 | Architecture ABIs | `armeabi-v7a` + `arm64-v8a` | Covers budget (32-bit) and modern devices; split per-ABI in the AAB to shrink native payload |
@@ -239,6 +239,25 @@ POST /api/v1/auth/device/register/
 Called once, lazily, the first time the app is about to make an authenticated call (never blocking app startup — see NFR-1/NFR-7). The returned `token` is sent as `X-Adiresy-Key` on every subsequent request. **Rate limits:** 10 registrations/hour/IP for this endpoint; 60 requests/hour for anonymous device tokens (vs. 100/hour per key, 200/hour per account for dashboard-issued keys).
 
 The API key strategy is anonymous per-install tokens via `/auth/device/register/` — no build-time secret, no CI-injected key. `DeviceAuthManager` owns the flow: `ensureToken()` registers only if no token is stored (called from `AdiresyRepository` before every authenticated network call), and `invalidateToken()` clears the stored token on a `401` so the next call re-registers.
+
+**Android Key Attestation** (github.com/nynosy/adiresy-mobile/issues/5): registration first tries an attested path before falling back to the plain one above.
+
+```
+POST /api/v1/auth/device/challenge/
+→ 200 { "challenge_id": "…", "challenge": "<base64, 32 bytes>", "expires_in": 300 }
+
+(generate an AndroidKeyStore EC key with setAttestationChallenge(challenge),
+StrongBox-preferred on API 28+ with a TEE fallback on StrongBoxUnavailableException)
+
+POST /api/v1/auth/device/register/
+{ "platform": "android", "app_version": "…",
+  "challenge_id": "…", "attestation_chain": ["<base64 DER, leaf first>", …] }
+→ 201 { "token": "…", "attested": true|false }
+```
+
+The server runs in *report* mode (as of 2026-10): both an attested and an unattested registration succeed and return a usable token; `attested` just records which kind it was, and isn't enforced yet. If anything in the attested path fails locally — challenge fetch, key generation, anything — `DeviceAuthManager` falls back to the plain unattested body rather than leaving the app without a token; attestation strengthens the key, it was never meant to gate whether the app works. A `400` on an attested register attempt (expired/reused challenge) fetches a fresh challenge and retries once; any other failure (including a `403`, meaning the device can't prove it's the genuine app) is left to fail like any other auth error — the token stays empty and the next trigger starts over.
+
+`minSdk` was raised from 24 to 26 for this — attestation can't verify *which app* is calling on API 24–25, only that some app holds the key, so those devices can't be supported once the server later switches enforcement on.
 
 The token is stored in `AppPrefs` (`EncryptedSharedPreferences`, via `androidx.security.crypto`, falling back to plain `SharedPreferences` if the encrypted store can't be created) and injected into every OkHttp request via `ApiKeyInterceptor`, which reads it fresh from prefs on each call.
 

@@ -33,7 +33,11 @@ android {
 
     defaultConfig {
         applicationId = "org.github.nynosy.adiresy_mobile"
-        minSdk = 24
+        // Raised from 24 to 26 (Android 8.0) — Android Key Attestation (see
+        // GitHub issue #5 / DeviceAuthManager) can't verify *which app* is
+        // calling on API 24-25, only that some app holds the key, so those
+        // devices can't be supported once attestation enforcement is on.
+        minSdk = 26
         targetSdk = 36
         // Literal, not git-derived — F-Droid's Tags-based auto-updater greps
         // this file for the versionCode and versionName assignments below;
