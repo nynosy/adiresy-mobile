@@ -60,7 +60,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="›"
+            android:text="@string/glyph_chevron"
             android:textAppearance="?attr/textAppearanceTitleMedium"
             android:textColor="?android:attr/textColorSecondary" />
 

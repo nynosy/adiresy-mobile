@@ -39,7 +39,11 @@
     <string name="fiche_section_tips">Conseils</string>
     <string name="fiche_review_header">★ %1$d — %2$s</string>
     <string name="fiche_tip_text">%1$s : %2$s</string>
-    <string name="fiche_tip_likes">%1$d mentions J\'aime</string>
+    <plurals name="fiche_tip_likes">
+        <item quantity="one">%1$d mention J\'aime</item>
+        <item quantity="many">%1$d de mentions J\'aime</item>
+        <item quantity="other">%1$d mentions J\'aime</item>
+    </plurals>
     <string name="btn_fiche_full_details">Détails complets ›</string>
     <string name="fiche_claim_notice">Vous êtes le propriétaire ou le gérant de cette fiche ? Vous pouvez la revendiquer sur adiresy.mg pour gérer ses coordonnées, ses horaires et ses photos.</string>
 
@@ -169,15 +173,29 @@
     <string name="emoji_picker_title">Choisir un emoji</string>
     <string name="bookmark_name_hint">Nom (facultatif, ex. Maison)</string>
     <string name="add_description_hint">Notes (facultatif)</string>
-    <string name="places_count_one">1 lieu</string>
-    <string name="places_count_other">%d lieux</string>
+    <plurals name="places_count">
+        <item quantity="one">%d lieu</item>
+        <item quantity="many">%d de lieux</item>
+        <item quantity="other">%d lieux</item>
+    </plurals>
     <string name="saved_today">Aujourd\'hui</string>
     <string name="saved_yesterday">Hier</string>
-    <string name="saved_days_ago">Il y a %d jours</string>
+    <!-- "one" and "many" are formally required by French plural rules even
+         though the call site never reaches them (0/1/million+ days ago all
+         have dedicated strings or never realistically occur). -->
+    <plurals name="saved_days_ago">
+        <item quantity="one">Il y a %d jour</item>
+        <item quantity="many">Il y a %d de jours</item>
+        <item quantity="other">Il y a %d jours</item>
+    </plurals>
     <string name="export_bookmarks_label">Exporter les signets</string>
     <string name="import_bookmarks_label">Importer des signets</string>
     <string name="export_chooser_title">Partager les signets</string>
-    <string name="import_success">%d lieux importés</string>
+    <plurals name="import_success">
+        <item quantity="one">%d lieu importé</item>
+        <item quantity="many">%d de lieux importés</item>
+        <item quantity="other">%d lieux importés</item>
+    </plurals>
     <string name="import_truncated">%1$d sur %2$d lieux importés — limite atteinte</string>
     <string name="import_error_schema">Cette sauvegarde a été créée par une version plus récente d\'Adiresy et ne peut pas être importée.</string>
     <string name="import_error_file">Impossible de lire le fichier de sauvegarde.</string>

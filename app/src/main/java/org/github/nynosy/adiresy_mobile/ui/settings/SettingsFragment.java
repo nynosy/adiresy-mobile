@@ -121,7 +121,8 @@ public class SettingsFragment extends Fragment {
                                 Snackbar.LENGTH_LONG).show();
                     } else {
                         Snackbar.make(requireView(),
-                                getString(R.string.import_success, result.imported),
+                                getResources().getQuantityString(
+                                        R.plurals.import_success, result.imported, result.imported),
                                 Snackbar.LENGTH_SHORT).show();
                     }
                 });

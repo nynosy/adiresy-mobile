@@ -42,7 +42,10 @@
     <string name="fiche_section_tips">Torohevitra</string><!-- [MG-REVIEW] -->
     <string name="fiche_review_header">★ %1$d — %2$s</string><!-- [MG-REVIEW] -->
     <string name="fiche_tip_text">%1$s: %2$s</string><!-- [MG-REVIEW] -->
-    <string name="fiche_tip_likes">Tiana %1$d</string><!-- [MG-REVIEW] -->
+    <plurals name="fiche_tip_likes">
+        <item quantity="one">Tiana %1$d</item><!-- [MG-REVIEW] -->
+        <item quantity="other">Tiana %1$d</item><!-- [MG-REVIEW] -->
+    </plurals>
     <string name="btn_fiche_full_details">Antsipiriany feno ›</string><!-- [MG-REVIEW] -->
     <string name="fiche_claim_notice">Ianao ve no tompony na mpitantana ity fiche ity? Azonao atao ny mitaky azy ao amin\'ny adiresy.mg mba hitantanana ny fifandraisana, ny ora ary ny sary.</string><!-- [MG-REVIEW] -->
 
@@ -171,15 +174,24 @@
     <string name="emoji_picker_title">Misafidiana emoji</string><!-- [MG-REVIEW] -->
     <string name="bookmark_name_hint">Anarana (tsy voatery, ohatra: Trano)</string><!-- [MG-REVIEW] -->
     <string name="add_description_hint">Fanamarihana (tsy voatery)</string><!-- [MG-REVIEW] -->
-    <string name="places_count_one">1 toerana</string><!-- [MG-REVIEW] -->
-    <string name="places_count_other">%d toerana</string><!-- [MG-REVIEW] -->
+    <!-- Malagasy nouns don't inflect for number — same word either way. -->
+    <plurals name="places_count">
+        <item quantity="one">%d toerana</item><!-- [MG-REVIEW] -->
+        <item quantity="other">%d toerana</item><!-- [MG-REVIEW] -->
+    </plurals>
     <string name="saved_today">Anio</string><!-- [MG-REVIEW] -->
     <string name="saved_yesterday">Omaly</string><!-- [MG-REVIEW] -->
-    <string name="saved_days_ago">%d andro lasa</string><!-- [MG-REVIEW] -->
+    <plurals name="saved_days_ago">
+        <item quantity="one">%d andro lasa</item><!-- [MG-REVIEW] -->
+        <item quantity="other">%d andro lasa</item><!-- [MG-REVIEW] -->
+    </plurals>
     <string name="export_bookmarks_label">Avoaka ny bookmark</string><!-- [MG-REVIEW] -->
     <string name="import_bookmarks_label">Ampidira bookmark</string><!-- [MG-REVIEW] -->
     <string name="export_chooser_title">Zarao ny bookmark</string><!-- [MG-REVIEW] -->
-    <string name="import_success">%d toerana nampidirina</string><!-- [MG-REVIEW] -->
+    <plurals name="import_success">
+        <item quantity="one">%d toerana nampidirina</item><!-- [MG-REVIEW] -->
+        <item quantity="other">%d toerana nampidirina</item><!-- [MG-REVIEW] -->
+    </plurals>
     <string name="import_truncated">%1$d amin\'ny %2$d toerana nampidirina — tratra ny fetra</string><!-- [MG-REVIEW] -->
     <string name="import_error_schema">Ity rakitra ity dia natao tamin\'ny dikan\'ny Adiresy vaovao kokoa ka tsy azo ampidirina.</string><!-- [MG-REVIEW] -->
     <string name="import_error_file">Tsy afaka namaky ny rakitra fandrosohana.</string><!-- [MG-REVIEW] -->

@@ -137,9 +137,35 @@ Decisions recorded; unchecked = not yet done.
       roots — suppressed with `tools:ignore` and a comment rather than
       removing the ripple feedback. Verified on-device: splash screen,
       map screen, search results list all render correctly.
-- [ ] `PluralsCandidate` ×6, `HardcodedText` ×10 — **decision: fix with
+- [x] `PluralsCandidate` ×5, `HardcodedText` ×10 — **decision: fix with
       real fr/mg translations** (not placeholder English copies),
       following the existing `[MG-REVIEW]` convention for Malagasy.
+      Converted `places_count`, `fiche_tip_likes`, `saved_days_ago`, and
+      `import_success` to real `<plurals>` resources with
+      `getQuantityString(...)` call sites — this is a genuine correctness
+      fix, not just a lint formality: the old `places_count` logic was a
+      hand-rolled `count == 1 ? ... : ...` ternary that only matches
+      *English* plural rules, so French (where CLDR's "one" category
+      covers both 0 *and* 1) was rendering "0 lieux" instead of the
+      grammatically correct "0 lieu". Real `<plurals>` + `getQuantityString`
+      resolves the right form per-locale automatically. `saved_days_ago`
+      only needed `other` functionally (the call site special-cases 0/1
+      days before ever reaching it) but French's plural rules formally
+      require defining `one` and `many` too, which lint enforces even for
+      an unreachable quantity — added them for completeness.
+      `import_truncated` was *not* converted: it has two numbers (imported,
+      total) with no single count to pluralize against, and "1 of 5
+      places" isn't a grammar error the way "1 places" would be — suppressed
+      instead, with a comment explaining why. For the 10 `HardcodedText`
+      items: 3 language names (shown in their own language regardless of
+      app locale, so `translatable="false"`, no fr/mg override) and 2
+      reused glyphs (chevron, back arrow, bookmark emoji — also
+      `translatable="false"`, pure symbols, not language content).
+      Verified live on the connected device, not just build-clean:
+      bookmarked a place into a new list and watched the count go
+      "0 places" → "1 place"; switched the app to French and confirmed it
+      read "1 lieu" (singular, the French-specific correctness fix above),
+      then switched back to English.
 - [x] `UselessParent` ×3, `DisableBaselineAlignment` ×3,
       `UseCompatTextViewDrawableXml` ×2, `UseCompoundDrawables` ×1 —
       **decision: fix and visually verify** each affected screen.

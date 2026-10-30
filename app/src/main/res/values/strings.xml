@@ -1,12 +1,23 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Adiresy</string>
+
+    <!-- Glyphs reused across several layouts as a bare android:text — not
+         translatable content, so these live only here (no fr/mg override). -->
+    <string name="glyph_chevron" translatable="false">›</string>
+    <string name="glyph_back_arrow" translatable="false">←</string>
+    <string name="glyph_bookmark_emoji" translatable="false">🔖</string>
 
     <!-- Bottom navigation tabs -->
     <string name="tab_map">Map</string>
     <string name="tab_search">Search</string>
     <string name="tab_settings">Settings</string>
 
-    <!-- First-run language chooser -->
+    <!-- First-run language chooser — each shown in its own language, same
+         text regardless of the app's current locale, so these live only
+         here (no fr/mg override needed). -->
+    <string name="lang_malagasy" translatable="false">Malagasy</string>
+    <string name="lang_french" translatable="false">Français</string>
+    <string name="lang_english" translatable="false">English</string>
 
     <!-- Home screen -->
     <string name="btn_locate_me">Locate me</string>
@@ -39,7 +50,10 @@
     <string name="fiche_section_tips">Tips</string>
     <string name="fiche_review_header">★ %1$d — %2$s</string>
     <string name="fiche_tip_text">%1$s: %2$s</string>
-    <string name="fiche_tip_likes">%1$d likes</string>
+    <plurals name="fiche_tip_likes">
+        <item quantity="one">%1$d like</item>
+        <item quantity="other">%1$d likes</item>
+    </plurals>
     <string name="btn_fiche_full_details">Full details ›</string>
     <string name="fiche_claim_notice">Are you the owner or manager of this listing? You can claim it on adiresy.mg to manage its contact info, hours, and photos.</string>
 
@@ -193,20 +207,32 @@
     <string name="bookmark_name_hint">Name (optional, e.g. Home)</string>
     <string name="add_description_hint">Notes (optional)</string>
     <!-- %d = count -->
-    <string name="places_count_one">1 place</string>
-    <string name="places_count_other">%d places</string>
+    <plurals name="places_count">
+        <item quantity="one">%d place</item>
+        <item quantity="other">%d places</item>
+    </plurals>
     <string name="saved_today">Today</string>
     <string name="saved_yesterday">Yesterday</string>
     <!-- %d = number of days -->
-    <string name="saved_days_ago">%d days ago</string>
+    <!-- Only "other" is reachable: the call site special-cases 0/1 days ago
+         (saved_today / saved_yesterday) before ever reaching this one. -->
+    <plurals name="saved_days_ago">
+        <item quantity="other">%d days ago</item>
+    </plurals>
     <!-- Export / import -->
     <string name="export_bookmarks_label">Export bookmarks</string>
     <string name="import_bookmarks_label">Import bookmarks</string>
     <string name="export_chooser_title">Share bookmarks</string>
     <!-- %d = count imported -->
-    <string name="import_success">Imported %d places</string>
+    <plurals name="import_success">
+        <item quantity="one">Imported %d place</item>
+        <item quantity="other">Imported %d places</item>
+    </plurals>
     <!-- %1$d = imported, %2$d = total -->
-    <string name="import_truncated">Imported %1$d of %2$d places — limit reached</string>
+    <!-- Not a plurals resource: two numbers (imported, total) share this one
+         string, and there's no single count to pluralize against — "1 of 5
+         places" isn't a grammar error the way "1 places" would be. -->
+    <string name="import_truncated" tools:ignore="PluralsCandidate">Imported %1$d of %2$d places — limit reached</string>
     <string name="import_error_schema">This backup was created by a newer version of Adiresy and cannot be imported.</string>
     <string name="import_error_file">Could not read the backup file.</string>
 

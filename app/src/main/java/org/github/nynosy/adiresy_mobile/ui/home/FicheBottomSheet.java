@@ -328,7 +328,8 @@ public class FicheBottomSheet extends BottomSheetDialogFragment {
             android.util.TypedValue secondary = new android.util.TypedValue();
             ctx.getTheme().resolveAttribute(android.R.attr.textColorSecondary, secondary, true);
             likes.setTextColor(secondary.data);
-            likes.setText(getString(R.string.fiche_tip_likes, tip.likes));
+            likes.setText(getResources().getQuantityString(
+                    R.plurals.fiche_tip_likes, tip.likes, tip.likes));
             row.addView(likes);
         }
         return row;

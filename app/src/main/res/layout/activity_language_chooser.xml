@@ -30,7 +30,7 @@
         android:layout_marginBottom="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:text="Malagasy" />
+        android:text="@string/lang_malagasy" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_french"
@@ -39,7 +39,7 @@
         android:layout_marginBottom="16dp"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:text="Français" />
+        android:text="@string/lang_french" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_english"
@@ -47,6 +47,6 @@
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
         android:paddingBottom="16dp"
-        android:text="English" />
+        android:text="@string/lang_english" />
 
 </LinearLayout>

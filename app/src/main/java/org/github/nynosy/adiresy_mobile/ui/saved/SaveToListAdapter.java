@@ -65,9 +65,8 @@ public class SaveToListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             BookmarkListWithCount item = items.get(position);
             h.emoji.setText(item.list.emoji);
             h.name.setText(item.list.name);
-            String countLabel = item.bookmarkCount == 1
-                    ? h.itemView.getContext().getString(R.string.places_count_one)
-                    : h.itemView.getContext().getString(R.string.places_count_other, item.bookmarkCount);
+            String countLabel = h.itemView.getContext().getResources().getQuantityString(
+                    R.plurals.places_count, item.bookmarkCount, item.bookmarkCount);
             h.count.setText(countLabel);
             h.itemView.setOnClickListener(v -> {
                 if (listener != null) listener.onListSelected(item);

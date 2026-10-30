@@ -65,9 +65,8 @@ public class BookmarkListAdapter
             h.description.setVisibility(View.GONE);
         }
 
-        String countLabel = item.bookmarkCount == 1
-                ? h.itemView.getContext().getString(R.string.places_count_one)
-                : h.itemView.getContext().getString(R.string.places_count_other, item.bookmarkCount);
+        String countLabel = h.itemView.getContext().getResources().getQuantityString(
+                R.plurals.places_count, item.bookmarkCount, item.bookmarkCount);
         h.count.setText(countLabel);
 
         h.itemView.setOnClickListener(v -> {

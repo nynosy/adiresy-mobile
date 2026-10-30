@@ -126,7 +126,8 @@ public class BookmarkAdapter
         long days   = TimeUnit.MILLISECONDS.toDays(diffMs);
         if (days == 0) return ctx.getString(R.string.saved_today);
         if (days == 1) return ctx.getString(R.string.saved_yesterday);
-        return ctx.getString(R.string.saved_days_ago, (int) days);
+        return ctx.getResources().getQuantityString(
+                R.plurals.saved_days_ago, (int) days, (int) days);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
