@@ -202,11 +202,23 @@ Decisions recorded; unchecked = not yet done.
       `androidx.appcompat.R.drawable.abc_ic_ab_back_material` reference
       with a new local `ic_arrow_back.xml` vector in
       `BookmarkListDetailFragment`.
-- [ ] `OldTargetApi` ×1, `CustomSplashScreen` ×1 — **decision: investigate
-      and fix individually** — deferred out of the "quick" batch. Android
-      17 (API 37) behavior changes (background-audio restrictions,
-      orientation-lock changes on large screens, activity-recreation
-      changes) mean a `targetSdk` bump needs real testing, not just a
-      version number change; `CustomSplashScreen` means migrating
-      `SplashActivity` to the AndroidX SplashScreen API, which is more
-      than a one-line fix.
+- [x] `OldTargetApi` ×1 — bumped `targetSdk` 36 → 37. Checked the app's
+      own code against every Android 17 targetSdk-gated behavior change
+      first: no `screenOrientation`/orientation locks, no
+      audio/`MediaPlayer`/`AudioManager` usage, no `ContactsContract`, no
+      SMS, no reflection on fields (`setAccessible`/`getDeclaredField`),
+      no `android:configChanges` or `onConfigurationChanged` overrides —
+      none of the gated changes touch this app directly, leaving only
+      dependency compatibility as a risk (low, given MapLibre/Room/
+      WorkManager/Retrofit are all actively maintained). Verified live on
+      the connected device rather than trusting that reasoning alone:
+      location permission flow + GPS acquisition, background→foreground
+      via the recents switcher (task state preserved correctly), and a
+      real WorkManager-driven offline tile download (start → visible
+      progress → pause) all worked with zero crashes or new logcat
+      exceptions.
+- [ ] `CustomSplashScreen` ×1 — still open. Means migrating
+      `SplashActivity` from a custom launch-screen Activity to the
+      AndroidX SplashScreen API (`androidx.core:core-splashscreen`), which
+      is a real UI migration (icon/branding timing, exit-animation
+      hookup), not a one-line fix — left for a separate, deliberate pass.

@@ -40,7 +40,7 @@ android {
         // calling on API 24-25, only that some app holds the key, so those
         // devices can't be supported once attestation enforcement is on.
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 37
         // Literal, not git-derived — F-Droid's Tags-based auto-updater greps
         // this file for the versionCode and versionName assignments below;
         // it can't resolve a computed or variable value. Bump both before
