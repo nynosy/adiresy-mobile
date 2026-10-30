@@ -48,9 +48,13 @@ public class LanguageChooserActivity extends AppCompatActivity {
     }
 
     /** Filled (colorPrimary fill) for the pre-selected button, outlined for the rest.
-     *  Read from theme attrs via MaterialColors so it stays correct in light/dark. */
+     *  Read from theme attrs via MaterialColors so it stays correct in light/dark.
+     *  colorPrimary is a framework attribute (API 21+), not declared by Material
+     *  itself, so with non-transitive R classes it only resolves via android.R —
+     *  material.R.attr.colorPrimary doesn't exist. colorOnPrimary is the opposite:
+     *  Material declares it itself, so material.R.attr.colorOnPrimary is correct. */
     private void applySelectionStyle(MaterialButton button, boolean selected) {
-        int primary = MaterialColors.getColor(button, com.google.android.material.R.attr.colorPrimary);
+        int primary = MaterialColors.getColor(button, android.R.attr.colorPrimary);
         if (selected) {
             int onPrimary = MaterialColors.getColor(button, com.google.android.material.R.attr.colorOnPrimary);
             button.setBackgroundTintList(ColorStateList.valueOf(primary));
