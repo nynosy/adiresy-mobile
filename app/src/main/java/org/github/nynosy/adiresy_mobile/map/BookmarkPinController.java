@@ -11,6 +11,7 @@ import org.maplibre.android.geometry.LatLngBounds;
 import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.Style;
 import org.maplibre.android.style.expressions.Expression;
+import org.maplibre.android.style.layers.Property;
 import org.maplibre.android.style.layers.PropertyFactory;
 import org.maplibre.android.style.layers.SymbolLayer;
 import org.maplibre.android.style.sources.GeoJsonSource;
@@ -64,7 +65,7 @@ public class BookmarkPinController {
                 .withProperties(
                         PropertyFactory.iconImage(Expression.get("icon")),
                         PropertyFactory.iconAllowOverlap(true),
-                        PropertyFactory.iconAnchor("center")));
+                        PropertyFactory.iconAnchor(Property.ICON_ANCHOR_CENTER)));
     }
 
     public void onCameraIdle() {

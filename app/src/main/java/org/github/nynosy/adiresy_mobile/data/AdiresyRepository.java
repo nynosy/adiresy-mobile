@@ -608,7 +608,8 @@ public class AdiresyRepository {
 
     private static final int SYNC_PAGE_SIZE = 200;
 
-    /** @return true if the sync completed (even if there was nothing new);
+    /** Pulls every page of pending listing updates and applies them locally.
+     *  @return true if the sync completed (even if there was nothing new);
      *  false on any network/HTTP failure, in which case the cursor was not
      *  advanced. */
     public boolean syncListingsBlocking() {
@@ -776,12 +777,12 @@ public class AdiresyRepository {
     /** Regions have no parent; every other level's parent pcode is returned
      *  under a level-specific key on the DTO (see AdminUnitDto). */
     private static String parentPcodeFor(String type, AdminUnitDto dto) {
-        switch (type) {
-            case "district":  return dto.regionPcode;
-            case "commune":   return dto.districtPcode;
-            case "fokontany": return dto.communePcode;
-            default:          return null;
-        }
+        return switch (type) {
+            case "district"  -> dto.regionPcode;
+            case "commune"   -> dto.districtPcode;
+            case "fokontany" -> dto.communePcode;
+            default          -> null;
+        };
     }
 
     private AdminUnitEntity toAdminEntity(AdminUnitDto dto, String type) {
@@ -803,13 +804,12 @@ public class AdiresyRepository {
         int page = 1;
         boolean gotFirstPage = false;
         while (true) {
-            Response<ApiResponse<PaginatedDto<AdminUnitDto>>> resp;
-            switch (type) {
-                case "region":   resp = api.listRegions(page, null).execute();        break;
-                case "district": resp = api.listDistricts(parentUuid, page).execute(); break;
-                case "commune":  resp = api.listCommunes(parentUuid, page).execute();  break;
-                default:         resp = api.listFokontany(parentUuid, page).execute(); break;
-            }
+            Response<ApiResponse<PaginatedDto<AdminUnitDto>>> resp = switch (type) {
+                case "region"   -> api.listRegions(page, null).execute();
+                case "district" -> api.listDistricts(parentUuid, page).execute();
+                case "commune"  -> api.listCommunes(parentUuid, page).execute();
+                default         -> api.listFokontany(parentUuid, page).execute();
+            };
             ApiResponse<PaginatedDto<AdminUnitDto>> env = resp.body();
             if (!resp.isSuccessful() || env == null || env.data == null) {
                 if (resp.code() == 401) deviceAuth.invalidateToken();
@@ -831,11 +831,11 @@ public class AdiresyRepository {
     }
 
     private retrofit2.Call<GeoJsonGeometryDto> geometryCall(String type, String pcode) {
-        switch (type) {
-            case "region":    return api.regionGeometry(pcode);
-            case "district":  return api.districtGeometry(pcode);
-            case "commune":   return api.communeGeometry(pcode);
-            default:          return api.fokontanyGeometry(pcode);
-        }
+        return switch (type) {
+            case "region"   -> api.regionGeometry(pcode);
+            case "district" -> api.districtGeometry(pcode);
+            case "commune"  -> api.communeGeometry(pcode);
+            default         -> api.fokontanyGeometry(pcode);
+        };
     }
 }

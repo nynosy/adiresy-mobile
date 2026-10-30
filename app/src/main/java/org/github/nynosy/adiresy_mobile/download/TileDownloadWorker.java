@@ -125,7 +125,11 @@ public class TileDownloadWorker extends Worker {
                         if (isStopped()) return Result.failure();
                         out.write(buf, 0, read);
                         done += read;
-                        setProgressAsync(new Data.Builder()
+                        // Deliberately not awaited: blocking this hot per-chunk loop on
+                        // WorkManager's progress-DB write would serialize network I/O
+                        // against disk I/O. A failure here just means this one progress
+                        // tick doesn't persist, not a download failure.
+                        var unused = setProgressAsync(new Data.Builder()
                                 .putLong(KEY_BYTES_DONE, done)
                                 .putLong(KEY_BYTES_TOTAL, total)
                                 .build());
@@ -144,24 +148,24 @@ public class TileDownloadWorker extends Worker {
             }
 
             switch (scope) {
-                case SCOPE_BUILDINGS:
+                case SCOPE_BUILDINGS -> {
                     prefs.setBuildingsPath(dest.getAbsolutePath());
                     if (version != null) prefs.setBuildingsVersion(version);
-                    break;
-                case SCOPE_POI:
+                }
+                case SCOPE_POI -> {
                     prefs.setPoiPath(dest.getAbsolutePath());
                     if (version != null) prefs.setPoiVersion(version);
-                    break;
-                case SCOPE_BOUNDARIES:
+                }
+                case SCOPE_BOUNDARIES -> {
                     prefs.setBoundariesPath(dest.getAbsolutePath());
                     if (version != null) prefs.setBoundariesVersion(version);
-                    break;
-                default: // SCOPE_NATIONAL
+                }
+                default -> { // SCOPE_NATIONAL
                     prefs.setDataPath(dest.getAbsolutePath());
                     if (version != null) prefs.setDataVersion(version);
                     int zoom = getInputData().getInt(KEY_NATIONAL_ZOOM, 12);
                     prefs.setNationalZoom(zoom);
-                    break;
+                }
             }
 
             return Result.success();

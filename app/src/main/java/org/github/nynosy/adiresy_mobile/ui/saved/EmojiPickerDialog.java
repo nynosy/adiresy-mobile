@@ -40,8 +40,8 @@ public class EmojiPickerDialog {
             @NonNull
             @Override
             public View getView(int pos, View convertView, @NonNull ViewGroup parent) {
-                TextView tv = convertView instanceof TextView
-                        ? (TextView) convertView
+                TextView tv = convertView instanceof TextView t
+                        ? t
                         : (TextView) LayoutInflater.from(context)
                                 .inflate(R.layout.item_emoji, parent, false);
                 tv.setText(EMOJIS[pos]);

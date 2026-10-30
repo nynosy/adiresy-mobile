@@ -38,9 +38,6 @@ public class OfflineDataFragment extends Fragment {
      *  the displayed version used to stay stuck at this literal forever. */
     private static final String FALLBACK_VERSION_LABEL = "latest";
 
-    // Map tiles + buildings tiles combined per zoom level
-    private static final int[] NATIONAL_SIZES_MB = {190, 410};
-
     private FragmentOfflineDataBinding binding;
     private OfflineDataViewModel viewModel;
     private final ExecutorService manifestExecutor = Executors.newSingleThreadExecutor();
@@ -297,7 +294,7 @@ public class OfflineDataFragment extends Fragment {
     private void onNationalWorkInfo(WorkInfo info) {
         if (info == null) return;
         switch (info.getState()) {
-            case ENQUEUED:
+            case ENQUEUED -> {
                 if (binding.progressNational.getVisibility() != View.VISIBLE) {
                     showNationalDownloading();
                 } else {
@@ -306,35 +303,32 @@ public class OfflineDataFragment extends Fragment {
                             ? R.string.offline_status_retrying
                             : R.string.offline_status_downloading);
                 }
-                break;
-            case RUNNING:
-                applyProgress(
-                        binding.progressNational,
-                        binding.labelNationalStatus,
-                        info.getProgress().getLong(TileDownloadWorker.KEY_BYTES_DONE, 0),
-                        info.getProgress().getLong(TileDownloadWorker.KEY_BYTES_TOTAL, -1));
-                break;
-            case SUCCEEDED:
+            }
+            case RUNNING -> applyProgress(
+                    binding.progressNational,
+                    binding.labelNationalStatus,
+                    info.getProgress().getLong(TileDownloadWorker.KEY_BYTES_DONE, 0),
+                    info.getProgress().getLong(TileDownloadWorker.KEY_BYTES_TOTAL, -1));
+            case SUCCEEDED -> {
                 binding.progressNational.setVisibility(View.GONE);
                 updateNationalCard();
-                break;
-            case FAILED:
+            }
+            case FAILED -> {
                 if (viewModel.isNationalPaused()) {
                     showNationalPaused();
                 } else {
                     updateNationalCard();
                     showDownloadFailedSnackbar();
                 }
-                break;
-            case CANCELLED:
+            }
+            case CANCELLED -> {
                 if (viewModel.isNationalPaused()) {
                     showNationalPaused();
                 } else {
                     updateNationalCard();
                 }
-                break;
-            default:
-                break;
+            }
+            default -> { }
         }
     }
 

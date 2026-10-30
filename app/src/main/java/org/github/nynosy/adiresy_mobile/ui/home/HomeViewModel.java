@@ -58,10 +58,7 @@ public class HomeViewModel extends AndroidViewModel {
     private LocationListener locationListener;
     private final Set<String> activeProviders = new HashSet<>();
     private final Handler  timeoutHandler  = new Handler(Looper.getMainLooper());
-    private final Runnable timeoutRunnable = () -> {
-        stopLocationUpdates();
-        locationState.setValue(LocationState.FAILED);
-    };
+    private final Runnable timeoutRunnable = this::onLocationTimeout;
     private Runnable networkFallbackRunnable;
 
     public HomeViewModel(@NonNull Application application) {
@@ -156,6 +153,10 @@ public class HomeViewModel extends AndroidViewModel {
         }
     }
 
+    // HomeFragment checks ACCESS_FINE_LOCATION (and asks for it) before ever
+    // calling startLocating(), which is the only path into this method; lint
+    // can't see that cross-class.
+    @SuppressLint("MissingPermission")
     private void registerProvider(String provider) {
         activeProviders.add(provider);
         locationManager.requestLocationUpdates(provider, 0, 0, locationListener,
@@ -179,6 +180,11 @@ public class HomeViewModel extends AndroidViewModel {
         if (locationManager != null && locationListener != null) {
             locationManager.removeUpdates(locationListener);
         }
+    }
+
+    private void onLocationTimeout() {
+        stopLocationUpdates();
+        locationState.setValue(LocationState.FAILED);
     }
 
     // ── Tap-to-identify (reverse geocode a map tap) ───────────────────────────

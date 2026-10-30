@@ -61,9 +61,8 @@ public class SaveToListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        if (holder instanceof ListViewHolder) {
+        if (holder instanceof ListViewHolder h) {
             BookmarkListWithCount item = items.get(position);
-            ListViewHolder h = (ListViewHolder) holder;
             h.emoji.setText(item.list.emoji);
             h.name.setText(item.list.name);
             String countLabel = item.bookmarkCount == 1
@@ -73,8 +72,7 @@ public class SaveToListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             h.itemView.setOnClickListener(v -> {
                 if (listener != null) listener.onListSelected(item);
             });
-        } else if (holder instanceof NewListViewHolder) {
-            NewListViewHolder h = (NewListViewHolder) holder;
+        } else if (holder instanceof NewListViewHolder h) {
             h.emoji.setText("➕");
             h.name.setText(R.string.new_list_label);
             h.count.setVisibility(View.GONE);

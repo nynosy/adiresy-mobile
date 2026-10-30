@@ -6,6 +6,7 @@ import android.content.IntentFilter;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
+import androidx.core.content.ContextCompat;
 
 import org.maplibre.android.MapLibre;
 import org.maplibre.android.WellKnownTileServer;
@@ -37,8 +38,11 @@ public class AdiresyApplication extends Application {
                     "org.github.nynosy.adiresy_mobile.debug.MockLocationReceiver");
             BroadcastReceiver receiver = (BroadcastReceiver) cls.getDeclaredConstructor()
                     .newInstance();
-            registerReceiver(receiver,
-                    new IntentFilter("org.github.nynosy.adiresy_mobile.MOCK_LOCATION"));
+            // EXPORTED to match the static <receiver> in the debug manifest — both
+            // exist so `adb shell am broadcast` can reach this from outside the app.
+            ContextCompat.registerReceiver(this, receiver,
+                    new IntentFilter("org.github.nynosy.adiresy_mobile.MOCK_LOCATION"),
+                    ContextCompat.RECEIVER_EXPORTED);
         } catch (Exception e) {
             Log.w(TAG, "MockLocationReceiver registration failed", e);
         }
@@ -46,18 +50,11 @@ public class AdiresyApplication extends Application {
 
     private void applyTheme() {
         String theme = AppPrefs.get(this).getTheme();
-        int mode;
-        switch (theme) {
-            case AppPrefs.THEME_LIGHT:
-                mode = AppCompatDelegate.MODE_NIGHT_NO;
-                break;
-            case AppPrefs.THEME_DARK:
-                mode = AppCompatDelegate.MODE_NIGHT_YES;
-                break;
-            default:
-                mode = AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
-                break;
-        }
+        int mode = switch (theme) {
+            case AppPrefs.THEME_LIGHT -> AppCompatDelegate.MODE_NIGHT_NO;
+            case AppPrefs.THEME_DARK  -> AppCompatDelegate.MODE_NIGHT_YES;
+            default                   -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM;
+        };
         AppCompatDelegate.setDefaultNightMode(mode);
     }
 }

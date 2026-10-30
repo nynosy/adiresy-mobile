@@ -67,7 +67,6 @@ public class StyleLoader {
         String landcover   = darkMode ? "#1e2d1e" : "#d4e8c2";
         String park        = darkMode ? "#1a2e1a" : "#c8e6c9";
         String building    = darkMode ? "#3a3a4a" : "#BEBBB5";
-        String buildingOut = darkMode ? "#252530" : "#9E9B95";
         String roadMinor   = darkMode ? "#3a3a4a" : "#F8F5EE";
         String roadMajor   = darkMode ? "#4a4a6a" : "#ffd27f";
         String roadTrunk   = darkMode ? "#5a4a2a" : "#f6a623";

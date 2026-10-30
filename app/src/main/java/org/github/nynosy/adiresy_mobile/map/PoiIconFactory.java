@@ -125,7 +125,7 @@ public final class PoiIconFactory {
     /** Red circle with white medical cross. */
     private static Bitmap healthcare(int sz) {
         Canvas c = canvas(sz, COL_HEALTHCARE);
-        Paint p = fill(sz);
+        Paint p = fill();
         float cx = sz / 2f, cy = sz / 2f, r = sz / 2f;
         float arm = r * 0.28f, len = r * 0.62f;
         c.drawRect(cx - arm, cy - len, cx + arm, cy + len, p);
@@ -176,7 +176,7 @@ public final class PoiIconFactory {
     /** Purple circle with white "$" character. */
     private static Bitmap finance(int sz) {
         Canvas c = canvas(sz, COL_FINANCE);
-        Paint p = fill(sz);
+        Paint p = fill();
         p.setTextAlign(Paint.Align.CENTER);
         p.setTextSize(sz * 0.58f);
         p.setFakeBoldText(true);
@@ -188,7 +188,7 @@ public final class PoiIconFactory {
     /** Teal circle with white bed (headboard + mattress + pillow). */
     private static Bitmap lodging(int sz) {
         Canvas c = canvas(sz, COL_LODGING);
-        Paint p = fill(sz);
+        Paint p = fill();
         float cx = sz / 2f, cy = sz / 2f, r = sz / 2f;
         c.drawRect(cx - r * 0.65f, cy - r * 0.45f, cx - r * 0.35f, cy + r * 0.52f, p);
         c.drawRect(cx - r * 0.35f, cy + r * 0.1f,  cx + r * 0.65f, cy + r * 0.52f, p);
@@ -200,7 +200,7 @@ public final class PoiIconFactory {
     /** Green circle with white shopping bag (body + arc handle). */
     private static Bitmap shopping(int sz) {
         Canvas c = canvas(sz, COL_SHOPPING);
-        Paint p = fill(sz);
+        Paint p = fill();
         float cx = sz / 2f, cy = sz / 2f, r = sz / 2f;
         c.drawRoundRect(new RectF(cx - r*0.52f, cy - r*0.15f, cx + r*0.52f, cy + r*0.6f),
                 sz * 0.07f, sz * 0.07f, p);
@@ -213,7 +213,7 @@ public final class PoiIconFactory {
     /** Brown circle with white fuel pump (body + nozzle arm). */
     private static Bitmap fuel(int sz) {
         Canvas c = canvas(sz, COL_FUEL);
-        Paint p = fill(sz);
+        Paint p = fill();
         float cx = sz / 2f, cy = sz / 2f, r = sz / 2f;
         c.drawRect(cx - r*0.52f, cy - r*0.45f, cx + r*0.15f, cy + r*0.55f, p);
         Paint sp = stroke(sz, 0.12f);
@@ -226,7 +226,7 @@ public final class PoiIconFactory {
     /** Gray circle with white info "i" symbol. */
     private static Bitmap defaultIcon(int sz) {
         Canvas c = canvas(sz, COL_DEFAULT);
-        Paint p = fill(sz);
+        Paint p = fill();
         float cx = sz / 2f, cy = sz / 2f, r = sz / 2f;
         c.drawCircle(cx, cy - r * 0.32f, r * 0.13f, p);
         Paint sp = stroke(sz, 0.13f);
@@ -267,7 +267,7 @@ public final class PoiIconFactory {
         return c;
     }
 
-    private static Paint fill(int sz) {
+    private static Paint fill() {
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
         p.setColor(Color.WHITE);
         p.setStyle(Paint.Style.FILL);

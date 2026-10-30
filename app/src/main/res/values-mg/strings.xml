@@ -30,10 +30,11 @@
     <string name="btn_navigate">Tariho</string><!-- [MG-REVIEW] -->
     <string name="btn_open_maps">Sokafy ao amin\'ny Maps</string><!-- [MG-REVIEW] -->
     <string name="navigate_external_hint">Manokatra fampiharana sarintany ivelany</string><!-- [MG-REVIEW] -->
+    <string name="hierarchy_format">%1$s › %2$s</string>
     <string name="copied_to_clipboard">Voadika ny kaody</string><!-- [MG-REVIEW] -->
     <string name="tap_no_address">Tsy misy adiresy hita ho an\'ity trano ity</string><!-- [MG-REVIEW] -->
     <string name="tap_no_network">Tsy misy fifandraisana — mifandraisa mba hikaroka ity trano ity</string><!-- [MG-REVIEW] -->
-    <string name="share_text">Hitadiava ity trano ity amin\'ny Adiresy: %2$s</string><!-- [MG-REVIEW] -->
+    <string name="share_text">Hitadiava ity trano ity amin\'ny Adiresy: %1$s</string><!-- [MG-REVIEW] -->
     <string name="share_chooser_title">Zarao ny kaody adiresy</string><!-- [MG-REVIEW] -->
 
     <!-- Fiche (lisitry ny orinasa) — porofo ny foto-kevitra -->
@@ -113,9 +114,9 @@
     <string name="offline_status_downloading">Alaina…</string><!-- [MG-REVIEW] -->
     <string name="offline_status_retrying">Olana amin\'ny fifandraisana — miezaka indray…</string><!-- [MG-REVIEW] -->
     <string name="offline_download_failed">Tsy nety ny fakana — jereo ny fifandraisanao ary andramo indray</string><!-- [MG-REVIEW] -->
-    <string name="offline_status_progress">Alaina — %1$s MB / %2$s MB</string><!-- [MG-REVIEW] -->
+    <string name="offline_status_progress">Alaina — %1$d MB / %2$d MB</string><!-- [MG-REVIEW] -->
     <string name="offline_status_done">Efa vaovao (v%1$s, %2$s MB)</string><!-- [MG-REVIEW] -->
-    <string name="offline_national_done">Nasionaly %1$s voaraka · v%2$s · %3$s MB</string><!-- [MG-REVIEW] -->
+    <string name="offline_national_done">Nasionaly %1$s voaraka · v%2$s · %3$d MB</string><!-- [MG-REVIEW] -->
     <string name="offline_title_national">Angon-tsarintany nasionaly</string><!-- [MG-REVIEW] -->
     <string name="offline_desc_national">Mandrakotra an\'i Madagasikara manontolo amin\'ny haavon\'antsipiriany voafantina. Alao indray mandeha ary ampiasao tsy mila anelanelana na aiza na aiza any amin\'ny firenena.</string><!-- [MG-REVIEW] -->
     <string name="offline_zoom_z12_title">Topi-maso faritra · ~190 MB</string><!-- [MG-REVIEW] -->
@@ -141,7 +142,7 @@
     <!-- About screen -->
     <string name="tab_about">Momba</string><!-- [MG-REVIEW] -->
     <string name="title_about">Momba sy fankasitrahana</string><!-- [MG-REVIEW] -->
-    <string name="label_app_version">Dikan\'ny fampiharana</string><!-- [MG-REVIEW] -->
+    <string name="label_app_version">Dikan\'ny fampiharana: %1$s</string><!-- [MG-REVIEW] -->
     <string name="label_data_version">Dikan\'ny angon-tsarintany</string><!-- [MG-REVIEW] -->
     <string name="data_version_none">Tsy nalaina</string><!-- [MG-REVIEW] -->
     <string name="disclaimer_title">Serivisy tsy ofisialy</string><!-- [MG-REVIEW] -->

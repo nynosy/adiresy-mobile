@@ -12,10 +12,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -277,7 +278,7 @@ public class BookmarkRepository {
         root.add("lists", listsArr);
 
         File outFile = new File(appCtx.getCacheDir(), "adiresy_bookmarks.json");
-        try (FileWriter w = new FileWriter(outFile)) {
+        try (Writer w = Files.newBufferedWriter(outFile.toPath(), StandardCharsets.UTF_8)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(root, w);
         }
         return outFile;

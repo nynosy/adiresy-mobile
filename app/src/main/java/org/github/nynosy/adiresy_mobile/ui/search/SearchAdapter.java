@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.github.nynosy.adiresy_mobile.data.api.dto.AutocompleteDto;
 import org.github.nynosy.adiresy_mobile.databinding.ItemSearchResultBinding;
 
+import java.util.Locale;
+
 public class SearchAdapter extends ListAdapter<AutocompleteDto.Item, SearchAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
@@ -49,7 +51,7 @@ public class SearchAdapter extends ListAdapter<AutocompleteDto.Item, SearchAdapt
 
         void bind(AutocompleteDto.Item item, OnItemClickListener listener) {
             binding.labelLabel.setText(item.label);
-            binding.labelType.setText(item.type != null ? item.type.toUpperCase() : "");
+            binding.labelType.setText(item.type != null ? item.type.toUpperCase(Locale.getDefault()) : "");
             binding.getRoot().setOnClickListener(v -> {
                 if (listener != null) listener.onItemClick(item);
             });

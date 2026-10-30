@@ -27,10 +27,11 @@
     <string name="btn_navigate">Itinéraire</string>
     <string name="btn_open_maps">Ouvrir dans Maps</string>
     <string name="navigate_external_hint">Ouvre une application de navigation externe</string>
+    <string name="hierarchy_format">%1$s › %2$s</string>
     <string name="copied_to_clipboard">Code copié</string>
     <string name="tap_no_address">Aucune adresse trouvée pour ce bâtiment</string>
     <string name="tap_no_network">Aucune connexion — connectez-vous pour rechercher ce bâtiment</string>
-    <string name="share_text">Trouvez ce bâtiment sur Adiresy : %2$s</string>
+    <string name="share_text">Trouvez ce bâtiment sur Adiresy : %1$s</string>
     <string name="share_chooser_title">Partager le code d\'adresse</string>
 
     <!-- Fiche (annuaire des établissements) — preuve de concept -->
@@ -110,10 +111,10 @@
     <string name="offline_status_downloading">Téléchargement…</string>
     <string name="offline_status_retrying">Problème de connexion — nouvelle tentative…</string>
     <string name="offline_download_failed">Échec du téléchargement — vérifiez votre connexion et réessayez</string>
-    <string name="offline_status_progress">Téléchargement — %1$s Mo / %2$s Mo</string>
+    <string name="offline_status_progress">Téléchargement — %1$d Mo / %2$d Mo</string>
     <string name="offline_status_done">À jour (v%1$s, %2$s Mo)</string>
     <!-- %1$s = tier (p. ex. "Z13"), %2$s = version, %3$s = taille en Mo -->
-    <string name="offline_national_done">National %1$s téléchargé · v%2$s · %3$s Mo</string>
+    <string name="offline_national_done">National %1$s téléchargé · v%2$s · %3$d Mo</string>
     <string name="offline_title_national">Données cartographiques nationales</string>
     <string name="offline_desc_national">Couvre l\'ensemble de Madagascar au niveau de détail sélectionné. Téléchargez une fois et utilisez hors ligne partout dans le pays.</string>
     <string name="offline_zoom_z12_title">Aperçu régional · ~190 Mo</string>
@@ -139,7 +140,7 @@
     <!-- About screen -->
     <string name="tab_about">À propos</string>
     <string name="title_about">À propos et attributions</string>
-    <string name="label_app_version">Version de l\'application</string>
+    <string name="label_app_version">Version de l\'application : %1$s</string>
     <string name="label_data_version">Version des données cartographiques</string>
     <string name="data_version_none">Non téléchargé</string>
     <string name="disclaimer_title">Service non officiel</string>

@@ -10,6 +10,7 @@ import android.util.Log;
 
 import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.Style;
+import org.maplibre.android.style.layers.Property;
 import org.maplibre.android.style.layers.PropertyFactory;
 import org.maplibre.android.style.layers.SymbolLayer;
 import org.maplibre.android.style.sources.GeoJsonSource;
@@ -130,7 +131,7 @@ public final class FichePinController {
                         // SelectionPinController already use true for exactly
                         // this reason; this layer was the one inconsistent spot.
                         PropertyFactory.iconAllowOverlap(true),
-                        PropertyFactory.iconAnchor("bottom"));
+                        PropertyFactory.iconAnchor(Property.ICON_ANCHOR_BOTTOM));
         layer.setMinZoom(ZOOM_FICHE_MIN);
         style.addLayer(layer);
         load();

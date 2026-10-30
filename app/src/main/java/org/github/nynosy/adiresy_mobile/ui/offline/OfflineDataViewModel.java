@@ -183,14 +183,4 @@ public class OfflineDataViewModel extends AndroidViewModel {
         }
         continuation.enqueue();
     }
-
-    private void enqueue(Data input, String tag, boolean allowMobileData) {
-        Constraints constraints = new Constraints.Builder()
-                .setRequiredNetworkType(
-                        allowMobileData ? NetworkType.CONNECTED : NetworkType.UNMETERED)
-                .build();
-        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(TileDownloadWorker.class)
-                .setConstraints(constraints).setInputData(input).addTag(tag).build();
-        workManager.enqueue(request);
-    }
 }

@@ -110,12 +110,13 @@ public class BookmarkAdapter
         popup.setOnMenuItemClickListener(menuItem -> {
             if (listener == null) return false;
             switch (menuItem.getItemId()) {
-                case 0: listener.onEditDescription(item); return true;
-                case 1: listener.onMoveToList(item);      return true;
-                case 2: listener.onShare(item);           return true;
-                case 3: listener.onDelete(item);          return true;
+                case 0 -> listener.onEditDescription(item);
+                case 1 -> listener.onMoveToList(item);
+                case 2 -> listener.onShare(item);
+                case 3 -> listener.onDelete(item);
+                default -> { return false; }
             }
-            return false;
+            return true;
         });
         popup.show();
     }

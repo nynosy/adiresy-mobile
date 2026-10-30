@@ -27,12 +27,10 @@
     <string name="btn_open_maps">Open in Maps</string>
     <string name="btn_navigate">Navigate</string>
     <string name="navigate_external_hint">Opens external maps app</string>
+    <string name="hierarchy_format">%1$s › %2$s</string>
     <string name="copied_to_clipboard">Code copied</string>
     <string name="tap_no_address">No address found for this building</string>
     <string name="tap_no_network">No connection — connect to look up this building</string>
-    <!-- %1$s and %2$s are both the canonical code — pass it twice at every
-         call site. The fr/mg translations only render %2$s, so a call
-         supplying just one arg throws MissingFormatArgumentException there. -->
     <string name="share_text">https://adiresy.mg/%1$s</string>
     <string name="share_chooser_title">Share address code</string>
 
@@ -118,11 +116,11 @@
     <!-- Shown once retries are exhausted after repeated failures -->
     <string name="offline_download_failed">Download failed — check your connection and try again</string>
     <!-- %1$s = downloaded MB (int), %2$s = total MB (int) -->
-    <string name="offline_status_progress">Downloading — %1$s MB / %2$s MB</string>
+    <string name="offline_status_progress">Downloading — %1$d MB / %2$d MB</string>
     <!-- %1$s = version string, %2$s = size in MB (int) -->
     <string name="offline_status_done">Up to date · v%1$s · %2$s MB</string>
     <!-- %1$s = zoom level (e.g. "Z13"), %2$s = version, %3$s = size MB -->
-    <string name="offline_national_done">National %1$s downloaded · v%2$s · %3$s MB</string>
+    <string name="offline_national_done">National %1$s downloaded · v%2$s · %3$d MB</string>
     <string name="offline_title_national">National map data</string>
     <string name="offline_desc_national">Covers all of Madagascar at the selected detail level. Download once and use offline anywhere in the country.</string>
     <!-- Zoom level labels for selectable rows -->
@@ -150,7 +148,7 @@
 
     <!-- About tab -->
     <string name="tab_about">About</string>
-    <string name="label_app_version">App version</string>
+    <string name="label_app_version">App version: %1$s</string>
     <string name="label_data_version">Map data version</string>
     <string name="data_version_none">Not downloaded</string>
     <string name="disclaimer_title">Unofficial service</string>

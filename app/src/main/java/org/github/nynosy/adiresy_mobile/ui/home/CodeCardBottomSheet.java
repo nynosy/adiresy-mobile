@@ -80,7 +80,7 @@ public class CodeCardBottomSheet extends BottomSheetDialogFragment {
 
         binding.labelCode.setText(code);
         binding.labelFokontany.setText(fokontany);
-        binding.labelHierarchy.setText(commune + " › " + district);
+        binding.labelHierarchy.setText(getString(R.string.hierarchy_format, commune, district));
         binding.imageQrCode.setImageBitmap(
                 QrCodeGenerator.generate(getString(R.string.share_text, code)));
 

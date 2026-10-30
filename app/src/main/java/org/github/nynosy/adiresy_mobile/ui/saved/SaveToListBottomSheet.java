@@ -144,27 +144,19 @@ public class SaveToListBottomSheet extends BottomSheetDialogFragment {
         if (root == null) return;
 
         switch (result.status) {
-            case OK:
-                Snackbar.make(root,
-                        getString(R.string.bookmark_saved_to, result.listName),
-                        Snackbar.LENGTH_SHORT).show();
-                break;
-            case WARN:
-                Snackbar.make(root,
-                        getString(R.string.bookmark_saved_to, result.listName),
-                        Snackbar.LENGTH_LONG)
-                        .setText(getString(R.string.bookmark_limit_warning, result.total))
-                        .show();
-                break;
-            case LIMIT_REACHED:
-                Snackbar.make(root, R.string.bookmark_limit_reached,
-                        Snackbar.LENGTH_LONG).show();
-                break;
-            case MOVED:
-                Snackbar.make(root,
-                        getString(R.string.bookmark_moved_to, result.listName),
-                        Snackbar.LENGTH_SHORT).show();
-                break;
+            case OK -> Snackbar.make(root,
+                    getString(R.string.bookmark_saved_to, result.listName),
+                    Snackbar.LENGTH_SHORT).show();
+            case WARN -> Snackbar.make(root,
+                    getString(R.string.bookmark_saved_to, result.listName),
+                    Snackbar.LENGTH_LONG)
+                    .setText(getString(R.string.bookmark_limit_warning, result.total))
+                    .show();
+            case LIMIT_REACHED -> Snackbar.make(root, R.string.bookmark_limit_reached,
+                    Snackbar.LENGTH_LONG).show();
+            case MOVED -> Snackbar.make(root,
+                    getString(R.string.bookmark_moved_to, result.listName),
+                    Snackbar.LENGTH_SHORT).show();
         }
     }
 

@@ -16,6 +16,7 @@ import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
+import java.util.Locale;
 
 import org.github.nynosy.adiresy_mobile.R;
 import org.github.nynosy.adiresy_mobile.data.Result;
@@ -107,7 +108,7 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
         String parent = args.getString(ARG_PARENT);
 
         binding.layoutUnitHeader.setVisibility(View.VISIBLE);
-        binding.labelUnitType.setText(levelLabel(level).toUpperCase());
+        binding.labelUnitType.setText(levelLabel(level).toUpperCase(Locale.getDefault()));
         binding.labelUnitName.setText(name);
 
         if (parent != null && !parent.isEmpty()) {
@@ -123,10 +124,10 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
     private void loadChildrenOf(String level, String uuid) {
         if (level == null) { loadRegions(); return; }
         switch (level) {
-            case "region":    viewModel.loadDistricts(uuid);  break;
-            case "district":  viewModel.loadCommunes(uuid);   break;
-            case "commune":   viewModel.loadFokontany(uuid);  break;
-            default:          loadRegions();                  break;
+            case "region"   -> viewModel.loadDistricts(uuid);
+            case "district" -> viewModel.loadCommunes(uuid);
+            case "commune"  -> viewModel.loadFokontany(uuid);
+            default         -> loadRegions();
         }
     }
 
@@ -145,13 +146,13 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
         binding.labelLevelTitle.setText(childLevelLabel(unit.type));
 
         switch (unit.type) {
-            case "region":   viewModel.loadDistricts(unit.pcode);  break;
-            case "district": viewModel.loadCommunes(unit.pcode);   break;
-            case "commune":  viewModel.loadFokontany(unit.pcode);  break;
-            default:
+            case "region"   -> viewModel.loadDistricts(unit.pcode);
+            case "district" -> viewModel.loadCommunes(unit.pcode);
+            case "commune"  -> viewModel.loadFokontany(unit.pcode);
+            default -> {
                 viewModel.showBoundary(unit);
                 dismiss();
-                break;
+            }
         }
     }
 
@@ -180,50 +181,31 @@ public class ExploreBottomSheet extends BottomSheetDialogFragment {
             if (parent == null) { loadRegions(); return; }
             binding.labelLevelTitle.setText(childLevelLabel(parent.type));
             switch (parent.type) {
-                case "region":   viewModel.loadDistricts(parent.pcode);  break;
-                case "district": viewModel.loadCommunes(parent.pcode);   break;
-                case "commune":  viewModel.loadFokontany(parent.pcode);  break;
+                case "region"   -> viewModel.loadDistricts(parent.pcode);
+                case "district" -> viewModel.loadCommunes(parent.pcode);
+                case "commune"  -> viewModel.loadFokontany(parent.pcode);
             }
         }
     }
 
     private String levelLabel(String type) {
         if (type == null) return "";
-        switch (type) {
-            case "region" -> {
-                return getString(R.string.label_region);
-            }
-            case "district" -> {
-                return getString(R.string.label_district);
-            }
-            case "commune" -> {
-                return getString(R.string.label_commune);
-            }
-            case "fokontany" -> {
-                return getString(R.string.label_fokontany);
-            }
-            default -> {
-                return type;
-            }
-        }
+        return switch (type) {
+            case "region"    -> getString(R.string.label_region);
+            case "district"  -> getString(R.string.label_district);
+            case "commune"   -> getString(R.string.label_commune);
+            case "fokontany" -> getString(R.string.label_fokontany);
+            default          -> type;
+        };
     }
 
     private String childLevelLabel(String parentType) {
         if (parentType == null) return getString(R.string.label_region);
-        switch (parentType) {
-            case "region" -> {
-                return getString(R.string.label_district);
-            }
-            case "district" -> {
-                return getString(R.string.label_commune);
-            }
-            case "commune" -> {
-                return getString(R.string.label_fokontany);
-            }
-            default -> {
-                return getString(R.string.label_fokontany);
-            }
-        }
+        return switch (parentType) {
+            case "region"   -> getString(R.string.label_district);
+            case "district" -> getString(R.string.label_commune);
+            default         -> getString(R.string.label_fokontany);
+        };
     }
 
     @StringRes

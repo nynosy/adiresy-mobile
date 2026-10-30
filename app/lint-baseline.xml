@@ -2,61 +2,6 @@
 <issues format="6" by="lint 9.5.0" type="baseline" client="gradle" dependencies="true" name="AGP (9.5.0)" variant="all" version="9.5.0">
 
     <issue
-        id="MissingPermission"
-        message="Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with `checkPermission`) or explicitly handle a potential `SecurityException`"
-        errorLine1="        locationManager.requestLocationUpdates(provider, 0, 0, locationListener,"
-        errorLine2="        ^">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/HomeViewModel.java"
-            line="161"
-            column="9"/>
-    </issue>
-
-    <issue
-        id="MockLocation"
-        message="Mock locations should only be requested in a test or debug-specific manifest file (typically `src/debug/AndroidManifest.xml`)"
-        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.ACCESS_MOCK_LOCATION&quot; />"
-        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/debug/AndroidManifest.xml"
-            line="6"
-            column="22"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="                binding.labelTypeBadge.setText(unit.type.substring(0, 1).toUpperCase()"
-        errorLine2="                                                                         ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/map/AdminUnitAdapter.java"
-            line="55"
-            column="74"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="        binding.labelUnitType.setText(levelLabel(level).toUpperCase());"
-        errorLine2="                                                        ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/map/ExploreBottomSheet.java"
-            line="110"
-            column="57"/>
-    </issue>
-
-    <issue
-        id="DefaultLocale"
-        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
-        errorLine1="            binding.labelType.setText(item.type != null ? item.type.toUpperCase() : &quot;&quot;);"
-        errorLine2="                                                                    ~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/search/SearchAdapter.java"
-            line="52"
-            column="69"/>
-    </issue>
-
-    <issue
         id="OldTargetApi"
         message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
         errorLine1="        targetSdk = 36"
@@ -68,46 +13,13 @@
     </issue>
 
     <issue
-        id="WrongConstant"
-        message="Must be one of: Property.ICON_ANCHOR_CENTER, Property.ICON_ANCHOR_LEFT, Property.ICON_ANCHOR_RIGHT, Property.ICON_ANCHOR_TOP, Property.ICON_ANCHOR_BOTTOM, Property.ICON_ANCHOR_TOP_LEFT, Property.ICON_ANCHOR_TOP_RIGHT, Property.ICON_ANCHOR_BOTTOM_LEFT, Property.ICON_ANCHOR_BOTTOM_RIGHT"
-        errorLine1="                        PropertyFactory.iconAnchor(&quot;center&quot;)));"
-        errorLine2="                                                   ~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/map/BookmarkPinController.java"
-            line="67"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="WrongConstant"
-        message="Must be one of: Property.ICON_ANCHOR_CENTER, Property.ICON_ANCHOR_LEFT, Property.ICON_ANCHOR_RIGHT, Property.ICON_ANCHOR_TOP, Property.ICON_ANCHOR_BOTTOM, Property.ICON_ANCHOR_TOP_LEFT, Property.ICON_ANCHOR_TOP_RIGHT, Property.ICON_ANCHOR_BOTTOM_LEFT, Property.ICON_ANCHOR_BOTTOM_RIGHT"
-        errorLine1="                        PropertyFactory.iconAnchor(&quot;bottom&quot;));"
-        errorLine2="                                                   ~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="133"
-            column="52"/>
-    </issue>
-
-    <issue
-        id="WrongConstant"
-        message="Must be one of: Property.ICON_ANCHOR_CENTER, Property.ICON_ANCHOR_LEFT, Property.ICON_ANCHOR_RIGHT, Property.ICON_ANCHOR_TOP, Property.ICON_ANCHOR_BOTTOM, Property.ICON_ANCHOR_TOP_LEFT, Property.ICON_ANCHOR_TOP_RIGHT, Property.ICON_ANCHOR_BOTTOM_LEFT, Property.ICON_ANCHOR_BOTTOM_RIGHT"
-        errorLine1="                        PropertyFactory.iconAnchor(&quot;bottom&quot;),"
-        errorLine2="                                                   ~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/map/SelectionPinController.java"
-            line="49"
-            column="52"/>
-    </issue>
-
-    <issue
         id="AppLinkWarning"
         message="This intent filter has the format of an Android App Link but is missing the `autoVerify` attribute; add `android:autoVerify=&quot;true&quot;` to ensure your domain will be validated and enable App Link-related Lint warnings. If you do not want clicked URLs to bring the user to your app, remove the `android.intent.category.BROWSABLE` category, or set `android:autoVerify=&quot;false&quot;` to make it clear this is not intended to be an Android App Link."
         errorLine1="            &lt;intent-filter>"
         errorLine2="             ~~~~~~~~~~~~~">
         <location
             file="src/main/AndroidManifest.xml"
-            line="52"
+            line="70"
             column="14"/>
     </issue>
 
@@ -120,83 +32,6 @@
             file="src/main/java/org/github/nynosy/adiresy_mobile/SplashActivity.java"
             line="14"
             column="14"/>
-    </issue>
-
-    <issue
-        id="QueryPermissionsNeeded"
-        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
-        errorLine1="            if (intent.resolveActivity(requireContext().getPackageManager()) != null) {"
-        errorLine2="                       ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
-            line="121"
-            column="24"/>
-    </issue>
-
-    <issue
-        id="QueryPermissionsNeeded"
-        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
-        errorLine1="                if (intent.resolveActivity(requireContext().getPackageManager()) != null) {"
-        errorLine2="                           ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
-            line="178"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="QueryPermissionsNeeded"
-        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
-        errorLine1="                if (intent.resolveActivity(requireContext().getPackageManager()) != null) {"
-        errorLine2="                           ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
-            line="191"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="QueryPermissionsNeeded"
-        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
-        errorLine1="                if (intent.resolveActivity(requireContext().getPackageManager()) != null) {"
-        errorLine2="                           ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
-            line="245"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="QueryPermissionsNeeded"
-        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
-        errorLine1="                if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);"
-        errorLine2="                           ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailActivity.java"
-            line="198"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="QueryPermissionsNeeded"
-        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
-        errorLine1="                if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);"
-        errorLine2="                           ~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailActivity.java"
-            line="210"
-            column="28"/>
-    </issue>
-
-    <issue
-        id="UnspecifiedRegisterReceiverFlag"
-        message="`receiver` is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected broadcasts registered for org.github.nynosy.adiresy_mobile.MOCK_LOCATION"
-        errorLine1="            registerReceiver(receiver,"
-        errorLine2="            ^">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/AdiresyApplication.java"
-            line="40"
-            column="13"/>
     </issue>
 
     <issue
@@ -266,445 +101,13 @@
     </issue>
 
     <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="        sb.append(&quot;\n&quot;).append(getString(R.string.share_text, bookmark.canonicalCode));"
-        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/saved/BookmarkListDetailFragment.java"
-            line="255"
-            column="32"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="        sb.append(&quot;\n&quot;).append(getString(R.string.share_text, bookmark.canonicalCode));"
-        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/saved/BookmarkListDetailFragment.java"
-            line="255"
-            column="32"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                QrCodeGenerator.generate(getString(R.string.share_text, code)));"
-        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
-            line="85"
-            column="42"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                QrCodeGenerator.generate(getString(R.string.share_text, code)));"
-        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
-            line="85"
-            column="42"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="            String text = getString(R.string.share_text, code);"
-        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
-            line="103"
-            column="27"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="            String text = getString(R.string.share_text, code);"
-        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
-            line="103"
-            column="27"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                        getString(R.string.share_text, result.data.canonicalCode)));"
-        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/code/CodeDetailActivity.java"
-            line="141"
-            column="25"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                        getString(R.string.share_text, result.data.canonicalCode)));"
-        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/code/CodeDetailActivity.java"
-            line="141"
-            column="25"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="        return context.getString(R.string.share_text, code);"
-        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/code/CodeDetailViewModel.java"
-            line="66"
-            column="16"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="        return context.getString(R.string.share_text, code);"
-        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/code/CodeDetailViewModel.java"
-            line="66"
-            column="16"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                    QrCodeGenerator.generate(getString(R.string.share_text, code)));"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
-            line="209"
-            column="46"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                    QrCodeGenerator.generate(getString(R.string.share_text, code)));"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
-            line="209"
-            column="46"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                String text = getString(R.string.share_text, code);"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
-            line="227"
-            column="31"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                String text = getString(R.string.share_text, code);"
-        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
-            line="227"
-            column="31"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                    QrCodeGenerator.generate(getString(R.string.share_text, finalCode)));"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailActivity.java"
-            line="234"
-            column="46"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="                    QrCodeGenerator.generate(getString(R.string.share_text, finalCode)));"
-        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailActivity.java"
-            line="234"
-            column="46"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="        return context.getString(R.string.share_text, code);"
-        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailViewModel.java"
-            line="69"
-            column="16"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
-        errorLine1="        return context.getString(R.string.share_text, code);"
-        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailViewModel.java"
-            line="69"
-            column="16"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"
-            message="This definition requires 2 arguments"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #3 in `offline_national_done`: conversion is `s`, received `int` (argument #4 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="                    getString(R.string.offline_national_done, &quot;Z&quot; + storedZoom, version, mb));"
-        errorLine2="                                                                                         ~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="145"
-            column="90"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="116"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #3 in `offline_national_done`: conversion is `s`, received `int` (argument #4 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="                    getString(R.string.offline_national_done, &quot;Z&quot; + storedZoom, version, mb));"
-        errorLine2="                                                                                         ~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="145"
-            column="90"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="118"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #3 in `offline_national_done`: conversion is `s`, received `int` (argument #4 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="                    getString(R.string.offline_national_done, &quot;Z&quot; + storedZoom, version, mb));"
-        errorLine2="                                                                                         ~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="145"
-            column="90"/>
-        <location
-            file="src/main/res/values/strings.xml"
-            line="125"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #1 in `offline_status_progress`: conversion is `s`, received `int` (argument #2 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
-        errorLine2="                                                                      ~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="367"
-            column="71"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="113"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #1 in `offline_status_progress`: conversion is `s`, received `int` (argument #2 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
-        errorLine2="                                                                      ~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="367"
-            column="71"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="116"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #1 in `offline_status_progress`: conversion is `s`, received `int` (argument #2 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
-        errorLine2="                                                                      ~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="367"
-            column="71"/>
-        <location
-            file="src/main/res/values/strings.xml"
-            line="121"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #2 in `offline_status_progress`: conversion is `s`, received `int` (argument #3 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
-        errorLine2="                                                                              ~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="367"
-            column="79"/>
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="113"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #2 in `offline_status_progress`: conversion is `s`, received `int` (argument #3 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
-        errorLine2="                                                                              ~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="367"
-            column="79"/>
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="116"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
-        id="StringFormatMatches"
-        message="Suspicious argument type for formatting argument #2 in `offline_status_progress`: conversion is `s`, received `int` (argument #3 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
-        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
-        errorLine2="                                                                              ~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
-            line="367"
-            column="79"/>
-        <location
-            file="src/main/res/values/strings.xml"
-            line="121"
-            column="5"
-            message="Conflicting argument declaration here"/>
-    </issue>
-
-    <issue
         id="LogNotTimber"
         message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
         errorLine1="            Log.w(TAG, &quot;MockLocationReceiver registration failed&quot;, e);"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/AdiresyApplication.java"
-            line="43"
+            line="47"
             column="13"/>
     </issue>
 
@@ -803,7 +206,7 @@
         errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="143"
+            line="144"
             column="40"/>
     </issue>
 
@@ -814,7 +217,7 @@
         errorLine2="                ^">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="151"
+            line="152"
             column="17"/>
     </issue>
 
@@ -825,7 +228,7 @@
         errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="158"
+            line="159"
             column="40"/>
     </issue>
 
@@ -836,7 +239,7 @@
         errorLine2="                ^">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="163"
+            line="164"
             column="17"/>
     </issue>
 
@@ -847,7 +250,7 @@
         errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="206"
+            line="207"
             column="48"/>
     </issue>
 
@@ -858,7 +261,7 @@
         errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="211"
+            line="212"
             column="48"/>
     </issue>
 
@@ -869,7 +272,7 @@
         errorLine2="                        ^">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="221"
+            line="222"
             column="25"/>
     </issue>
 
@@ -880,7 +283,7 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="228"
+            line="229"
             column="21"/>
     </issue>
 
@@ -891,7 +294,7 @@
         errorLine2="            ^">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
-            line="258"
+            line="259"
             column="13"/>
     </issue>
 
@@ -946,7 +349,7 @@
         errorLine2="                    ^">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
-            line="139"
+            line="143"
             column="21"/>
     </issue>
 
@@ -957,7 +360,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
-            line="170"
+            line="174"
             column="13"/>
     </issue>
 
@@ -968,7 +371,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
-            line="180"
+            line="184"
             column="13"/>
     </issue>
 
@@ -979,7 +382,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
-            line="201"
+            line="205"
             column="13"/>
     </issue>
 
@@ -990,7 +393,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="49"
+            line="47"
             column="5"/>
     </issue>
 
@@ -1001,7 +404,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="206"
+            line="204"
             column="5"/>
     </issue>
 
@@ -1012,7 +415,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="222"
+            line="220"
             column="5"/>
     </issue>
 
@@ -1023,7 +426,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="226"
+            line="224"
             column="5"/>
     </issue>
 
@@ -1034,7 +437,7 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="232"
+            line="230"
             column="5"/>
     </issue>
 
@@ -1045,40 +448,8 @@
         errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="234"
+            line="232"
             column="5"/>
-    </issue>
-
-    <issue
-        id="StringFormatCount"
-        message="Inconsistent number of arguments in formatting string `share_text`; found both 2 here and 1 in values/strings.xml"
-        errorLine1="    &lt;string name=&quot;share_text&quot;>Trouvez ce bâtiment sur Adiresy : %2$s&lt;/string>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-fr/strings.xml"
-            line="33"
-            column="5"/>
-        <location
-            file="src/main/res/values/strings.xml"
-            line="36"
-            column="5"
-            message="Conflicting number of arguments (1) here"/>
-    </issue>
-
-    <issue
-        id="StringFormatCount"
-        message="Inconsistent number of arguments in formatting string `share_text`; found both 2 here and 1 in values/strings.xml"
-        errorLine1="    &lt;string name=&quot;share_text&quot;>Hitadiava ity trano ity amin\&apos;ny Adiresy: %2$s&lt;/string>&lt;!-- [MG-REVIEW] -->"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/values-mg/strings.xml"
-            line="36"
-            column="5"/>
-        <location
-            file="src/main/res/values/strings.xml"
-            line="36"
-            column="5"
-            message="Conflicting number of arguments (1) here"/>
     </issue>
 
     <issue
@@ -1090,17 +461,6 @@
             file="build.gradle.kts"
             line="56"
             column="27"/>
-    </issue>
-
-    <issue
-        id="ExportedReceiver"
-        message="Exported receiver does not require permission"
-        errorLine1="        &lt;receiver"
-        errorLine2="         ~~~~~~~~">
-        <location
-            file="src/debug/AndroidManifest.xml"
-            line="13"
-            column="10"/>
     </issue>
 
     <issue
@@ -1337,7 +697,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="94"
+            line="92"
             column="13"/>
     </issue>
 
@@ -1348,7 +708,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="95"
+            line="93"
             column="13"/>
     </issue>
 
@@ -1359,7 +719,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="96"
+            line="94"
             column="13"/>
     </issue>
 
@@ -1370,7 +730,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="123"
+            line="121"
             column="13"/>
     </issue>
 
@@ -1381,7 +741,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="142"
+            line="140"
             column="13"/>
     </issue>
 
@@ -1392,7 +752,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="154"
+            line="152"
             column="13"/>
     </issue>
 
@@ -1403,7 +763,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="155"
+            line="153"
             column="13"/>
     </issue>
 
@@ -1414,7 +774,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="156"
+            line="154"
             column="13"/>
     </issue>
 
@@ -1425,7 +785,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="157"
+            line="155"
             column="13"/>
     </issue>
 
@@ -1436,7 +796,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="158"
+            line="156"
             column="13"/>
     </issue>
 
@@ -1447,7 +807,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="194"
+            line="192"
             column="13"/>
     </issue>
 
@@ -1458,7 +818,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="195"
+            line="193"
             column="13"/>
     </issue>
 
@@ -1469,7 +829,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="206"
+            line="204"
             column="13"/>
     </issue>
 
@@ -1480,7 +840,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="209"
+            line="207"
             column="13"/>
     </issue>
 
@@ -1491,7 +851,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="211"
+            line="209"
             column="13"/>
     </issue>
 
@@ -1502,7 +862,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="214"
+            line="212"
             column="13"/>
     </issue>
 
@@ -1513,7 +873,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="215"
+            line="213"
             column="13"/>
     </issue>
 
@@ -1524,7 +884,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="216"
+            line="214"
             column="13"/>
     </issue>
 
@@ -1535,7 +895,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="247"
+            line="245"
             column="13"/>
     </issue>
 
@@ -1546,7 +906,7 @@
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/values/strings.xml"
-            line="248"
+            line="246"
             column="13"/>
     </issue>
 
@@ -1696,39 +1056,6 @@
             file="src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"/>
         <location
             file="src/main/res/mipmap-xxxhdpi/ic_launcher.png"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
-        errorLine1="        binding.labelVersion.setText(getString(R.string.label_app_version) + &quot;: &quot; + BuildConfig.VERSION_NAME);"
-        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/about/AboutFragment.java"
-            line="33"
-            column="38"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
-        errorLine1="                binding.labelTypeBadge.setText(unit.type.substring(0, 1).toUpperCase()"
-        errorLine2="                                               ^">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/map/AdminUnitAdapter.java"
-            line="55"
-            column="48"/>
-    </issue>
-
-    <issue
-        id="SetTextI18n"
-        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
-        errorLine1="        binding.labelHierarchy.setText(commune + &quot; › &quot; + district);"
-        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
-            line="83"
-            column="40"/>
     </issue>
 
     <issue

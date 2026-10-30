@@ -69,7 +69,6 @@ import org.github.nynosy.adiresy_mobile.ui.home.HomeViewModel;
 import org.github.nynosy.adiresy_mobile.ui.home.LocationRationaleBottomSheet;
 import org.github.nynosy.adiresy_mobile.ui.home.NearbyAdapter;
 import org.github.nynosy.adiresy_mobile.ui.map.ExploreBottomSheet;
-import org.github.nynosy.adiresy_mobile.ui.map.MapViewModel;
 import org.github.nynosy.adiresy_mobile.ui.offline.OfflineDataFragment;
 import org.github.nynosy.adiresy_mobile.ui.saved.SharedMapViewModel;
 import org.github.nynosy.adiresy_mobile.ui.search.SearchController;
@@ -90,7 +89,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     private HomeViewModel      homeViewModel;
     private SearchViewModel    searchViewModel;
     private SharedMapViewModel sharedMapViewModel;
-    private MapViewModel       mapViewModel;
 
     private NearbyAdapter             nearbyAdapter;
     private BottomSheetBehavior<View> sheetBehavior;
@@ -135,7 +133,6 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
         homeViewModel      = new ViewModelProvider(this).get(HomeViewModel.class);
         searchViewModel    = new ViewModelProvider(this).get(SearchViewModel.class);
         sharedMapViewModel = new ViewModelProvider(requireActivity()).get(SharedMapViewModel.class);
-        mapViewModel       = new ViewModelProvider(this).get(MapViewModel.class);
         styleLoader        = new StyleLoader(requireContext());
 
         setupOfflineBanner();
@@ -436,24 +433,24 @@ public class MainMapFragment extends Fragment implements OnMapReadyCallback {
     private void observeLocation() {
         homeViewModel.getLocationState().observe(getViewLifecycleOwner(), state -> {
             switch (state) {
-                case REQUESTING:
+                case REQUESTING -> {
                     binding.fabLocate.setEnabled(false);
                     startLocateSpin();
-                    break;
-                case ACQUIRED:
+                }
+                case ACQUIRED -> {
                     binding.fabLocate.setEnabled(true);
                     stopLocateSpin();
-                    break;
-                case FAILED:
+                }
+                case FAILED -> {
                     binding.fabLocate.setEnabled(true);
                     stopLocateSpin();
                     Snackbar.make(binding.getRoot(),
                             R.string.location_failed, Snackbar.LENGTH_LONG).show();
-                    break;
-                default:
+                }
+                default -> {
                     binding.fabLocate.setEnabled(true);
                     stopLocateSpin();
-                    break;
+                }
             }
         });
 

@@ -30,7 +30,7 @@ public class AboutFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        binding.labelVersion.setText(getString(R.string.label_app_version) + ": " + BuildConfig.VERSION_NAME);
+        binding.labelVersion.setText(getString(R.string.label_app_version, BuildConfig.VERSION_NAME));
 
         binding.linkWebsite.setOnClickListener(v -> openUrl("https://adiresy.mg"));
         binding.linkRepoApp.setOnClickListener(v ->

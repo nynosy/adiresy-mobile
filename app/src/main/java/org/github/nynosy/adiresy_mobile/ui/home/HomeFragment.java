@@ -69,21 +69,20 @@ public class HomeFragment extends Fragment {
 
         viewModel.getLocationState().observe(getViewLifecycleOwner(), state -> {
             switch (state) {
-                case REQUESTING:
+                case REQUESTING -> {
                     binding.btnLocateMe.setEnabled(false);
                     binding.progressLocating.setVisibility(View.VISIBLE);
-                    break;
-                case ACQUIRED:
-                case IDLE:
+                }
+                case ACQUIRED, IDLE -> {
                     binding.btnLocateMe.setEnabled(true);
                     binding.progressLocating.setVisibility(View.GONE);
-                    break;
-                case FAILED:
+                }
+                case FAILED -> {
                     binding.btnLocateMe.setEnabled(true);
                     binding.progressLocating.setVisibility(View.GONE);
                     Snackbar.make(binding.getRoot(),
                             R.string.location_failed, Snackbar.LENGTH_LONG).show();
-                    break;
+                }
             }
         });
 

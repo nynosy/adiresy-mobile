@@ -21,7 +21,6 @@ public class SearchFragment extends Fragment {
 
     private FragmentSearchBinding binding;
     private SearchViewModel       viewModel;
-    private SearchController      searchController;
 
     @Nullable
     @Override
@@ -36,7 +35,7 @@ public class SearchFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         viewModel = new ViewModelProvider(this).get(SearchViewModel.class);
 
-        searchController = new SearchController(
+        new SearchController(
                 requireContext(),
                 binding.recyclerResults,
                 binding.historyHeader,

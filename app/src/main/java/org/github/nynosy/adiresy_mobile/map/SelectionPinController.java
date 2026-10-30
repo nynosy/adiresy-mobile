@@ -9,6 +9,7 @@ import android.graphics.Path;
 
 import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.Style;
+import org.maplibre.android.style.layers.Property;
 import org.maplibre.android.style.layers.PropertyFactory;
 import org.maplibre.android.style.layers.SymbolLayer;
 import org.maplibre.android.style.sources.GeoJsonSource;
@@ -46,7 +47,7 @@ public class SelectionPinController {
         style.addLayer(new SymbolLayer(LAYER, SOURCE)
                 .withProperties(
                         PropertyFactory.iconImage(ICON),
-                        PropertyFactory.iconAnchor("bottom"),
+                        PropertyFactory.iconAnchor(Property.ICON_ANCHOR_BOTTOM),
                         PropertyFactory.iconAllowOverlap(true)));
     }
 

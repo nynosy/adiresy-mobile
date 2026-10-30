@@ -179,8 +179,8 @@ public class AppPrefs {
         }
         if (ks.containsAlias(PREFS_KEY_ALIAS)) {
             KeyStore.Entry entry = ks.getEntry(PREFS_KEY_ALIAS, null);
-            if (entry instanceof KeyStore.SecretKeyEntry) {
-                return ((KeyStore.SecretKeyEntry) entry).getSecretKey();
+            if (entry instanceof KeyStore.SecretKeyEntry secretKeyEntry) {
+                return secretKeyEntry.getSecretKey();
             }
         }
         KeyGenerator kg = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE);

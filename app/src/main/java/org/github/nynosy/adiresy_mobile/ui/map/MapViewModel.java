@@ -37,12 +37,12 @@ public class MapViewModel extends AndroidViewModel {
     public LiveData<Result<List<AdminUnitEntity>>> getAdminUnits() {
         return Transformations.switchMap(adminQuery, q -> {
             if (q == null) return new MutableLiveData<>();
-            switch (q.type) {
-                case "region":    return repository.listRegions();
-                case "district":  return repository.listDistricts(q.parentUuid);
-                case "commune":   return repository.listCommunes(q.parentUuid);
-                default:          return repository.listFokontany(q.parentUuid);
-            }
+            return switch (q.type) {
+                case "region"   -> repository.listRegions();
+                case "district" -> repository.listDistricts(q.parentUuid);
+                case "commune"  -> repository.listCommunes(q.parentUuid);
+                default         -> repository.listFokontany(q.parentUuid);
+            };
         });
     }
 

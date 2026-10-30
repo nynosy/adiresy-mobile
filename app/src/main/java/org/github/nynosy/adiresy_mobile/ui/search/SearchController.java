@@ -27,11 +27,9 @@ public class SearchController {
         void onHistorySelected(String query);
     }
 
-    private final Context        context;
     private final RecyclerView   recycler;
     private final View           historyHeader;
     private final TextView       emptyLabel;
-    private final EditText       editText;
     private final SearchViewModel viewModel;
 
     private final SearchAdapter  searchAdapter  = new SearchAdapter();
@@ -49,11 +47,9 @@ public class SearchController {
                             SearchViewModel viewModel,
                             LifecycleOwner owner,
                             Listener listener) {
-        this.context       = context;
         this.recycler      = recycler;
         this.historyHeader = historyHeader;
         this.emptyLabel    = emptyLabel;
-        this.editText      = editText;
         this.viewModel     = viewModel;
 
         recycler.setLayoutManager(new LinearLayoutManager(context));

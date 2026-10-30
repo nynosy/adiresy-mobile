@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import org.github.nynosy.adiresy_mobile.data.cache.AdminUnitEntity;
 import org.github.nynosy.adiresy_mobile.databinding.ItemAdminUnitBinding;
 
+import java.util.Locale;
+
 public class AdminUnitAdapter extends ListAdapter<AdminUnitEntity, AdminUnitAdapter.ViewHolder> {
 
     private OnItemClickListener listener;
@@ -52,8 +54,9 @@ public class AdminUnitAdapter extends ListAdapter<AdminUnitEntity, AdminUnitAdap
             // Show the type badge only at the search-result root level (type is visible context)
             if (unit.type != null && !unit.type.isEmpty()) {
                 binding.labelTypeBadge.setVisibility(android.view.View.VISIBLE);
-                binding.labelTypeBadge.setText(unit.type.substring(0, 1).toUpperCase()
-                        + unit.type.substring(1));
+                String capitalized = unit.type.substring(0, 1).toUpperCase(Locale.getDefault())
+                        + unit.type.substring(1);
+                binding.labelTypeBadge.setText(capitalized);
             } else {
                 binding.labelTypeBadge.setVisibility(android.view.View.GONE);
             }
