@@ -2,15 +2,11 @@
     <string name="app_name">Adiresy</string>
 
     <!-- Bottom navigation tabs -->
-    <string name="tab_home">Accueil</string>
     <string name="tab_map">Carte</string>
     <string name="tab_search">Recherche</string>
     <string name="tab_settings">Paramètres</string>
 
     <!-- First-run language chooser — shown in own language, no translation needed -->
-    <string name="lang_english">English</string>
-    <string name="lang_french">Français</string>
-    <string name="lang_malagasy">Malagasy</string>
 
     <!-- Home screen -->
     <string name="btn_locate_me">Me localiser</string>
@@ -25,7 +21,6 @@
     <string name="btn_share">Partager</string>
     <string name="btn_copy">Copier</string>
     <string name="btn_navigate">Itinéraire</string>
-    <string name="btn_open_maps">Ouvrir dans Maps</string>
     <string name="navigate_external_hint">Ouvre une application de navigation externe</string>
     <string name="hierarchy_format">%1$s › %2$s</string>
     <string name="copied_to_clipboard">Code copié</string>
@@ -87,9 +82,6 @@
     <string name="search_hint">Rechercher codes, lieux, zones…</string>
     <string name="label_recent_searches">Recherches récentes</string>
     <string name="btn_clear_history">Effacer l\'historique</string>
-    <string name="search_type_code">Code</string>
-    <string name="search_type_place">Lieu</string>
-    <string name="search_type_area">Zone</string>
     <string name="search_empty">Aucun résultat pour « %s »</string>
 
     <!-- Settings -->
@@ -112,7 +104,6 @@
     <string name="offline_status_retrying">Problème de connexion — nouvelle tentative…</string>
     <string name="offline_download_failed">Échec du téléchargement — vérifiez votre connexion et réessayez</string>
     <string name="offline_status_progress">Téléchargement — %1$d Mo / %2$d Mo</string>
-    <string name="offline_status_done">À jour (v%1$s, %2$s Mo)</string>
     <!-- %1$s = tier (p. ex. "Z13"), %2$s = version, %3$s = taille en Mo -->
     <string name="offline_national_done">National %1$s téléchargé · v%2$s · %3$d Mo</string>
     <string name="offline_title_national">Données cartographiques nationales</string>
@@ -128,7 +119,6 @@
     <string name="warning_mobile_data_message">Le téléchargement des données cartographiques via les données mobiles peut consommer une quantité importante de données et entraîner des frais supplémentaires.</string>
     <string name="btn_download">Télécharger</string>
     <string name="btn_update">Mettre à jour</string>
-    <string name="btn_delete_map_data">Supprimer les données</string>
     <string name="confirm_delete_title">Supprimer les données cartographiques ?</string>
     <string name="confirm_delete_message">Cela supprimera toutes les tuiles cartographiques téléchargées. Vous pourrez les télécharger à nouveau à tout moment.</string>
     <string name="btn_delete">Supprimer</string>
@@ -141,11 +131,6 @@
     <string name="tab_about">À propos</string>
     <string name="title_about">À propos et attributions</string>
     <string name="label_app_version">Version de l\'application : %1$s</string>
-    <string name="label_data_version">Version des données cartographiques</string>
-    <string name="data_version_none">Non téléchargé</string>
-    <string name="disclaimer_title">Service non officiel</string>
-    <string name="disclaimer_body">Adiresy est un service d\'adressage non officiel. Les codes d\'adresses sont valables uniquement sur cette plateforme et n\'ont aucune valeur légale.</string>
-    <string name="title_data_sources">Sources de données</string>
     <string name="link_adiresy">adiresy.mg</string>
     <string name="about_section_source">Code source</string>
     <string name="link_repo_app">Application — github.com/nynosy/adiresy-mobile</string>
@@ -167,8 +152,6 @@
     <string name="new_list_label">+ Nouvelle liste</string>
     <string name="list_name_hint">Nom de la liste</string>
     <string name="list_description_hint">Description (facultatif)</string>
-    <string name="list_name_required_error">Le nom est obligatoire</string>
-    <string name="list_name_too_long_error">Le nom doit comporter 40 caractères maximum</string>
     <string name="bookmark_saved_to">Enregistré dans %s</string>
     <string name="bookmark_moved_to">Déplacé vers %s</string>
     <string name="bookmark_removed_from">Supprimé de %s</string>
@@ -178,17 +161,11 @@
     <string name="create_list_title">Nouvelle liste</string>
     <string name="edit_list_title">Modifier la liste</string>
     <string name="delete_list_title">Supprimer la liste ?</string>
-    <string name="delete_list_body">Supprimer « %1$s » ? Les %2$d lieux enregistrés seront également supprimés.</string>
     <string name="delete_list_body_empty">Supprimer « %s » ?</string>
     <string name="edit_description_title">Modifier la description</string>
-    <string name="edit_description_hint">Description</string>
     <string name="move_to_list_title">Déplacer vers une liste</string>
-    <string name="saved_section_label">Favoris</string>
     <string name="btn_save">Enregistrer</string>
     <string name="btn_edit">Modifier</string>
-    <string name="btn_move">Déplacer</string>
-    <string name="label_no_description">(Sans description)</string>
-    <string name="label_saved_places">Lieux favoris</string>
     <string name="emoji_picker_title">Choisir un emoji</string>
     <string name="bookmark_name_hint">Nom (facultatif, ex. Maison)</string>
     <string name="add_description_hint">Notes (facultatif)</string>
@@ -280,7 +257,5 @@
     <string name="cd_navigate">Itinéraire vers cette adresse</string>
     <string name="cd_qr_code">Code QR menant à cette adresse</string>
     <string name="cd_explore">Explorer les zones administratives</string>
-    <string name="cd_back_level">Revenir au niveau administratif précédent</string>
-    <string name="cd_clear_search_history">Effacer tout l\'historique de recherche</string>
     <string name="cd_map_view">Carte interactive de Madagascar</string>
 </resources>

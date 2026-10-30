@@ -4,7 +4,6 @@
     <color name="teal_600">#0D9488</color>
     <color name="teal_700">#0F766E</color>
     <color name="teal_500">#14B8A6</color>
-    <color name="teal_400">#2DD4BF</color>
 
     <!-- Neutrals — light theme -->
     <color name="white">#FFFFFF</color>
@@ -22,8 +21,6 @@
     <!-- Semantic -->
     <color name="red_600">#DC2626</color>
     <color name="red_400">#F87171</color>
-    <color name="emerald_600">#059669</color>
-    <color name="blue_600">#2563EB</color>
 
     <!-- On-primary for dark theme -->
     <color name="teal_900">#04312C</color>

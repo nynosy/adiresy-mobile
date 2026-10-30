@@ -2,15 +2,11 @@
     <string name="app_name">Adiresy</string>
 
     <!-- Bottom navigation tabs -->
-    <string name="tab_home">Home</string>
     <string name="tab_map">Map</string>
     <string name="tab_search">Search</string>
     <string name="tab_settings">Settings</string>
 
     <!-- First-run language chooser -->
-    <string name="lang_english">English</string>
-    <string name="lang_french">Français</string>
-    <string name="lang_malagasy">Malagasy</string>
 
     <!-- Home screen -->
     <string name="btn_locate_me">Locate me</string>
@@ -24,7 +20,6 @@
     <string name="btn_full_details">Full address details ›</string>
     <string name="btn_share">Share</string>
     <string name="btn_copy">Copy</string>
-    <string name="btn_open_maps">Open in Maps</string>
     <string name="btn_navigate">Navigate</string>
     <string name="navigate_external_hint">Opens external maps app</string>
     <string name="hierarchy_format">%1$s › %2$s</string>
@@ -89,9 +84,6 @@
     <string name="search_hint">Search codes, places, areas…</string>
     <string name="label_recent_searches">Recent searches</string>
     <string name="btn_clear_history">Clear history</string>
-    <string name="search_type_code">Code</string>
-    <string name="search_type_place">Place</string>
-    <string name="search_type_area">Area</string>
     <string name="search_empty">No results for "%s"</string>
 
     <!-- Settings -->
@@ -118,7 +110,6 @@
     <!-- %1$s = downloaded MB (int), %2$s = total MB (int) -->
     <string name="offline_status_progress">Downloading — %1$d MB / %2$d MB</string>
     <!-- %1$s = version string, %2$s = size in MB (int) -->
-    <string name="offline_status_done">Up to date · v%1$s · %2$s MB</string>
     <!-- %1$s = zoom level (e.g. "Z13"), %2$s = version, %3$s = size MB -->
     <string name="offline_national_done">National %1$s downloaded · v%2$s · %3$d MB</string>
     <string name="offline_title_national">National map data</string>
@@ -137,7 +128,6 @@
     <string name="warning_mobile_data_message">Downloading map data over mobile data may use a significant amount of data and incur costs on your plan.</string>
     <string name="btn_download">Download</string>
     <string name="btn_update">Update</string>
-    <string name="btn_delete_map_data">Delete map data</string>
     <string name="confirm_delete_title">Delete map data?</string>
     <string name="confirm_delete_message">This will remove all downloaded map tiles. You can download again at any time.</string>
     <string name="btn_delete">Delete</string>
@@ -149,11 +139,6 @@
     <!-- About tab -->
     <string name="tab_about">About</string>
     <string name="label_app_version">App version: %1$s</string>
-    <string name="label_data_version">Map data version</string>
-    <string name="data_version_none">Not downloaded</string>
-    <string name="disclaimer_title">Unofficial service</string>
-    <string name="disclaimer_body">Adiresy is an unofficial addressing service. Address codes are valid on this platform only and have no legal value.</string>
-    <string name="title_data_sources">Data sources</string>
     <string name="link_adiresy">adiresy.mg</string>
 
     <string name="about_section_what">What is Adiresy?</string>
@@ -189,8 +174,6 @@
     <string name="new_list_label">+ New list</string>
     <string name="list_name_hint">List name</string>
     <string name="list_description_hint">Description (optional)</string>
-    <string name="list_name_required_error">Name is required</string>
-    <string name="list_name_too_long_error">Name must be 40 characters or fewer</string>
     <string name="bookmark_saved_to">Saved to %s</string>
     <string name="bookmark_moved_to">Moved to %s</string>
     <string name="bookmark_removed_from">Removed from %s</string>
@@ -201,17 +184,11 @@
     <string name="edit_list_title">Edit list</string>
     <string name="delete_list_title">Delete list?</string>
     <!-- %1$s = list name, %2$d = bookmark count -->
-    <string name="delete_list_body">Delete \"%1$s\"? All %2$d saved places will also be removed.</string>
     <string name="delete_list_body_empty">Delete \"%s\"?</string>
     <string name="edit_description_title">Edit description</string>
-    <string name="edit_description_hint">Description</string>
     <string name="move_to_list_title">Move to list</string>
-    <string name="saved_section_label">Favourites</string>
     <string name="btn_save">Save</string>
     <string name="btn_edit">Edit</string>
-    <string name="btn_move">Move to list</string>
-    <string name="label_no_description">(No description)</string>
-    <string name="label_saved_places">Favourite Places</string>
     <string name="emoji_picker_title">Choose an emoji</string>
     <string name="bookmark_name_hint">Name (optional, e.g. Home)</string>
     <string name="add_description_hint">Notes (optional)</string>
@@ -242,8 +219,6 @@
     <string name="cd_bookmark_unsaved">Add to favourites</string>
     <string name="cd_bookmark_saved">Remove from favourites</string>
     <string name="cd_explore">Explore administrative areas</string>
-    <string name="cd_back_level">Go back to previous administrative level</string>
-    <string name="cd_clear_search_history">Clear all recent searches</string>
     <string name="cd_map_view">Interactive map of Madagascar</string>
     <string name="cd_legend">Show map icon legend</string>
     <string name="title_legend">Map icons</string>

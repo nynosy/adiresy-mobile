@@ -93,9 +93,17 @@ Decisions recorded; unchecked = not yet done.
 
 - [ ] `LogNotTimber` ×26 — **decision: adopt Timber.** Add the dependency,
       migrate all 26 `android.util.Log` call sites.
-- [ ] `UnusedResources` ×30 — **decision: audit and remove.** Check each
-      for dynamic references (`getIdentifier()`, reflection) before
-      deleting.
+- [x] `UnusedResources` ×30 — **decision: audit and remove.** No
+      `getIdentifier()`/reflection usage anywhere in the codebase, and each
+      of the 30 had zero references outside its own declaration (checked
+      across `res/` and `java/`, not just lint's own view). Removed 25
+      orphaned strings (+ fr/mg translations), 3 unused colors, 2 unused
+      drawables. Several turned out to be superseded duplicates (e.g.
+      `disclaimer_title`/`title_data_sources` vs the still-used
+      `attribution_unofficial`/`title_attribution`; `lang_english` etc.
+      vs the hardcoded literals already flagged separately by
+      `HardcodedText`). Verified on-device: Settings, Offline map data, and
+      Attribution screens all render correctly.
 - [ ] `IconLauncherShape` ×10, `IconDuplicates` ×5 — **decision: skip.**
       Needs real icon/image work; left for a deliberate design pass.
 - [ ] `Overdraw` ×5 — **decision: fix and visually verify** on the
