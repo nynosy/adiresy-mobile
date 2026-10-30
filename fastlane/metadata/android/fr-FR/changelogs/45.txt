@@ -1,0 +1,5 @@
+- Correction : un plantage lors du partage d'un code d'adresse avec l'application en français ou en malgache.
+- Correction : les boutons d'appel, d'itinéraire et de site web qui ne faisaient rien sous Android 11 et versions ultérieures.
+- Correction : le nombre de lieux en français utilise désormais le singulier correct (par ex. « 1 lieu »).
+- Changement : l'application s'ouvre désormais directement sur la carte après l'écran de lancement du système, sans second écran d'accueil.
+- Mise à jour pour Android 17.

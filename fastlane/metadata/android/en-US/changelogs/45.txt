@@ -1,0 +1,5 @@
+- Fixed: A crash when sharing an address code with the app set to French or Malagasy.
+- Fixed: The call, directions and website buttons doing nothing on Android 11 and newer.
+- Fixed: Place counts in French now use the correct singular form (e.g. "1 lieu").
+- Changed: The app now opens straight to the map after the system launch screen, without a second splash screen.
+- Updated for Android 17.
