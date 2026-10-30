@@ -2,6 +2,10 @@
 agp              = "9.5.0"
 desugar          = "2.1.5"
 
+# Code quality
+errorprone             = "2.51.0"
+errorproneGradlePlugin = "5.1.1"
+
 # UI
 appcompat        = "1.8.0"
 material         = "1.14.0"
@@ -73,5 +77,9 @@ junit                    = { group = "junit",                           name = "
 ext-junit                = { group = "androidx.test.ext",               name = "junit",                   version.ref = "junitVersion" }
 espresso-core            = { group = "androidx.test.espresso",          name = "espresso-core",           version.ref = "espressoCore" }
 
+# Code quality
+errorprone-core          = { group = "com.google.errorprone",           name = "error_prone_core",        version.ref = "errorprone" }
+
 [plugins]
 android-application      = { id = "com.android.application",           version.ref = "agp" }
+errorprone                = { id = "net.ltgt.errorprone",               version.ref = "errorproneGradlePlugin" }

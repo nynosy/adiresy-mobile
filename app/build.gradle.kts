@@ -1,7 +1,9 @@
 import java.util.Properties
+import net.ltgt.gradle.errorprone.errorprone
 
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.errorprone)
 }
 
 val localProps = Properties().apply {
@@ -110,6 +112,17 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
+
+    lint {
+        // Existing issues are grandfathered in via the baseline below; only
+        // newly introduced lint issues fail the build. Regenerate the
+        // baseline with `./gradlew updateLintBaseline` after deliberately
+        // fixing or accepting issues it currently hides.
+        baseline = file("lint-baseline.xml")
+        warningsAsErrors = true
+        abortOnError = true
+        checkDependencies = true
+    }
 }
 
 dependencies {
@@ -148,4 +161,31 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    // Code quality
+    errorprone(libs.errorprone.core)
+}
+
+// AGP's per-variant annotationProcessor configurations (debugAnnotationProcessor,
+// releaseAnnotationProcessor, ...) aren't standard Gradle source sets, so the
+// errorprone plugin's usual auto-wiring skips them entirely; extend them by
+// hand or the compiler plugin never ends up on javac's processor path.
+configurations.matching { it.name.endsWith("AnnotationProcessor") }.configureEach {
+    extendsFrom(configurations.getByName("errorprone"))
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.errorprone {
+        // The plugin only defaults this to true for tasks it discovers via
+        // Gradle's SourceSetContainer; AGP's compileDebugJavaWithJavac etc.
+        // aren't reachable that way, so without this the -Xplugin:ErrorProne
+        // arg never gets added and the whole setup silently no-ops. (Forking
+        // and the JDK 16+ --add-exports/--add-opens flags are handled
+        // automatically by the plugin once this is enabled.)
+        enabled.set(true)
+        disableWarningsInGeneratedCode.set(true)
+        // Room's generated DAO/database implementations live under here and
+        // aren't ours to fix.
+        excludedPaths.set(".*/build/generated/.*")
+    }
 }

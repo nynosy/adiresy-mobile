@@ -1,0 +1,1855 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<issues format="6" by="lint 9.5.0" type="baseline" client="gradle" dependencies="true" name="AGP (9.5.0)" variant="all" version="9.5.0">
+
+    <issue
+        id="MissingPermission"
+        message="Call requires permission which may be rejected by user: code should explicitly check to see if permission is available (with `checkPermission`) or explicitly handle a potential `SecurityException`"
+        errorLine1="        locationManager.requestLocationUpdates(provider, 0, 0, locationListener,"
+        errorLine2="        ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/HomeViewModel.java"
+            line="161"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="MockLocation"
+        message="Mock locations should only be requested in a test or debug-specific manifest file (typically `src/debug/AndroidManifest.xml`)"
+        errorLine1="    &lt;uses-permission android:name=&quot;android.permission.ACCESS_MOCK_LOCATION&quot; />"
+        errorLine2="                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/debug/AndroidManifest.xml"
+            line="6"
+            column="22"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="                binding.labelTypeBadge.setText(unit.type.substring(0, 1).toUpperCase()"
+        errorLine2="                                                                         ~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/map/AdminUnitAdapter.java"
+            line="55"
+            column="74"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="        binding.labelUnitType.setText(levelLabel(level).toUpperCase());"
+        errorLine2="                                                        ~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/map/ExploreBottomSheet.java"
+            line="110"
+            column="57"/>
+    </issue>
+
+    <issue
+        id="DefaultLocale"
+        message="Implicitly using the default locale is a common source of bugs: Use `toUpperCase(Locale)` instead. For strings meant to be internal use `Locale.ROOT`, otherwise `Locale.getDefault()`."
+        errorLine1="            binding.labelType.setText(item.type != null ? item.type.toUpperCase() : &quot;&quot;);"
+        errorLine2="                                                                    ~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/search/SearchAdapter.java"
+            line="52"
+            column="69"/>
+    </issue>
+
+    <issue
+        id="OldTargetApi"
+        message="Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the `android.os.Build.VERSION_CODES` javadoc for details."
+        errorLine1="        targetSdk = 36"
+        errorLine2="        ~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="43"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="WrongConstant"
+        message="Must be one of: Property.ICON_ANCHOR_CENTER, Property.ICON_ANCHOR_LEFT, Property.ICON_ANCHOR_RIGHT, Property.ICON_ANCHOR_TOP, Property.ICON_ANCHOR_BOTTOM, Property.ICON_ANCHOR_TOP_LEFT, Property.ICON_ANCHOR_TOP_RIGHT, Property.ICON_ANCHOR_BOTTOM_LEFT, Property.ICON_ANCHOR_BOTTOM_RIGHT"
+        errorLine1="                        PropertyFactory.iconAnchor(&quot;center&quot;)));"
+        errorLine2="                                                   ~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/BookmarkPinController.java"
+            line="67"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="WrongConstant"
+        message="Must be one of: Property.ICON_ANCHOR_CENTER, Property.ICON_ANCHOR_LEFT, Property.ICON_ANCHOR_RIGHT, Property.ICON_ANCHOR_TOP, Property.ICON_ANCHOR_BOTTOM, Property.ICON_ANCHOR_TOP_LEFT, Property.ICON_ANCHOR_TOP_RIGHT, Property.ICON_ANCHOR_BOTTOM_LEFT, Property.ICON_ANCHOR_BOTTOM_RIGHT"
+        errorLine1="                        PropertyFactory.iconAnchor(&quot;bottom&quot;));"
+        errorLine2="                                                   ~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="133"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="WrongConstant"
+        message="Must be one of: Property.ICON_ANCHOR_CENTER, Property.ICON_ANCHOR_LEFT, Property.ICON_ANCHOR_RIGHT, Property.ICON_ANCHOR_TOP, Property.ICON_ANCHOR_BOTTOM, Property.ICON_ANCHOR_TOP_LEFT, Property.ICON_ANCHOR_TOP_RIGHT, Property.ICON_ANCHOR_BOTTOM_LEFT, Property.ICON_ANCHOR_BOTTOM_RIGHT"
+        errorLine1="                        PropertyFactory.iconAnchor(&quot;bottom&quot;),"
+        errorLine2="                                                   ~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/SelectionPinController.java"
+            line="49"
+            column="52"/>
+    </issue>
+
+    <issue
+        id="AppLinkWarning"
+        message="This intent filter has the format of an Android App Link but is missing the `autoVerify` attribute; add `android:autoVerify=&quot;true&quot;` to ensure your domain will be validated and enable App Link-related Lint warnings. If you do not want clicked URLs to bring the user to your app, remove the `android.intent.category.BROWSABLE` category, or set `android:autoVerify=&quot;false&quot;` to make it clear this is not intended to be an Android App Link."
+        errorLine1="            &lt;intent-filter>"
+        errorLine2="             ~~~~~~~~~~~~~">
+        <location
+            file="src/main/AndroidManifest.xml"
+            line="52"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="CustomSplashScreen"
+        message="The application should not provide its own launch screen"
+        errorLine1="public class SplashActivity extends AppCompatActivity {"
+        errorLine2="             ~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/SplashActivity.java"
+            line="14"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="QueryPermissionsNeeded"
+        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
+        errorLine1="            if (intent.resolveActivity(requireContext().getPackageManager()) != null) {"
+        errorLine2="                       ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
+            line="121"
+            column="24"/>
+    </issue>
+
+    <issue
+        id="QueryPermissionsNeeded"
+        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
+        errorLine1="                if (intent.resolveActivity(requireContext().getPackageManager()) != null) {"
+        errorLine2="                           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
+            line="178"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="QueryPermissionsNeeded"
+        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
+        errorLine1="                if (intent.resolveActivity(requireContext().getPackageManager()) != null) {"
+        errorLine2="                           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
+            line="191"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="QueryPermissionsNeeded"
+        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
+        errorLine1="                if (intent.resolveActivity(requireContext().getPackageManager()) != null) {"
+        errorLine2="                           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
+            line="245"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="QueryPermissionsNeeded"
+        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
+        errorLine1="                if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);"
+        errorLine2="                           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailActivity.java"
+            line="198"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="QueryPermissionsNeeded"
+        message="Consider adding a `&lt;queries>` declaration to your manifest when calling this method; see https://g.co/dev/packagevisibility for details"
+        errorLine1="                if (intent.resolveActivity(getPackageManager()) != null) startActivity(intent);"
+        errorLine2="                           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailActivity.java"
+            line="210"
+            column="28"/>
+    </issue>
+
+    <issue
+        id="UnspecifiedRegisterReceiverFlag"
+        message="`receiver` is missing `RECEIVER_EXPORTED` or `RECEIVER_NOT_EXPORTED` flag for unprotected broadcasts registered for org.github.nynosy.adiresy_mobile.MOCK_LOCATION"
+        errorLine1="            registerReceiver(receiver,"
+        errorLine2="            ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/AdiresyApplication.java"
+            line="40"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="GradleDependency"
+        message="A newer version of `compileSdk` than 36 is available: 37"
+        errorLine1="        version = release(36) {"
+        errorLine2="                  ^">
+        <location
+            file="build.gradle.kts"
+            line="23"
+            column="19"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.squareup.okhttp3:logging-interceptor than 5.4.0 is available: 5.5.1"
+        errorLine1="okhttp           = &quot;5.4.0&quot;"
+        errorLine2="                   ~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="26"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="NewerVersionAvailable"
+        message="A newer version of com.squareup.okhttp3:okhttp than 5.4.0 is available: 5.5.1"
+        errorLine1="okhttp           = &quot;5.4.0&quot;"
+        errorLine2="                   ~~~~~~~">
+        <location
+            file="../gradle/libs.versions.toml"
+            line="26"
+            column="20"/>
+    </issue>
+
+    <issue
+        id="PrivateResource"
+        message="The resource `@drawable/abc_ic_ab_back_material` is marked as private in androidx.appcompat:appcompat:1.8.0"
+        errorLine1="                androidx.appcompat.R.drawable.abc_ic_ab_back_material);"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/saved/BookmarkListDetailFragment.java"
+            line="82"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="UseCompatTextViewDrawableXml"
+        message="Use `app:drawableEndCompat` instead of `android:drawableEnd`"
+        errorLine1="            android:drawableEnd=&quot;@drawable/ic_chevron_end&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_main_map.xml"
+            line="55"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UseCompatTextViewDrawableXml"
+        message="Use `app:drawableTint` instead of `android:drawableTint`"
+        errorLine1="            android:drawableTint=&quot;?attr/colorOnErrorContainer&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_main_map.xml"
+            line="56"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="        sb.append(&quot;\n&quot;).append(getString(R.string.share_text, bookmark.canonicalCode));"
+        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/saved/BookmarkListDetailFragment.java"
+            line="255"
+            column="32"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="        sb.append(&quot;\n&quot;).append(getString(R.string.share_text, bookmark.canonicalCode));"
+        errorLine2="                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/saved/BookmarkListDetailFragment.java"
+            line="255"
+            column="32"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                QrCodeGenerator.generate(getString(R.string.share_text, code)));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
+            line="85"
+            column="42"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                QrCodeGenerator.generate(getString(R.string.share_text, code)));"
+        errorLine2="                                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
+            line="85"
+            column="42"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="            String text = getString(R.string.share_text, code);"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
+            line="103"
+            column="27"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="            String text = getString(R.string.share_text, code);"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
+            line="103"
+            column="27"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                        getString(R.string.share_text, result.data.canonicalCode)));"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/code/CodeDetailActivity.java"
+            line="141"
+            column="25"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                        getString(R.string.share_text, result.data.canonicalCode)));"
+        errorLine2="                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/code/CodeDetailActivity.java"
+            line="141"
+            column="25"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="        return context.getString(R.string.share_text, code);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/code/CodeDetailViewModel.java"
+            line="66"
+            column="16"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="        return context.getString(R.string.share_text, code);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/code/CodeDetailViewModel.java"
+            line="66"
+            column="16"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                    QrCodeGenerator.generate(getString(R.string.share_text, code)));"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
+            line="209"
+            column="46"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                    QrCodeGenerator.generate(getString(R.string.share_text, code)));"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
+            line="209"
+            column="46"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                String text = getString(R.string.share_text, code);"
+        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
+            line="227"
+            column="31"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                String text = getString(R.string.share_text, code);"
+        errorLine2="                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/FicheBottomSheet.java"
+            line="227"
+            column="31"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                    QrCodeGenerator.generate(getString(R.string.share_text, finalCode)));"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailActivity.java"
+            line="234"
+            column="46"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="                    QrCodeGenerator.generate(getString(R.string.share_text, finalCode)));"
+        errorLine2="                                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailActivity.java"
+            line="234"
+            column="46"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="        return context.getString(R.string.share_text, code);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailViewModel.java"
+            line="69"
+            column="16"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Wrong argument count, format string `share_text` requires `2` but format call supplies `1`"
+        errorLine1="        return context.getString(R.string.share_text, code);"
+        errorLine2="               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/fiche/FicheDetailViewModel.java"
+            line="69"
+            column="16"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"
+            message="This definition requires 2 arguments"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #3 in `offline_national_done`: conversion is `s`, received `int` (argument #4 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="                    getString(R.string.offline_national_done, &quot;Z&quot; + storedZoom, version, mb));"
+        errorLine2="                                                                                         ~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="145"
+            column="90"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="116"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #3 in `offline_national_done`: conversion is `s`, received `int` (argument #4 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="                    getString(R.string.offline_national_done, &quot;Z&quot; + storedZoom, version, mb));"
+        errorLine2="                                                                                         ~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="145"
+            column="90"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="118"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #3 in `offline_national_done`: conversion is `s`, received `int` (argument #4 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="                    getString(R.string.offline_national_done, &quot;Z&quot; + storedZoom, version, mb));"
+        errorLine2="                                                                                         ~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="145"
+            column="90"/>
+        <location
+            file="src/main/res/values/strings.xml"
+            line="125"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #1 in `offline_status_progress`: conversion is `s`, received `int` (argument #2 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
+        errorLine2="                                                                      ~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="367"
+            column="71"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="113"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #1 in `offline_status_progress`: conversion is `s`, received `int` (argument #2 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
+        errorLine2="                                                                      ~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="367"
+            column="71"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="116"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #1 in `offline_status_progress`: conversion is `s`, received `int` (argument #2 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
+        errorLine2="                                                                      ~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="367"
+            column="71"/>
+        <location
+            file="src/main/res/values/strings.xml"
+            line="121"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #2 in `offline_status_progress`: conversion is `s`, received `int` (argument #3 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
+        errorLine2="                                                                              ~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="367"
+            column="79"/>
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="113"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #2 in `offline_status_progress`: conversion is `s`, received `int` (argument #3 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
+        errorLine2="                                                                              ~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="367"
+            column="79"/>
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="116"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="StringFormatMatches"
+        message="Suspicious argument type for formatting argument #2 in `offline_status_progress`: conversion is `s`, received `int` (argument #3 in method call) (Did you mean formatting character `d`, &apos;o&apos; or `x`?)"
+        errorLine1="            label.setText(getString(R.string.offline_status_progress, doneMb, totalMb));"
+        errorLine2="                                                                              ~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/offline/OfflineDataFragment.java"
+            line="367"
+            column="79"/>
+        <location
+            file="src/main/res/values/strings.xml"
+            line="121"
+            column="5"
+            message="Conflicting argument declaration here"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG, &quot;MockLocationReceiver registration failed&quot;, e);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/AdiresyApplication.java"
+            line="43"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG_DIRECTORY, endpoint + &quot; -> HTTP &quot; + httpCode + &quot; OK, &quot; + detail);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/data/AdiresyRepository.java"
+            line="433"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG_DIRECTORY, endpoint + &quot; -> network/parse error: &quot; + error);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/data/AdiresyRepository.java"
+            line="444"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="        Log.w(TAG_DIRECTORY, endpoint + &quot; -> HTTP &quot; + (resp != null ? resp.code() : -1)"
+        errorLine2="        ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/data/AdiresyRepository.java"
+            line="457"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG, &quot;Could not decrypt stored API key, treating as absent&quot;, e);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/data/prefs/AppPrefs.java"
+            line="136"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG, &quot;Could not encrypt API key, not persisting it&quot;, e);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/data/prefs/AppPrefs.java"
+            line="148"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG, &quot;Attested registration setup failed, falling back to unattested&quot;, e);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/data/api/DeviceAuthManager.java"
+            line="116"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                    Log.w(TAG, &quot;Registered — attested=&quot; + envelope.data.attested"
+        errorLine2="                    ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/data/api/DeviceAuthManager.java"
+            line="129"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG, &quot;Attested key generation failed&quot;, e);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/data/api/DeviceAuthManager.java"
+            line="179"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                if (BuildConfig.DEBUG) Log.w(TAG, &quot;listingsGeoJsonBlocking() returned null — no fiche pins this session&quot;);"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="143"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                Log.w(TAG, &quot;Failed to parse /listings/geo/ payload (&quot; + geoJson.length()"
+        errorLine2="                ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="151"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                if (BuildConfig.DEBUG) Log.w(TAG, &quot;Parsed /listings/geo/ OK but got 0 features&quot;);"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="158"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                Log.w(TAG, src.size() + &quot; features parsed; sample properties: &quot;"
+        errorLine2="                ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="163"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                        if (BuildConfig.DEBUG) Log.w(TAG, &quot;mapRef null at apply time&quot;);"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="206"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                        if (BuildConfig.DEBUG) Log.w(TAG, &quot;style null at apply time&quot;);"
+        errorLine2="                                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="211"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                        Log.w(TAG, &quot;Pre-apply check — layer present: &quot; + layerPresent"
+        errorLine2="                        ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="221"
+            column="25"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                    Log.w(TAG, &quot;Exception applying fiche features to style: &quot; + e, e);"
+        errorLine2="                    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="228"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG, &quot;Applied &quot; + visible.size() + &quot;/&quot; + allFeatures.size()"
+        errorLine2="            ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/map/FichePinController.java"
+            line="258"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.w(TAG, &quot;Missing or invalid lat/lng string extras&quot;);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/debug/java/org/github/nynosy/adiresy_mobile/debug/MockLocationReceiver.java"
+            line="31"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="        Log.d(TAG, &quot;Debug location injected: &quot; + lat + &quot;, &quot; + lng);"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/debug/java/org/github/nynosy/adiresy_mobile/debug/MockLocationReceiver.java"
+            line="35"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                Log.d(TAG, &quot;HTTP 416 — file already complete: &quot; + filename);"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
+            line="110"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                Log.e(TAG, &quot;Download failed: &quot; + response.code());"
+        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
+            line="112"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="                    Log.e(TAG, &quot;Checksum mismatch for &quot; + filename"
+        errorLine2="                    ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
+            line="139"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.e(TAG, &quot;Download IO error&quot;, e);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
+            line="170"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.e(TAG, &quot;Giving up after &quot; + (getRunAttemptCount() + 1) + &quot; attempts&quot;);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
+            line="180"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="LogNotTimber"
+        message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
+        errorLine1="            Log.e(TAG, &quot;Failed to hash &quot; + file, e);"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/download/TileDownloadWorker.java"
+            line="201"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;likes&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;fiche_tip_likes&quot;>%1$d likes&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="49"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;saved&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;delete_list_body&quot;>Delete \&quot;%1$s\&quot;? All %2$d saved places will also be removed.&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="206"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;places&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;places_count_other&quot;>%d places&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="222"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;days&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;saved_days_ago&quot;>%d days ago&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="226"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;places&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;import_success&quot;>Imported %d places&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="232"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="PluralsCandidate"
+        message="Formatting %d followed by words (&quot;places&quot;): This should probably be a plural rather than a string"
+        errorLine1="    &lt;string name=&quot;import_truncated&quot;>Imported %1$d of %2$d places — limit reached&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="234"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="StringFormatCount"
+        message="Inconsistent number of arguments in formatting string `share_text`; found both 2 here and 1 in values/strings.xml"
+        errorLine1="    &lt;string name=&quot;share_text&quot;>Trouvez ce bâtiment sur Adiresy : %2$s&lt;/string>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-fr/strings.xml"
+            line="33"
+            column="5"/>
+        <location
+            file="src/main/res/values/strings.xml"
+            line="36"
+            column="5"
+            message="Conflicting number of arguments (1) here"/>
+    </issue>
+
+    <issue
+        id="StringFormatCount"
+        message="Inconsistent number of arguments in formatting string `share_text`; found both 2 here and 1 in values/strings.xml"
+        errorLine1="    &lt;string name=&quot;share_text&quot;>Hitadiava ity trano ity amin\&apos;ny Adiresy: %2$s&lt;/string>&lt;!-- [MG-REVIEW] -->"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values-mg/strings.xml"
+            line="36"
+            column="5"/>
+        <location
+            file="src/main/res/values/strings.xml"
+            line="36"
+            column="5"
+            message="Conflicting number of arguments (1) here"/>
+    </issue>
+
+    <issue
+        id="ChromeOsAbiSupport"
+        message="Missing x86_64 ABI support for ChromeOS"
+        errorLine1="            abiFilters += listOf(&quot;arm64-v8a&quot;, &quot;armeabi-v7a&quot;)"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="56"
+            column="27"/>
+    </issue>
+
+    <issue
+        id="ExportedReceiver"
+        message="Exported receiver does not require permission"
+        errorLine1="        &lt;receiver"
+        errorLine2="         ~~~~~~~~">
+        <location
+            file="src/debug/AndroidManifest.xml"
+            line="13"
+            column="10"/>
+    </issue>
+
+    <issue
+        id="NotifyDataSetChanged"
+        message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
+        errorLine1="        notifyDataSetChanged();"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/saved/SaveToListAdapter.java"
+            line="32"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="ObsoleteSdkInt"
+        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 26. Merge all the resources in this folder into `mipmap-anydpi`.">
+        <location
+            file="src/main/res/mipmap-anydpi-v26"/>
+    </issue>
+
+    <issue
+        id="UseCompoundDrawables"
+        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
+        errorLine1="    &lt;LinearLayout"
+        errorLine2="     ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_splash.xml"
+            line="7"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="DisableBaselineAlignment"
+        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
+        errorLine1="            &lt;LinearLayout"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_settings.xml"
+            line="25"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="DisableBaselineAlignment"
+        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
+        errorLine1="            &lt;LinearLayout"
+        errorLine2="             ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_settings.xml"
+            line="65"
+            column="14"/>
+    </issue>
+
+    <issue
+        id="DisableBaselineAlignment"
+        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
+        errorLine1="&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2=" ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_result.xml"
+            line="2"
+            column="2"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `@color/teal_600` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
+        errorLine1="    android:background=&quot;@color/teal_600&quot;>"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_splash.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_admin_unit.xml"
+            line="10"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_bookmark.xml"
+            line="12"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackgroundBorderless` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackgroundBorderless&quot; />"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_emoji.xml"
+            line="7"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="Overdraw"
+        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
+        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_result.xml"
+            line="8"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.teal_400` appears to be unused"
+        errorLine1="    &lt;color name=&quot;teal_400&quot;>#2DD4BF&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="7"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.emerald_600` appears to be unused"
+        errorLine1="    &lt;color name=&quot;emerald_600&quot;>#059669&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="25"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.color.blue_600` appears to be unused"
+        errorLine1="    &lt;color name=&quot;blue_600&quot;>#2563EB&lt;/color>"
+        errorLine2="           ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/colors.xml"
+            line="26"
+            column="12"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_bookmark_pin_24` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_bookmark_pin_24.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.drawable.ic_open_in_maps` appears to be unused"
+        errorLine1="&lt;vector xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
+        errorLine2="^">
+        <location
+            file="src/main/res/drawable/ic_open_in_maps.xml"
+            line="2"
+            column="1"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.tab_home` appears to be unused"
+        errorLine1="    &lt;string name=&quot;tab_home&quot;>Home&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="5"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lang_english` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lang_english&quot;>English&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="11"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lang_french` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lang_french&quot;>Français&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="12"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.lang_malagasy` appears to be unused"
+        errorLine1="    &lt;string name=&quot;lang_malagasy&quot;>Malagasy&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="13"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.btn_open_maps` appears to be unused"
+        errorLine1="    &lt;string name=&quot;btn_open_maps&quot;>Open in Maps&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="27"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.search_type_code` appears to be unused"
+        errorLine1="    &lt;string name=&quot;search_type_code&quot;>Code&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="94"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.search_type_place` appears to be unused"
+        errorLine1="    &lt;string name=&quot;search_type_place&quot;>Place&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="95"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.search_type_area` appears to be unused"
+        errorLine1="    &lt;string name=&quot;search_type_area&quot;>Area&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="96"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.offline_status_done` appears to be unused"
+        errorLine1="    &lt;string name=&quot;offline_status_done&quot;>Up to date · v%1$s · %2$s MB&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="123"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.btn_delete_map_data` appears to be unused"
+        errorLine1="    &lt;string name=&quot;btn_delete_map_data&quot;>Delete map data&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="142"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.label_data_version` appears to be unused"
+        errorLine1="    &lt;string name=&quot;label_data_version&quot;>Map data version&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="154"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.data_version_none` appears to be unused"
+        errorLine1="    &lt;string name=&quot;data_version_none&quot;>Not downloaded&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="155"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.disclaimer_title` appears to be unused"
+        errorLine1="    &lt;string name=&quot;disclaimer_title&quot;>Unofficial service&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="156"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.disclaimer_body` appears to be unused"
+        errorLine1="    &lt;string name=&quot;disclaimer_body&quot;>Adiresy is an unofficial addressing service. Address codes are valid on this platform only and have no legal value.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="157"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.title_data_sources` appears to be unused"
+        errorLine1="    &lt;string name=&quot;title_data_sources&quot;>Data sources&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="158"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.list_name_required_error` appears to be unused"
+        errorLine1="    &lt;string name=&quot;list_name_required_error&quot;>Name is required&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="194"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.list_name_too_long_error` appears to be unused"
+        errorLine1="    &lt;string name=&quot;list_name_too_long_error&quot;>Name must be 40 characters or fewer&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="195"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.delete_list_body` appears to be unused"
+        errorLine1="    &lt;string name=&quot;delete_list_body&quot;>Delete \&quot;%1$s\&quot;? All %2$d saved places will also be removed.&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="206"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.edit_description_hint` appears to be unused"
+        errorLine1="    &lt;string name=&quot;edit_description_hint&quot;>Description&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="209"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.saved_section_label` appears to be unused"
+        errorLine1="    &lt;string name=&quot;saved_section_label&quot;>Favourites&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="211"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.btn_move` appears to be unused"
+        errorLine1="    &lt;string name=&quot;btn_move&quot;>Move to list&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="214"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.label_no_description` appears to be unused"
+        errorLine1="    &lt;string name=&quot;label_no_description&quot;>(No description)&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="215"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.label_saved_places` appears to be unused"
+        errorLine1="    &lt;string name=&quot;label_saved_places&quot;>Favourite Places&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="216"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.cd_back_level` appears to be unused"
+        errorLine1="    &lt;string name=&quot;cd_back_level&quot;>Go back to previous administrative level&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="247"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.cd_clear_search_history` appears to be unused"
+        errorLine1="    &lt;string name=&quot;cd_clear_search_history&quot;>Clear all recent searches&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="248"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UselessParent"
+        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
+        errorLine1="                &lt;LinearLayout"
+        errorLine2="                 ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_settings.xml"
+            line="34"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="UselessParent"
+        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
+        errorLine1="                &lt;LinearLayout"
+        errorLine2="                 ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_settings.xml"
+            line="74"
+            column="18"/>
+    </issue>
+
+    <issue
+        id="UselessParent"
+        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
+        errorLine1="    &lt;LinearLayout"
+        errorLine2="     ~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_search_result.xml"
+            line="12"
+            column="6"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icons should not fill every pixel of their square region; see the design guide for details">
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconLauncherShape"
+        message="Launcher icon used as round icon did not have a circular shape">
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-hdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-mdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-xhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-xxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="IconDuplicates"
+        message="The following unrelated icon files have identical contents: ic_launcher.png, ic_launcher_round.png">
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher_round.png"/>
+        <location
+            file="src/main/res/mipmap-xxxhdpi/ic_launcher.png"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        errorLine1="        binding.labelVersion.setText(getString(R.string.label_app_version) + &quot;: &quot; + BuildConfig.VERSION_NAME);"
+        errorLine2="                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/about/AboutFragment.java"
+            line="33"
+            column="38"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        errorLine1="                binding.labelTypeBadge.setText(unit.type.substring(0, 1).toUpperCase()"
+        errorLine2="                                               ^">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/map/AdminUnitAdapter.java"
+            line="55"
+            column="48"/>
+    </issue>
+
+    <issue
+        id="SetTextI18n"
+        message="Do not concatenate text displayed with `setText`. Use resource string with placeholders."
+        errorLine1="        binding.labelHierarchy.setText(commune + &quot; › &quot; + district);"
+        errorLine2="                                       ~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/home/CodeCardBottomSheet.java"
+            line="83"
+            column="40"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Malagasy&quot;, should use `@string` resource"
+        errorLine1="        android:text=&quot;Malagasy&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_language_chooser.xml"
+            line="33"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;Français&quot;, should use `@string` resource"
+        errorLine1="        android:text=&quot;Français&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_language_chooser.xml"
+            line="42"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;English&quot;, should use `@string` resource"
+        errorLine1="        android:text=&quot;English&quot; />"
+        errorLine2="        ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/activity_language_chooser.xml"
+            line="50"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;←&quot;, should use `@string` resource"
+        errorLine1="            android:text=&quot;←&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/bottom_sheet_explore.xml"
+            line="60"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;🔖&quot;, should use `@string` resource"
+        errorLine1="                android:text=&quot;🔖&quot;"
+        errorLine2="                ~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_saved.xml"
+            line="36"
+            column="17"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;›&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;›&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_settings.xml"
+            line="176"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;›&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;›&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_settings.xml"
+            line="209"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;›&quot;, should use `@string` resource"
+        errorLine1="                    android:text=&quot;›&quot;"
+        errorLine2="                    ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_settings.xml"
+            line="241"
+            column="21"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;›&quot;, should use `@string` resource"
+        errorLine1="        android:text=&quot;›&quot;"
+        errorLine2="        ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_admin_unit.xml"
+            line="34"
+            column="9"/>
+    </issue>
+
+    <issue
+        id="HardcodedText"
+        message="Hardcoded string &quot;›&quot;, should use `@string` resource"
+        errorLine1="            android:text=&quot;›&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/item_bookmark_list.xml"
+            line="63"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="RtlSymmetry"
+        message="When you define `paddingStart` you should probably also define `paddingEnd` for right-to-left symmetry"
+        errorLine1="            android:paddingStart=&quot;16dp&quot;"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/layout/fragment_saved.xml"
+            line="18"
+            column="13"/>
+    </issue>
+
+</issues>
