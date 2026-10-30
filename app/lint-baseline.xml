@@ -24,28 +24,6 @@
     </issue>
 
     <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableEndCompat` instead of `android:drawableEnd`"
-        errorLine1="            android:drawableEnd=&quot;@drawable/ic_chevron_end&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_main_map.xml"
-            line="55"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="UseCompatTextViewDrawableXml"
-        message="Use `app:drawableTint` instead of `android:drawableTint`"
-        errorLine1="            android:drawableTint=&quot;?attr/colorOnErrorContainer&quot;"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_main_map.xml"
-            line="56"
-            column="13"/>
-    </issue>
-
-    <issue
         id="LogNotTimber"
         message="Using &apos;Log&apos; instead of &apos;Timber&apos;"
         errorLine1="            Log.w(TAG, &quot;MockLocationReceiver registration failed&quot;, e);"
@@ -404,127 +382,6 @@
         errorLine2="     ~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/activity_splash.xml"
-            line="7"
-            column="6"/>
-    </issue>
-
-    <issue
-        id="DisableBaselineAlignment"
-        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
-        errorLine1="            &lt;LinearLayout"
-        errorLine2="             ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_settings.xml"
-            line="25"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="DisableBaselineAlignment"
-        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
-        errorLine1="            &lt;LinearLayout"
-        errorLine2="             ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_settings.xml"
-            line="65"
-            column="14"/>
-    </issue>
-
-    <issue
-        id="DisableBaselineAlignment"
-        message="Set `android:baselineAligned=&quot;false&quot;` on this element for better performance"
-        errorLine1="&lt;LinearLayout xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;"
-        errorLine2=" ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_search_result.xml"
-            line="2"
-            column="2"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `@color/teal_600` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
-        errorLine1="    android:background=&quot;@color/teal_600&quot;>"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_splash.xml"
-            line="5"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
-        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_admin_unit.xml"
-            line="10"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
-        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_bookmark.xml"
-            line="12"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `?attr/selectableItemBackgroundBorderless` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
-        errorLine1="    android:background=&quot;?attr/selectableItemBackgroundBorderless&quot; />"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_emoji.xml"
-            line="7"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="Overdraw"
-        message="Possible overdraw: Root element paints background `?attr/selectableItemBackground` with a theme that also paints a background (inferred theme is `@style/Theme.AdiresyMobile`)"
-        errorLine1="    android:background=&quot;?attr/selectableItemBackground&quot;"
-        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_search_result.xml"
-            line="8"
-            column="5"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_settings.xml"
-            line="34"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="                &lt;LinearLayout"
-        errorLine2="                 ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/fragment_settings.xml"
-            line="74"
-            column="18"/>
-    </issue>
-
-    <issue
-        id="UselessParent"
-        message="This `LinearLayout` layout or its `LinearLayout` parent is unnecessary; transfer the `background` attribute to the other view"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/item_search_result.xml"
             line="12"
             column="6"/>
     </issue>
@@ -706,7 +563,7 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_settings.xml"
-            line="176"
+            line="158"
             column="21"/>
     </issue>
 
@@ -717,7 +574,7 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_settings.xml"
-            line="209"
+            line="191"
             column="21"/>
     </issue>
 
@@ -728,7 +585,7 @@
         errorLine2="                    ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/fragment_settings.xml"
-            line="241"
+            line="223"
             column="21"/>
     </issue>
 
@@ -739,7 +596,7 @@
         errorLine2="        ~~~~~~~~~~~~~~~~">
         <location
             file="src/main/res/layout/item_admin_unit.xml"
-            line="34"
+            line="38"
             column="9"/>
     </issue>
 

@@ -106,14 +106,38 @@ Decisions recorded; unchecked = not yet done.
       Attribution screens all render correctly.
 - [ ] `IconLauncherShape` ×10, `IconDuplicates` ×5 — **decision: skip.**
       Needs real icon/image work; left for a deliberate design pass.
-- [ ] `Overdraw` ×5 — **decision: fix and visually verify** on the
-      connected device before considering it done.
+- [x] `Overdraw` ×5 — **decision: fix and visually verify** on the
+      connected device before considering it done. `activity_splash.xml`
+      had a genuine full-screen double-paint (root `android:background`
+      duplicating the theme's `windowBackground`, both `@color/teal_600`)
+      — removed the redundant one. The other 4
+      (`item_admin_unit`/`item_bookmark`/`item_emoji`/`item_search_result`)
+      are the standard `selectableItemBackground`-on-clickable-row ripple
+      pattern, a well-known lint false positive for RecyclerView item
+      roots — suppressed with `tools:ignore` and a comment rather than
+      removing the ripple feedback. Verified on-device: splash screen,
+      map screen, search results list all render correctly.
 - [ ] `PluralsCandidate` ×6, `HardcodedText` ×10 — **decision: fix with
       real fr/mg translations** (not placeholder English copies),
       following the existing `[MG-REVIEW]` convention for Malagasy.
-- [ ] `UselessParent` ×3, `DisableBaselineAlignment` ×3,
+- [x] `UselessParent` ×3, `DisableBaselineAlignment` ×3,
       `UseCompatTextViewDrawableXml` ×2, `UseCompoundDrawables` ×1 —
       **decision: fix and visually verify** each affected screen.
+      `fragment_settings.xml`'s language/theme rows and
+      `item_search_result.xml` each had a horizontal `LinearLayout` with
+      exactly one child (an inner vertical `LinearLayout`); flattened to a
+      single vertical `LinearLayout`, which resolves
+      `DisableBaselineAlignment` too (baseline alignment only applies to
+      horizontal orientation). `fragment_main_map.xml`'s offline banner
+      swapped `android:drawableEnd`/`drawableTint` for the AppCompat
+      equivalents. Two findings suppressed instead of applied — both on
+      `activity_splash.xml`, the first screen users see:
+      `UseCompoundDrawables` (XML `drawableTop` always uses the drawable's
+      *intrinsic* size, no way to pin it to exactly 108dp the way
+      `layout_width`/`height` does) and `UselessParent` (flattening would
+      center the icon alone instead of the icon+slogan pair, visibly
+      shifting it). Verified on-device: Settings, map banner, search
+      results, and splash screen all render correctly.
 - [x] `NewerVersionAvailable` ×2, `GradleDependency` ×1 — **decision:
       check each against the pinning comments in
       `gradle/libs.versions.toml`, bump what's safe.** API 37 (Android 17)

@@ -52,8 +52,8 @@
             android:textAppearance="?attr/textAppearanceBodySmall"
             android:textColor="?attr/colorOnErrorContainer"
             android:gravity="center"
-            android:drawableEnd="@drawable/ic_chevron_end"
-            android:drawableTint="?attr/colorOnErrorContainer"
+            app:drawableEndCompat="@drawable/ic_chevron_end"
+            app:drawableTint="?attr/colorOnErrorContainer"
             android:drawablePadding="4dp"
             android:visibility="gone" />
 
