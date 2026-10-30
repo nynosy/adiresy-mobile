@@ -2,13 +2,22 @@ package org.github.nynosy.adiresy_mobile.data.prefs;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
 import android.util.Log;
 
-import androidx.security.crypto.EncryptedSharedPreferences;
-import androidx.security.crypto.MasterKey;
-
-import java.security.GeneralSecurityException;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.GeneralSecurityException;
+import java.security.KeyStore;
+import java.security.spec.AlgorithmParameterSpec;
+import java.util.Arrays;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.GCMParameterSpec;
 
 public class AppPrefs {
 
@@ -18,7 +27,12 @@ public class AppPrefs {
     private static final String KEY_FIRST_RUN         = "first_run";
     private static final String KEY_LANGUAGE          = "language";
     private static final String KEY_THEME             = "theme";
-    private static final String KEY_API_KEY           = "api_key";
+    // "_v2": the previous value (security-crypto's EncryptedSharedPreferences,
+    // dropped — see KEY_ALIAS doc below) lives under the old "api_key" name in
+    // the same file. A distinct name means a post-upgrade read never collides
+    // with — or attempts to decrypt — that leftover value; it's simply orphaned.
+    // No migration: this token is cheap to replace, see DeviceAuthManager.
+    private static final String KEY_API_KEY           = "api_key_v2";
     private static final String KEY_DATA_VERSION      = "data_version";
     private static final String KEY_DATA_PATH         = "data_path";
     private static final String KEY_BUILDINGS_PATH    = "buildings_path";
@@ -43,28 +57,7 @@ public class AppPrefs {
     private AppPrefs(Context context) {
         Context appCtx = context.getApplicationContext();
         prefs = appCtx.getSharedPreferences(PREF_FILE, Context.MODE_PRIVATE);
-        securePrefs = createSecurePrefs(appCtx);
-    }
-
-    private static SharedPreferences createSecurePrefs(Context context) {
-        try {
-            MasterKey masterKey = new MasterKey.Builder(context)
-                    .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
-                    .build();
-            return EncryptedSharedPreferences.create(
-                    context,
-                    SECURE_PREF_FILE,
-                    masterKey,
-                    EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
-                    EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM);
-        } catch (GeneralSecurityException | IOException e) {
-            // Fall back to a plain, still device-private file. The device
-            // token is per-install and low-value (governs only its own rate
-            // limit bucket), so this is a degraded-but-safe fallback, not a
-            // security hole.
-            Log.w(TAG, "EncryptedSharedPreferences unavailable, falling back to plain prefs", e);
-            return context.getSharedPreferences(SECURE_PREF_FILE, Context.MODE_PRIVATE);
-        }
+        securePrefs = appCtx.getSharedPreferences(SECURE_PREF_FILE, Context.MODE_PRIVATE);
     }
 
     public static AppPrefs get(Context context) {
@@ -122,15 +115,106 @@ public class AppPrefs {
 
     // ── API key ───────────────────────────────────────────────────────────────
     // Per-install device token from POST /api/v1/auth/device/register/ (see
-    // DeviceAuthManager) — not a single key baked into the build. Stored in
-    // EncryptedSharedPreferences since it's a bearer credential.
+    // DeviceAuthManager) — not a single key baked into the build. Encrypted
+    // with an AES-256-GCM key generated directly in AndroidKeyStore (see
+    // encrypt()/decrypt() below), not androidx.security's
+    // MasterKey/EncryptedSharedPreferences: that whole API was deprecated in
+    // security-crypto 1.1.0 with no replacement shipped, in favour of exactly
+    // this — direct Keystore use. No migration from the old library's stored
+    // value: KEY_API_KEY is a new pref name, so it's simply never read; the
+    // token is cheap and self-healing (DeviceAuthManager re-registers
+    // whenever this returns empty), not worth a migration path for.
 
     public String getApiKey() {
-        return securePrefs.getString(KEY_API_KEY, "");
+        String stored = securePrefs.getString(KEY_API_KEY, "");
+        if (stored.isEmpty()) return "";
+        try {
+            return decrypt(stored);
+        } catch (GeneralSecurityException e) {
+            // Corrupt, from an incompatible format, or the key was
+            // invalidated (e.g. keystore reset) — treat as absent.
+            Log.w(TAG, "Could not decrypt stored API key, treating as absent", e);
+            return "";
+        }
     }
 
     public void setApiKey(String apiKey) {
-        securePrefs.edit().putString(KEY_API_KEY, apiKey).apply();
+        try {
+            securePrefs.edit().putString(KEY_API_KEY, encrypt(apiKey)).apply();
+        } catch (GeneralSecurityException e) {
+            // Don't persist a value getApiKey() could never decrypt back —
+            // leaves the key simply unset, which DeviceAuthManager already
+            // treats as "needs to register" and retries next time it's needed.
+            Log.w(TAG, "Could not encrypt API key, not persisting it", e);
+        }
+    }
+
+    // ── AndroidKeyStore-backed encryption for the API key ───────────────────
+    // AES-256-GCM, key held entirely inside AndroidKeyStore (hardware-backed
+    // where available) — only Cipher operations cross that boundary, the raw
+    // key material never does. Stored value is base64(IV || ciphertext); GCM's
+    // 12-byte IV and 128-bit auth tag are standard, not a judgment call here.
+
+    private static final String ANDROID_KEYSTORE   = "AndroidKeyStore";
+    private static final String PREFS_KEY_ALIAS    = "adiresy_prefs_key";
+    private static final String AES_GCM_TRANSFORM  = "AES/GCM/NoPadding";
+    private static final int    GCM_IV_LENGTH       = 12;
+    private static final int    GCM_TAG_LENGTH_BITS = 128;
+
+    /** Synchronized: AppPrefs is a singleton reached from multiple background
+     *  threads at once (e.g. WorkManager's ListingSyncWorker racing a direct
+     *  call, both triggering DeviceAuthManager.ensureToken() concurrently on
+     *  a fresh install). Without this lock, two threads can both see the
+     *  alias absent and each call generateKey() for it — the second call
+     *  replaces the keystore entry out from under the first, which then
+     *  fails its in-flight Cipher.init() with
+     *  KeyPermanentlyInvalidatedException. Reproduced and confirmed fixed
+     *  on-device (2026-10-30). */
+    private static synchronized SecretKey getOrCreatePrefsKey() throws GeneralSecurityException {
+        KeyStore ks = KeyStore.getInstance(ANDROID_KEYSTORE);
+        try {
+            ks.load(null);
+        } catch (IOException e) {
+            throw new GeneralSecurityException(e);
+        }
+        if (ks.containsAlias(PREFS_KEY_ALIAS)) {
+            KeyStore.Entry entry = ks.getEntry(PREFS_KEY_ALIAS, null);
+            if (entry instanceof KeyStore.SecretKeyEntry) {
+                return ((KeyStore.SecretKeyEntry) entry).getSecretKey();
+            }
+        }
+        KeyGenerator kg = KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, ANDROID_KEYSTORE);
+        kg.init(new KeyGenParameterSpec.Builder(PREFS_KEY_ALIAS,
+                KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT)
+                .setBlockModes(KeyProperties.BLOCK_MODE_GCM)
+                .setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE)
+                .setKeySize(256)
+                .build());
+        return kg.generateKey();
+    }
+
+    private static String encrypt(String plaintext) throws GeneralSecurityException {
+        Cipher cipher = Cipher.getInstance(AES_GCM_TRANSFORM);
+        cipher.init(Cipher.ENCRYPT_MODE, getOrCreatePrefsKey());
+        byte[] iv = cipher.getIV();
+        byte[] ciphertext = cipher.doFinal(plaintext.getBytes(StandardCharsets.UTF_8));
+        byte[] combined = new byte[iv.length + ciphertext.length];
+        System.arraycopy(iv, 0, combined, 0, iv.length);
+        System.arraycopy(ciphertext, 0, combined, iv.length, ciphertext.length);
+        return Base64.encodeToString(combined, Base64.NO_WRAP);
+    }
+
+    private static String decrypt(String stored) throws GeneralSecurityException {
+        byte[] combined = Base64.decode(stored, Base64.NO_WRAP);
+        if (combined.length <= GCM_IV_LENGTH) {
+            throw new GeneralSecurityException("Stored value too short to contain an IV");
+        }
+        byte[] iv         = Arrays.copyOfRange(combined, 0, GCM_IV_LENGTH);
+        byte[] ciphertext = Arrays.copyOfRange(combined, GCM_IV_LENGTH, combined.length);
+        Cipher cipher = Cipher.getInstance(AES_GCM_TRANSFORM);
+        AlgorithmParameterSpec spec = new GCMParameterSpec(GCM_TAG_LENGTH_BITS, iv);
+        cipher.init(Cipher.DECRYPT_MODE, getOrCreatePrefsKey(), spec);
+        return new String(cipher.doFinal(ciphertext), StandardCharsets.UTF_8);
     }
 
     // ── Offline map data — national Z12 ──────────────────────────────────────

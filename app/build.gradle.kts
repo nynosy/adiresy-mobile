@@ -138,9 +138,8 @@ dependencies {
     implementation(libs.room.runtime)
     annotationProcessor(libs.room.compiler)
 
-    // Background work & encrypted prefs
+    // Background work
     implementation(libs.work.runtime)
-    implementation(libs.security.crypto)
 
     // QR code generation (address-link QR on the code card / code detail screens)
     implementation(libs.zxing.core)
