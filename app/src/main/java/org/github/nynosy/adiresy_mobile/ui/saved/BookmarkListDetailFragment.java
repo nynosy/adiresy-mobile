@@ -78,8 +78,7 @@ public class BookmarkListDetailFragment extends Fragment {
 
     private void setupToolbar() {
         binding.toolbar.setTitle(listEmoji + " " + listName);
-        binding.toolbar.setNavigationIcon(
-                androidx.appcompat.R.drawable.abc_ic_ab_back_material);
+        binding.toolbar.setNavigationIcon(R.drawable.ic_arrow_back);
         binding.toolbar.setNavigationOnClickListener(v ->
                 requireActivity().getSupportFragmentManager().popBackStack());
 

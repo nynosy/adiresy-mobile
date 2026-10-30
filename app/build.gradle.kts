@@ -20,7 +20,7 @@ val hasReleaseSigning = releaseKeystorePath.isNotBlank()
 android {
     namespace = "org.github.nynosy.adiresy_mobile"
     compileSdk {
-        version = release(36) {
+        version = release(37) {
             minorApiLevel = 1
         }
     }
@@ -122,6 +122,13 @@ android {
         warningsAsErrors = true
         abortOnError = true
         checkDependencies = true
+        disable += setOf(
+            // Deliberate: see the abiFilters comment above — real devices are
+            // arm64-v8a/armeabi-v7a, and x86_64 (what this check wants, for
+            // ChromeOS) only matters for the Play Store bundle, which splits
+            // per-ABI itself and isn't affected by this module's APK abiFilters.
+            "ChromeOsAbiSupport"
+        )
     }
 }
 

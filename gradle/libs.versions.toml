@@ -20,10 +20,7 @@ lifecycle        = "2.11.0"
 
 # Network
 retrofit         = "3.0.0"
-# 5.5.0+ requires compileSdk 37, which doesn't exist in the public SDK repo
-# yet (only up to 36.1) — 5.4.0 is the newest release that still only needs
-# compileSdk 36. Revisit once compileSdk is raised.
-okhttp           = "5.4.0"
+okhttp           = "5.5.1"
 
 # Local data
 room             = "2.8.5"

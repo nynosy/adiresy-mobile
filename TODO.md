@@ -86,34 +86,49 @@ with `./gradlew clean assembleDebug lintDebug`.
       `OfflineDataFragment.java:299`, `TileDownloadWorker.java:146`,
       `AdiresyApplication.java:50`.
 
-## Backlog — needs a product/design decision, not auto-fixed
+## Backlog — decisions made 2026-10-30, now actionable
 
-These are real lint findings but fixing them blindly risks guessing wrong
-about intent (translations, visual assets, a new dependency). Flagging
-for a deliberate pass rather than touching them here.
+Each item below was a product/design call rather than an obvious fix.
+Decisions recorded; unchecked = not yet done.
 
-- [ ] `LogNotTimber` ×26 — a dependency-bundled lint check (surfaced now
-      that `checkDependencies = true` is on) suggesting the Timber logging
-      library instead of `android.util.Log`. That's a new dependency +
-      26 call-site migration, not a bug fix — decide first whether to adopt
-      Timber or suppress this check.
-- [ ] `UnusedResources` ×30 — likely safe to delete, but needs a pass to
-      rule out resources referenced dynamically (e.g. via
-      `getIdentifier()`) before bulk-removing.
-- [ ] `IconLauncherShape` ×10, `IconDuplicates` ×5 — asset-level; needs
-      actual icon/image work, not code changes.
-- [ ] `Overdraw` ×5 — layout perf; needs visual verification per screen
-      before changing backgrounds/elevation.
-- [ ] `PluralsCandidate` ×6, `HardcodedText` ×10 — i18n cleanup that needs
-      real fr/mg translation, not just resource extraction with the
-      English text copied over.
+- [ ] `LogNotTimber` ×26 — **decision: adopt Timber.** Add the dependency,
+      migrate all 26 `android.util.Log` call sites.
+- [ ] `UnusedResources` ×30 — **decision: audit and remove.** Check each
+      for dynamic references (`getIdentifier()`, reflection) before
+      deleting.
+- [ ] `IconLauncherShape` ×10, `IconDuplicates` ×5 — **decision: skip.**
+      Needs real icon/image work; left for a deliberate design pass.
+- [ ] `Overdraw` ×5 — **decision: fix and visually verify** on the
+      connected device before considering it done.
+- [ ] `PluralsCandidate` ×6, `HardcodedText` ×10 — **decision: fix with
+      real fr/mg translations** (not placeholder English copies),
+      following the existing `[MG-REVIEW]` convention for Malagasy.
 - [ ] `UselessParent` ×3, `DisableBaselineAlignment` ×3,
       `UseCompatTextViewDrawableXml` ×2, `UseCompoundDrawables` ×1 —
-      layout simplifications, low risk but need a visual check per screen.
-- [ ] `NewerVersionAvailable` ×2, `GradleDependency` ×1 — version bumps;
-      check against the pinning comments already in
-      `gradle/libs.versions.toml` (e.g. okhttp is pinned to 5.4.0 because
-      5.5.0+ needs compileSdk 37, which isn't published yet).
-- [ ] `OldTargetApi` ×1, `ObsoleteSdkInt` ×1, `CustomSplashScreen` ×1,
-      `ChromeOsAbiSupport` ×1, `AppLinkWarning` ×1, `PrivateResource` ×1 —
-      one-off manifest/config findings, each needs individual investigation.
+      **decision: fix and visually verify** each affected screen.
+- [x] `NewerVersionAvailable` ×2, `GradleDependency` ×1 — **decision:
+      check each against the pinning comments in
+      `gradle/libs.versions.toml`, bump what's safe.** API 37 (Android 17)
+      shipped stable 2026-06-16, so the compileSdk-37 block on the okhttp
+      pin no longer applies: bumped compileSdk to 37.1, okhttp/
+      logging-interceptor to 5.5.1. Smoke-tested on the connected device —
+      launches clean, no new logcat errors, no visual regression.
+- [x] `ObsoleteSdkInt`, `ChromeOsAbiSupport`, `AppLinkWarning`,
+      `PrivateResource` — **decision: investigate and fix each
+      individually.** `mipmap-anydpi-v26` renamed to `mipmap-anydpi`
+      (minSdk is already 26); `ChromeOsAbiSupport` suppressed in the
+      `lint {}` block — deliberate per the existing abiFilters comment;
+      `AppLinkWarning` suppressed on the `CodeDetailActivity` intent-filter
+      — deliberate, autoVerify would need a hosted assetlinks.json that
+      doesn't exist; `PrivateResource` fixed by replacing the internal
+      `androidx.appcompat.R.drawable.abc_ic_ab_back_material` reference
+      with a new local `ic_arrow_back.xml` vector in
+      `BookmarkListDetailFragment`.
+- [ ] `OldTargetApi` ×1, `CustomSplashScreen` ×1 — **decision: investigate
+      and fix individually** — deferred out of the "quick" batch. Android
+      17 (API 37) behavior changes (background-audio restrictions,
+      orientation-lock changes on large screens, activity-recreation
+      changes) mean a `targetSdk` bump needs real testing, not just a
+      version number change; `CustomSplashScreen` means migrating
+      `SplashActivity` to the AndroidX SplashScreen API, which is more
+      than a one-line fix.

@@ -13,17 +13,6 @@
     </issue>
 
     <issue
-        id="AppLinkWarning"
-        message="This intent filter has the format of an Android App Link but is missing the `autoVerify` attribute; add `android:autoVerify=&quot;true&quot;` to ensure your domain will be validated and enable App Link-related Lint warnings. If you do not want clicked URLs to bring the user to your app, remove the `android.intent.category.BROWSABLE` category, or set `android:autoVerify=&quot;false&quot;` to make it clear this is not intended to be an Android App Link."
-        errorLine1="            &lt;intent-filter>"
-        errorLine2="             ~~~~~~~~~~~~~">
-        <location
-            file="src/main/AndroidManifest.xml"
-            line="70"
-            column="14"/>
-    </issue>
-
-    <issue
         id="CustomSplashScreen"
         message="The application should not provide its own launch screen"
         errorLine1="public class SplashActivity extends AppCompatActivity {"
@@ -32,50 +21,6 @@
             file="src/main/java/org/github/nynosy/adiresy_mobile/SplashActivity.java"
             line="14"
             column="14"/>
-    </issue>
-
-    <issue
-        id="GradleDependency"
-        message="A newer version of `compileSdk` than 36 is available: 37"
-        errorLine1="        version = release(36) {"
-        errorLine2="                  ^">
-        <location
-            file="build.gradle.kts"
-            line="23"
-            column="19"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.squareup.okhttp3:logging-interceptor than 5.4.0 is available: 5.5.1"
-        errorLine1="okhttp           = &quot;5.4.0&quot;"
-        errorLine2="                   ~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="26"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.squareup.okhttp3:okhttp than 5.4.0 is available: 5.5.1"
-        errorLine1="okhttp           = &quot;5.4.0&quot;"
-        errorLine2="                   ~~~~~~~">
-        <location
-            file="../gradle/libs.versions.toml"
-            line="26"
-            column="20"/>
-    </issue>
-
-    <issue
-        id="PrivateResource"
-        message="The resource `@drawable/abc_ic_ab_back_material` is marked as private in androidx.appcompat:appcompat:1.8.0"
-        errorLine1="                androidx.appcompat.R.drawable.abc_ic_ab_back_material);"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/ui/saved/BookmarkListDetailFragment.java"
-            line="82"
-            column="17"/>
     </issue>
 
     <issue
@@ -453,17 +398,6 @@
     </issue>
 
     <issue
-        id="ChromeOsAbiSupport"
-        message="Missing x86_64 ABI support for ChromeOS"
-        errorLine1="            abiFilters += listOf(&quot;arm64-v8a&quot;, &quot;armeabi-v7a&quot;)"
-        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle.kts"
-            line="56"
-            column="27"/>
-    </issue>
-
-    <issue
         id="NotifyDataSetChanged"
         message="It will always be more efficient to use more specific change events if you can. Rely on `notifyDataSetChanged` as a last resort."
         errorLine1="        notifyDataSetChanged();"
@@ -472,13 +406,6 @@
             file="src/main/java/org/github/nynosy/adiresy_mobile/ui/saved/SaveToListAdapter.java"
             line="32"
             column="9"/>
-    </issue>
-
-    <issue
-        id="ObsoleteSdkInt"
-        message="This folder configuration (`v26`) is unnecessary; `minSdkVersion` is 26. Merge all the resources in this folder into `mipmap-anydpi`.">
-        <location
-            file="src/main/res/mipmap-anydpi-v26"/>
     </issue>
 
     <issue

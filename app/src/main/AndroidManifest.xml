@@ -66,8 +66,11 @@
             android:name=".ui.code.CodeDetailActivity"
             android:exported="true"
             android:parentActivityName=".MainActivity">
-            <!-- Plain (unverified) intent filter — user chooses Adiresy from the app chooser -->
-            <intent-filter>
+            <!-- Plain (unverified) intent filter — user chooses Adiresy from the app chooser.
+                 autoVerify is deliberately omitted: that would need a hosted
+                 .well-known/assetlinks.json on adiresy.mg, which doesn't exist,
+                 and would make this an exclusive App Link instead of a chooser entry. -->
+            <intent-filter tools:ignore="AppLinkWarning">
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
