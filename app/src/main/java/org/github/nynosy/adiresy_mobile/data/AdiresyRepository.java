@@ -1,7 +1,6 @@
 package org.github.nynosy.adiresy_mobile.data;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -42,6 +41,7 @@ import org.github.nynosy.adiresy_mobile.data.cache.SearchHistoryEntity;
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
+import timber.log.Timber;
 
 public class AdiresyRepository {
 
@@ -430,7 +430,7 @@ public class AdiresyRepository {
 
     private static void logDirectoryOk(String endpoint, int httpCode, String detail) {
         if (BuildConfig.DEBUG) {
-            Log.w(TAG_DIRECTORY, endpoint + " -> HTTP " + httpCode + " OK, " + detail);
+            Timber.tag(TAG_DIRECTORY).w(endpoint + " -> HTTP " + httpCode + " OK, " + detail);
         }
     }
 
@@ -441,7 +441,7 @@ public class AdiresyRepository {
     private static void logDirectoryFailure(String endpoint, Response<?> resp, Exception error) {
         if (!BuildConfig.DEBUG) return;
         if (error != null) {
-            Log.w(TAG_DIRECTORY, endpoint + " -> network/parse error: " + error);
+            Timber.tag(TAG_DIRECTORY).w(endpoint + " -> network/parse error: " + error);
             return;
         }
         String snippet = null;
@@ -454,7 +454,7 @@ public class AdiresyRepository {
             // errorBody is a one-shot stream — a failure reading it isn't itself
             // worth logging over the HTTP code we already have.
         }
-        Log.w(TAG_DIRECTORY, endpoint + " -> HTTP " + (resp != null ? resp.code() : -1)
+        Timber.tag(TAG_DIRECTORY).w(endpoint + " -> HTTP " + (resp != null ? resp.code() : -1)
                 + (snippet != null ? ": " + snippet : " (no error body)"));
     }
 

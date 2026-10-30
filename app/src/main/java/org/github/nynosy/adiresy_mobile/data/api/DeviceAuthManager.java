@@ -6,7 +6,6 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.security.keystore.StrongBoxUnavailableException;
 import android.util.Base64;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -24,6 +23,7 @@ import org.github.nynosy.adiresy_mobile.data.api.dto.DeviceRegisterDto;
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 
 import retrofit2.Response;
+import timber.log.Timber;
 
 /**
  * Ensures the app holds a valid per-install API token, obtained via
@@ -51,7 +51,6 @@ import retrofit2.Response;
  */
 public class DeviceAuthManager {
 
-    private static final String TAG = "DeviceAuthManager";
     private static final String KEY_ALIAS = "adiresy_device";
     private static final String ANDROID_KEYSTORE = "AndroidKeyStore";
 
@@ -113,7 +112,7 @@ public class DeviceAuthManager {
             body.attestationChain = chain;
             return body;
         } catch (Exception e) {
-            Log.w(TAG, "Attested registration setup failed, falling back to unattested", e);
+            Timber.w(e, "Attested registration setup failed, falling back to unattested");
             return null;
         }
     }
@@ -126,7 +125,7 @@ public class DeviceAuthManager {
                     && envelope.data.token != null) {
                 prefs.setApiKey(envelope.data.token);
                 if (BuildConfig.DEBUG) {
-                    Log.w(TAG, "Registered — attested=" + envelope.data.attested
+                    Timber.w("Registered — attested=" + envelope.data.attested
                             + (body.challengeId != null ? " (attestation attempted)" : " (no challenge)"));
                 }
                 return;
@@ -176,7 +175,7 @@ public class DeviceAuthManager {
             }
             return encoded;
         } catch (Exception e) {
-            Log.w(TAG, "Attested key generation failed", e);
+            Timber.w(e, "Attested key generation failed");
             return null;
         }
     }

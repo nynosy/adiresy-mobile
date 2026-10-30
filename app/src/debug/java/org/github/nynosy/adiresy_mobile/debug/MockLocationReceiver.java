@@ -3,9 +3,10 @@ package org.github.nynosy.adiresy_mobile.debug;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import org.github.nynosy.adiresy_mobile.ui.home.HomeViewModel;
+
+import timber.log.Timber;
 
 /**
  * Debug-only receiver. Simulate a GPS fix without LocationManager mock location:
@@ -28,10 +29,10 @@ public class MockLocationReceiver extends BroadcastReceiver {
             lat = Double.parseDouble(intent.getStringExtra("lat"));
             lng = Double.parseDouble(intent.getStringExtra("lng"));
         } catch (Exception e) {
-            Log.w(TAG, "Missing or invalid lat/lng string extras");
+            Timber.tag(TAG).w("Missing or invalid lat/lng string extras");
             return;
         }
         HomeViewModel.debugInjectCoords(lat, lng);
-        Log.d(TAG, "Debug location injected: " + lat + ", " + lng);
+        Timber.tag(TAG).d("Debug location injected: " + lat + ", " + lng);
     }
 }

@@ -164,6 +164,9 @@ dependencies {
     // QR code generation (address-link QR on the code card / code detail screens)
     implementation(libs.zxing.core)
 
+    // Logging
+    implementation(libs.timber)
+
     // Test
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)

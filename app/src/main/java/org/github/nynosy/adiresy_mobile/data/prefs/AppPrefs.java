@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
-import android.util.Log;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -19,9 +18,10 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.GCMParameterSpec;
 
+import timber.log.Timber;
+
 public class AppPrefs {
 
-    private static final String TAG            = "AppPrefs";
     private static final String PREF_FILE         = "adiresy_prefs";
     private static final String SECURE_PREF_FILE   = "adiresy_secure_prefs";
     private static final String KEY_FIRST_RUN         = "first_run";
@@ -133,7 +133,7 @@ public class AppPrefs {
         } catch (GeneralSecurityException e) {
             // Corrupt, from an incompatible format, or the key was
             // invalidated (e.g. keystore reset) — treat as absent.
-            Log.w(TAG, "Could not decrypt stored API key, treating as absent", e);
+            Timber.w(e, "Could not decrypt stored API key, treating as absent");
             return "";
         }
     }
@@ -145,7 +145,7 @@ public class AppPrefs {
             // Don't persist a value getApiKey() could never decrypt back —
             // leaves the key simply unset, which DeviceAuthManager already
             // treats as "needs to register" and retries next time it's needed.
-            Log.w(TAG, "Could not encrypt API key, not persisting it", e);
+            Timber.w(e, "Could not encrypt API key, not persisting it");
         }
     }
 

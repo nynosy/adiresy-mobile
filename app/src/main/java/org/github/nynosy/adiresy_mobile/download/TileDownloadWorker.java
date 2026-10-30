@@ -1,7 +1,6 @@
 package org.github.nynosy.adiresy_mobile.download;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.work.Data;
@@ -20,10 +19,9 @@ import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import timber.log.Timber;
 
 public class TileDownloadWorker extends Worker {
-
-    private static final String TAG = "TileDownloadWorker";
 
     /** URL to download. */
     public static final String KEY_URL          = "download_url";
@@ -107,9 +105,9 @@ public class TileDownloadWorker extends Worker {
         try (Response response = httpClient().newCall(reqBuilder.build()).execute()) {
             if (response.code() == 416) {
                 // Range start == file size: file already fully downloaded, skip to prefs update.
-                Log.d(TAG, "HTTP 416 — file already complete: " + filename);
+                Timber.d("HTTP 416 — file already complete: %s", filename);
             } else if (!response.isSuccessful() && response.code() != 206) {
-                Log.e(TAG, "Download failed: " + response.code());
+                Timber.e("Download failed: %s", response.code());
                 return giveUpOrRetry();
             } else {
                 long contentLength = response.body() != null
@@ -140,7 +138,7 @@ public class TileDownloadWorker extends Worker {
             if (expectedSha256 != null && !expectedSha256.isEmpty()) {
                 String actual = sha256Of(dest);
                 if (actual == null || !actual.equalsIgnoreCase(expectedSha256)) {
-                    Log.e(TAG, "Checksum mismatch for " + filename
+                    Timber.e("Checksum mismatch for " + filename
                             + " (expected " + expectedSha256 + ", got " + actual + ")");
                     dest.delete();
                     return giveUpOrRetry();
@@ -171,7 +169,7 @@ public class TileDownloadWorker extends Worker {
             return Result.success();
 
         } catch (IOException e) {
-            Log.e(TAG, "Download IO error", e);
+            Timber.e(e, "Download IO error");
             return giveUpOrRetry();
         }
     }
@@ -181,7 +179,7 @@ public class TileDownloadWorker extends Worker {
      *  backing off forever. */
     private Result giveUpOrRetry() {
         if (getRunAttemptCount() + 1 >= MAX_ATTEMPTS) {
-            Log.e(TAG, "Giving up after " + (getRunAttemptCount() + 1) + " attempts");
+            Timber.e("Giving up after " + (getRunAttemptCount() + 1) + " attempts");
             return Result.failure();
         }
         return Result.retry();
@@ -202,7 +200,7 @@ public class TileDownloadWorker extends Worker {
             }
             return hex.toString();
         } catch (IOException | NoSuchAlgorithmException e) {
-            Log.e(TAG, "Failed to hash " + file, e);
+            Timber.e(e, "Failed to hash %s", file);
             return null;
         }
     }

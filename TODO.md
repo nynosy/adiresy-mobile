@@ -91,8 +91,28 @@ with `./gradlew clean assembleDebug lintDebug`.
 Each item below was a product/design call rather than an obvious fix.
 Decisions recorded; unchecked = not yet done.
 
-- [ ] `LogNotTimber` ×26 — **decision: adopt Timber.** Add the dependency,
-      migrate all 26 `android.util.Log` call sites.
+- [x] `LogNotTimber` ×26 — **decision: adopt Timber.** Added the
+      dependency (5.0.1), planted `Timber.DebugTree()` unconditionally in
+      `AdiresyApplication.onCreate()` — not just in debug builds, since
+      most of the original `Log.*` calls (e.g. `TileDownloadWorker`'s
+      download-failure logging) had no `BuildConfig.DEBUG` guard and were
+      visible in release too; matching that meant Timber had to forward in
+      release as well. The handful of call sites that *were* debug-gated
+      kept their own `if (BuildConfig.DEBUG)` around the `Timber` call.
+      Dropped each `TAG` constant that exactly matched its class's simple
+      name (Timber auto-infers the tag from the caller) and preserved the
+      two that didn't: `AdiresyRepository`'s `TAG_DIRECTORY = "DirectoryApi"`
+      (a documented `-s DirectoryApi` logcat-filter workflow) and
+      `MockLocationReceiver`'s `TAG = "MockLocation"`, both via
+      `Timber.tag(...)`. Timber ships its own lint check
+      (`BinaryOperationInTimber`, surfaced by `checkDependencies = true`)
+      that flagged 4 of the 26 for using string concatenation instead of
+      `%s` format args — fixed those (and simplified one redundant
+      `+ e` next to an already-passed `Throwable`). Verified for real on
+      the connected device: both the custom-tag (`DirectoryApi`) and
+      auto-inferred-tag (`FichePinController`) cases show up correctly in
+      logcat, at the right level, with the right message, from live
+      network calls — not just "doesn't crash."
 - [x] `UnusedResources` ×30 — **decision: audit and remove.** No
       `getIdentifier()`/reflection usage anywhere in the codebase, and each
       of the 30 had zero references outside its own declaration (checked

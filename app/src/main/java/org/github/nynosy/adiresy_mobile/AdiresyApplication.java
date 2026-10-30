@@ -3,7 +3,6 @@ package org.github.nynosy.adiresy_mobile;
 import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.content.ContextCompat;
@@ -16,13 +15,20 @@ import org.github.nynosy.adiresy_mobile.data.ListingSyncWorker;
 import org.github.nynosy.adiresy_mobile.data.prefs.AppPrefs;
 import org.github.nynosy.adiresy_mobile.i18n.LocaleHelper;
 
-public class AdiresyApplication extends Application {
+import timber.log.Timber;
 
-    private static final String TAG = "AdiresyApplication";
+public class AdiresyApplication extends Application {
 
     @Override
     public void onCreate() {
         super.onCreate();
+        // Planted unconditionally, not just in debug: most of the Log.* call
+        // sites this replaced had no BuildConfig.DEBUG guard and were visible
+        // in release builds too (e.g. TileDownloadWorker's download-failure
+        // logging) — matching that means Timber must forward in release as
+        // well. The handful of call sites that *were* debug-gated keep their
+        // own `if (BuildConfig.DEBUG)` around the Timber call.
+        Timber.plant(new Timber.DebugTree());
         // Required before any MapView is inflated. Token is unused for self-hosted/PMTiles.
         MapLibre.getInstance(this, "adiresy", WellKnownTileServer.MapLibre);
         applyTheme();
@@ -44,7 +50,7 @@ public class AdiresyApplication extends Application {
                     new IntentFilter("org.github.nynosy.adiresy_mobile.MOCK_LOCATION"),
                     ContextCompat.RECEIVER_EXPORTED);
         } catch (Exception e) {
-            Log.w(TAG, "MockLocationReceiver registration failed", e);
+            Timber.w(e, "MockLocationReceiver registration failed");
         }
     }
 

@@ -6,7 +6,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 
 import org.maplibre.android.maps.MapLibreMap;
 import org.maplibre.android.maps.Style;
@@ -28,6 +27,8 @@ import java.util.concurrent.Executors;
 
 import org.github.nynosy.adiresy_mobile.BuildConfig;
 import org.github.nynosy.adiresy_mobile.data.AdiresyRepository;
+
+import timber.log.Timber;
 
 /**
  * Renders the Adiresy directory ("fiches") as a map layer, fed by the unpaginated
@@ -57,7 +58,6 @@ public final class FichePinController {
     // below WARN system-wide — the previous version of this class had no
     // logging at all here, so a parse failure against real (vs. near-empty
     // test) data was completely invisible.
-    private static final String TAG = "FichePinController";
 
     public static final String FICHE_LAYER  = "fiche-layer";
     static final        String FICHE_SOURCE = "fiche-source";
@@ -141,7 +141,7 @@ public final class FichePinController {
         bgExecutor.execute(() -> {
             String geoJson = repository.listingsGeoJsonBlocking();
             if (geoJson == null) {
-                if (BuildConfig.DEBUG) Log.w(TAG, "listingsGeoJsonBlocking() returned null — no fiche pins this session");
+                if (BuildConfig.DEBUG) Timber.w("listingsGeoJsonBlocking() returned null — no fiche pins this session");
                 return;
             }
 
@@ -149,19 +149,19 @@ public final class FichePinController {
             try {
                 fc = FeatureCollection.fromJson(geoJson);
             } catch (Exception e) {
-                Log.w(TAG, "Failed to parse /listings/geo/ payload (" + geoJson.length()
+                Timber.w("Failed to parse /listings/geo/ payload (" + geoJson.length()
                         + " chars): " + e + " — first 300 chars: "
                         + geoJson.substring(0, Math.min(300, geoJson.length())));
                 return; // Unparseable payload — leave the layer empty.
             }
             List<Feature> src = fc.features();
             if (src == null || src.isEmpty()) {
-                if (BuildConfig.DEBUG) Log.w(TAG, "Parsed /listings/geo/ OK but got 0 features");
+                if (BuildConfig.DEBUG) Timber.w("Parsed /listings/geo/ OK but got 0 features");
                 return;
             }
             if (BuildConfig.DEBUG) {
                 Feature sample = src.get(0);
-                Log.w(TAG, src.size() + " features parsed; sample properties: "
+                Timber.w(src.size() + " features parsed; sample properties: "
                         + (sample.properties() != null ? sample.properties().toString() : "null")
                         + " geometry type: " + (sample.geometry() != null
                                 ? sample.geometry().type() : "null"));
@@ -204,12 +204,12 @@ public final class FichePinController {
                 try {
                     allFeatures = src;
                     if (mapRef == null) {
-                        if (BuildConfig.DEBUG) Log.w(TAG, "mapRef null at apply time");
+                        if (BuildConfig.DEBUG) Timber.w("mapRef null at apply time");
                         return;
                     }
                     Style style = mapRef.getStyle();
                     if (style == null) {
-                        if (BuildConfig.DEBUG) Log.w(TAG, "style null at apply time");
+                        if (BuildConfig.DEBUG) Timber.w("style null at apply time");
                         return;
                     }
                     for (Map.Entry<String, Bitmap> e : bitmaps.entrySet()) {
@@ -219,14 +219,14 @@ public final class FichePinController {
                         boolean layerPresent = style.getLayer(FICHE_LAYER) != null;
                         boolean sourcePresent = style.getSource(FICHE_SOURCE) != null;
                         boolean imagePresent = style.getImage(bitmaps.keySet().iterator().next()) != null;
-                        Log.w(TAG, "Pre-apply check — layer present: " + layerPresent
+                        Timber.w("Pre-apply check — layer present: " + layerPresent
                                 + ", source present: " + sourcePresent
                                 + ", first image registered: " + imagePresent
                                 + ", bitmaps registered: " + bitmaps.size());
                     }
                     applyFilter();
                 } catch (Exception e) {
-                    Log.w(TAG, "Exception applying fiche features to style: " + e, e);
+                    Timber.w(e, "Exception applying fiche features to style");
                 }
             });
         });
@@ -256,7 +256,7 @@ public final class FichePinController {
         }
         source.setGeoJson(FeatureCollection.fromFeatures(visible));
         if (BuildConfig.DEBUG) {
-            Log.w(TAG, "Applied " + visible.size() + "/" + allFeatures.size()
+            Timber.w("Applied " + visible.size() + "/" + allFeatures.size()
                     + " fiche features to the map source");
         }
     }
