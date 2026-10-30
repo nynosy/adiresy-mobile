@@ -1,0 +1,21 @@
+version: 2
+updates:
+  # Gradle dependencies and plugins from gradle/libs.versions.toml.
+  # Replaces lint's NewerVersionAvailable/GradleDependency checks, which are
+  # disabled in app/build.gradle.kts so CI doesn't fail on upstream releases.
+  # Several versions are deliberately pinned (see the comments in
+  # libs.versions.toml) — check those before merging a bump.
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    groups:
+      androidx:
+        patterns:
+          - "androidx.*"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"

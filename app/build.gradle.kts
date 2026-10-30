@@ -127,7 +127,15 @@ android {
             // arm64-v8a/armeabi-v7a, and x86_64 (what this check wants, for
             // ChromeOS) only matters for the Play Store bundle, which splits
             // per-ABI itself and isn't affected by this module's APK abiFilters.
-            "ChromeOsAbiSupport"
+            "ChromeOsAbiSupport",
+            // Network-dependent: these compare against the latest published
+            // versions, so the result changes whenever upstream ships a
+            // release, with no change to this repo — that would turn CI red
+            // at random. Version bumps come from Dependabot PRs instead (see
+            // .github/dependabot.yml).
+            "NewerVersionAvailable",
+            "GradleDependency",
+            "AndroidGradlePluginVersion"
         )
     }
 }
