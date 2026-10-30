@@ -1,8 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Splash activity: full-screen teal so the window is never blank during cold start -->
-    <style name="Theme.AdiresyMobile.Splash" parent="Theme.Material3.DayNight.NoActionBar">
-        <item name="android:windowBackground">@color/teal_600</item>
+    <!-- Launch theme for MainActivity: the system splash screen (backported to
+         API 26-30 by androidx core-splashscreen) shows the icon on full-screen
+         teal, then installSplashScreen() swaps to postSplashScreenTheme. -->
+    <style name="Theme.AdiresyMobile.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/teal_600</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.AdiresyMobile</item>
         <item name="android:statusBarColor">@color/teal_600</item>
         <item name="android:navigationBarColor">@color/teal_600</item>
         <item name="android:windowLightStatusBar">false</item>

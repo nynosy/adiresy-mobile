@@ -217,8 +217,19 @@ Decisions recorded; unchecked = not yet done.
       real WorkManager-driven offline tile download (start → visible
       progress → pause) all worked with zero crashes or new logcat
       exceptions.
-- [ ] `CustomSplashScreen` ×1 — still open. Means migrating
-      `SplashActivity` from a custom launch-screen Activity to the
-      AndroidX SplashScreen API (`androidx.core:core-splashscreen`), which
-      is a real UI migration (icon/branding timing, exit-animation
-      hookup), not a one-line fix — left for a separate, deliberate pass.
+- [x] `CustomSplashScreen` ×1 — **decision: full migration, drop the
+      random-slogan screen.** On API 31+ users saw two splashes (system
+      icon splash, then `SplashActivity`'s icon + slogan for 1.8 s), and
+      the system splash can't show text, so keeping the slogan would have
+      meant keeping a second splash. Added `androidx.core:core-splashscreen`
+      1.2.0; `Theme.AdiresyMobile.Splash` now extends `Theme.SplashScreen`
+      (teal background, `ic_launcher_foreground` icon,
+      `postSplashScreenTheme` → `Theme.AdiresyMobile`) and is applied to
+      `MainActivity`, which calls `SplashScreen.installSplashScreen(this)`
+      before `super.onCreate`. Deleted `SplashActivity.java` and
+      `activity_splash.xml` (and their two baseline entries). The launcher
+      intent-filter lives on an `<activity-alias>` that keeps the old
+      `.SplashActivity` component name, pointing at `MainActivity`, so
+      pinned home-screen shortcuts survive the update. Verified on-device
+      (API 34): cold launch via the launcher alias shows a single teal
+      icon splash, then goes straight to the map, with no crashes.

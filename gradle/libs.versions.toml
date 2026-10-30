@@ -11,6 +11,7 @@ appcompat        = "1.8.0"
 material         = "1.14.0"
 activity         = "1.13.0"
 fragment         = "1.9.1"
+splashscreen     = "1.2.0"
 
 # Map — verify latest stable at build time
 maplibre         = "13.7.1"
@@ -48,6 +49,7 @@ appcompat                = { group = "androidx.appcompat",              name = "
 material                 = { group = "com.google.android.material",     name = "material",                version.ref = "material" }
 activity                 = { group = "androidx.activity",               name = "activity",                version.ref = "activity" }
 fragment                 = { group = "androidx.fragment",               name = "fragment",                version.ref = "fragment" }
+splashscreen             = { group = "androidx.core",                   name = "core-splashscreen",       version.ref = "splashscreen" }
 
 # Map
 maplibre                 = { group = "org.maplibre.gl",                 name = "android-sdk",             version.ref = "maplibre" }

@@ -140,6 +140,7 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.fragment)
+    implementation(libs.splashscreen)
 
     // Map
     implementation(libs.maplibre)

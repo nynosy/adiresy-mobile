@@ -1,16 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <issues format="6" by="lint 9.5.0" type="baseline" client="gradle" dependencies="true" name="AGP (9.5.0)" variant="all" version="9.5.0">
 
-    <issue
-        id="CustomSplashScreen"
-        message="The application should not provide its own launch screen"
-        errorLine1="public class SplashActivity extends AppCompatActivity {"
-        errorLine2="             ~~~~~~~~~~~~~~">
-        <location
-            file="src/main/java/org/github/nynosy/adiresy_mobile/SplashActivity.java"
-            line="14"
-            column="14"/>
-    </issue>
 
     <issue
         id="NotifyDataSetChanged"
@@ -23,16 +13,6 @@
             column="9"/>
     </issue>
 
-    <issue
-        id="UseCompoundDrawables"
-        message="This tag and its children can be replaced by one `&lt;TextView/>` and a compound drawable"
-        errorLine1="    &lt;LinearLayout"
-        errorLine2="     ~~~~~~~~~~~~">
-        <location
-            file="src/main/res/layout/activity_splash.xml"
-            line="12"
-            column="6"/>
-    </issue>
 
     <issue
         id="IconLauncherShape"

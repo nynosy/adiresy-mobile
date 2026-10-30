@@ -37,21 +37,24 @@
         android:theme="@style/Theme.AdiresyMobile">
 
         <activity
+            android:name=".MainActivity"
+            android:exported="false"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.AdiresyMobile.Splash"
+            android:windowSoftInputMode="adjustResize" />
+
+        <!-- Launcher entry point. Kept under the old SplashActivity component
+             name (now an alias for MainActivity) so home-screen shortcuts
+             pinned before the SplashScreen API migration keep working. -->
+        <activity-alias
             android:name=".SplashActivity"
             android:exported="true"
-            android:noHistory="true"
-            android:theme="@style/Theme.AdiresyMobile.Splash">
+            android:targetActivity=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:launchMode="singleTop"
-            android:windowSoftInputMode="adjustResize" />
+        </activity-alias>
 
         <activity
             android:name=".ui.settings.LanguageChooserActivity"
