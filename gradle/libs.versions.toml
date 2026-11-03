@@ -52,7 +52,10 @@ fragment                 = { group = "androidx.fragment",               name = "
 splashscreen             = { group = "androidx.core",                   name = "core-splashscreen",       version.ref = "splashscreen" }
 
 # Map
-maplibre                 = { group = "org.maplibre.gl",                 name = "android-sdk",             version.ref = "maplibre" }
+# OpenGL ES artifact, NOT plain "android-sdk": since MapLibre 13.0 that one
+# renders with Vulkan, under which the buildings fill-extrusion layer silently
+# draws nothing on PowerVR GPUs (verified on a Z2466, 2026-11-03).
+maplibre                 = { group = "org.maplibre.gl",                 name = "android-sdk-opengl",      version.ref = "maplibre" }
 
 # Architecture
 lifecycle-viewmodel      = { group = "androidx.lifecycle",              name = "lifecycle-viewmodel",     version.ref = "lifecycle" }

@@ -1,0 +1,1 @@
+- Fixed: Buildings no longer appeared on the map on some devices.

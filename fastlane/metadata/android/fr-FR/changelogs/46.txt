@@ -1,0 +1,1 @@
+- Correction : les bâtiments n'apparaissaient plus sur la carte sur certains appareils.
