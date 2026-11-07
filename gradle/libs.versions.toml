@@ -3,7 +3,7 @@ agp              = "9.5.0"
 desugar          = "2.1.5"
 
 # Code quality
-errorprone             = "2.51.0"
+errorprone             = "2.52.0"
 errorproneGradlePlugin = "5.1.1"
 
 # UI
